@@ -1,6 +1,76 @@
 DEBUG = false  # Set to true to see bounding circles used for collision detection
 
 
+class CharWheel < Chingu::GameObject
+  def setup
+    @speed = 3
+    @picture = ["players/boy.png", "players/monk.png", "players/tanooki.png",
+                "players/cult_leader.png", "players/villager.png", "players/knight.png",
+                "players/sorceror.png" ]
+    @p = 0
+    @image = Gosu::Image[@picture[@p]]
+    @click = Sound["media/audio/keypress.ogg"]
+    @ready = false
+  end
+
+  def p
+    @picture[@p]
+  end
+
+  def ready
+    @ready = true
+  end
+
+  def go_left
+    if @ready == false
+      @click.play
+      if @p > 0
+        @p -= 1
+      else
+        @p = 6
+      end
+      @image = Gosu::Image[@picture[@p]]
+    end
+  end
+
+  def go_right
+    if @ready == false
+      @click.play
+      if @p < 6
+        @p += 1
+      else
+        @p = 0
+      end
+      @image = Gosu::Image[@picture[@p]]
+    end
+  end
+
+  def go_up
+    @y -= @speed
+  end
+
+  def go_down
+    @y += @speed
+  end
+
+  def enlargen
+    if self.factor < 3.0
+      self.factor *= 1.02
+    end
+  end
+
+  def update
+    if @ready == true
+      enlargen
+    end
+  end
+
+end
+
+
+
+
+
 class Player < Chingu::GameObject
   trait :bounding_box, :debug => DEBUG
   traits :velocity, :collision_detection
@@ -22,9 +92,6 @@ class Player < Chingu::GameObject
 end
 
 
-#
-#  REFEREE
-#
 class Referee < Player
     trait :bounding_circle, :debug => DEBUG
   def setup
@@ -79,8 +146,6 @@ class Player2 < Player
 end
 
 
-
-
 #
 #   EYES
 #
@@ -97,6 +162,35 @@ class EyesRight < Chingu::GameObject
 end
 
 
-
+#
+#  KNIGHT
+#    called in beginning.rb, in Introduction gamestate
+class Knight < Chingu::GameObject
+  def initialize(options)
+    super
+    @image = Image["players/knight.png"]
+    @voice = Sound["audio/mumble.ogg"]
+    @velox = 0     # x velocity starts as 0
+    @veloy = 0     # y velocity starts as 0
+    @factoring = 1 # used for shrinking Knight when he enters the ship
+  end
+  def movement   # called in Introduction gamestate
+    @velox = -7  # move left
+  end
+  def enter_ship # called in Introduction gamestate
+    @veloy = 2
+    @factoring = 0.98
+  end
+  def speak      # called in Introduction gamestate
+    @voice.play
+  end
+  def update
+    self.factor *= @factoring
+    @x += @velox
+    @y += @veloy
+    if @x <= 400; @velox = 0; end
+    if @y >= 450; @veloy = 0; end
+  end
+end
 
 

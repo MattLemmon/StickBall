@@ -62,7 +62,7 @@ end
 
 
 #
-#    Plasma Class
+#    PLASMA
 #
 class Plasma < Chingu::GameObject
   traits :velocity
@@ -134,11 +134,12 @@ end
 
 #
 #   STAR CLASS
-#     stars can be picked up by player; called in levels.rb
+#     stars can be picked up by players
 class Star < Chingu::GameObject
   trait :bounding_circle, :debug => DEBUG
-  trait :collision_detection
-  
+  traits :velocity, :collision_detection
+  attr_accessor :color
+
   def setup
     @animation = Chingu::Animation.new(:file => "objects/living.png", :size => 64)
     @image = @animation.next
@@ -147,8 +148,9 @@ class Star < Chingu::GameObject
     self.color.red = rand(255 - 40) + 40
     self.color.green = rand(255 - 40) + 40
     self.color.blue = rand(255 - 40) + 40
-    self.x = rand * 800
-    self.y = rand * 600
+    self.factor = 0.5
+#    self.x = rand * 800
+#    self.y = rand * 600
     cache_bounding_circle     # A cached bounding circle will not adapt to changes in size, but it will follow objects X / Y
   end
   
@@ -156,6 +158,8 @@ class Star < Chingu::GameObject
     # Move the animation forward by fetching the next frame and putting it into @image
     # @image is drawn by default by GameObject#draw
     @image = @animation.next
+    self.velocity_x *= 0.97
+    self.velocity_y *= 0.97
   end
 end
 
@@ -214,4 +218,29 @@ class Highlight2 < Chingu::GameObject
     @x += 5
   end
 end
+
+
+#
+#   METEOR
+#     Meteor class is used in Introduction gamestate
+class Meteor < Chingu::GameObject
+  trait :bounding_circle, :debug => DEBUG
+  traits :velocity, :collision_detection
+
+  def initialize(options)
+    super(options.merge(:image => Gosu::Image["objects/meteor.png"]))
+    @angular_velocity = 5
+    @random = rand(2)+1
+    if(@random == 1)
+      @angular_velocity = -@angular_velocity
+    end
+  end
+
+  def update
+    @angle += @angular_velocity
+  end
+end
+
+
+
 

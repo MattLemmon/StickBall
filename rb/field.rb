@@ -1,25 +1,19 @@
-# Classes: Bowl, FireCube, Splash, Circle, Box
-# GAMESTATES:  BOWL,  SPLASH
 
 #
-# BOWL GAMESTATE
-#
-# from Chingu Tutorial Demonstrating traits "velocity" and "collision_detection"
+# FIELD GAMESTATE
 #
 class Field < Chingu::GameState    
   trait :timer
-  def initialize
+  def initialize#(n, nn)
+#    @n = n
+#    @nn = nn
     super
-    $health = 6   # starting health is 6      These constants are updated throughout the game.
-    $score = 0    # starting score is 0
-    $stars = 0    # starting stars is 0
-    $weapon = 1   # starting weapon is 1
     self.input = { :p => Pause,
-                   :space => :new_fire_cube,
-                   :left => :decrease_speed,
-                   :right => :increase_speed,
-                   :up => :increase_size,
-                   :down => :decrease_size,
+                   :space => :fire,
+                   :j => :toggle_left,
+                   :l => :toggle_right,
+                   :i => :toggle_up,
+                   :k => :toggle_down,
                    :p => Pause,
                    :return => lambda{current_game_state.setup}
                  }
@@ -63,10 +57,6 @@ class Field < Chingu::GameState
 
     @puck = FireCube.create(:x => rand($window.width), :y => rand($window.height), :zorder => Zorder::Projectile)
 
-#    @gui = GUI.create(@player1)      # create GUI
-
-    1.times { new_fire_cube }
-
     @ground_y = ($window.height * 0.95).to_i
 
     @score1 = 0
@@ -75,12 +65,15 @@ class Field < Chingu::GameState
     @score2_text = Chingu::Text.create(:text=>"", :x=>330, :y=>10, :size=>46)
 
     @bump = 0
-    @bump_delay = 20
+    @bump_delay = 15
     @bounce = 0
     @bounce_delay = 6
 
     @shake1 = 10
     @shake2 = 5
+
+#    @gui = GUI.create(@player1)      # create GUI
+#    1.times { fire }
 
 #    @shaking = true                 # screen_shake cooldown
 #    after(1000) {@shaking = false}
@@ -92,23 +85,11 @@ class Field < Chingu::GameState
 #    }
   end
   
-  def new_fire_cube
-#    FireCube.create(:x => rand($window.width), :y => rand($window.height), :zorder => Zorder::Projectile)
-    Star.create
-  end
-
-  def increase_size
-#    game_objects.each { |go| go.factor += 1 }
-  end
-  def decrease_size
-#    game_objects.each { |go| go.factor -= 1 if go.factor > 1  }
-  end
-  def increase_speed
-#    game_objects.each { |go| go.velocity_x *= 2; go.velocity_y *= 2; }
-  end
-  def decrease_speed
-#    game_objects.each { |go| go.velocity_x *= 0.5; go.velocity_y *= 0.5; }
-  end
+  def fire;  FireCube.create(:x => rand($window.width), :y => rand($window.height), :zorder => Zorder::Projectile);  end
+  def toggle_left;  end
+  def toggle_right;  end
+  def toggle_up;  end
+  def toggle_down;  end
 
 
   def screen_shake1
@@ -145,35 +126,7 @@ class Field < Chingu::GameState
 #    end
   end
 
-
-  def draw
-    $window.caption = "Stick Ball!     Go team go!                                             Objects: #{game_objects.size}, FPS: #{$window.fps}"
-    fill_gradient(:from => Color.new(255,0,0,0), :to => Color.new(255,60,60,80), :rect => [0,0,$window.width,@ground_y])
-    fill_gradient(:from => Color.new(255,100,100,100), :to => Color.new(255,50,50,50), :rect => [0,@ground_y,$window.width,$window.height-@ground_y])
-    super
-  end
-
-  def update
-    super
-
-    @score1_text.text = "#{@score1}"
-    @score2_text.text = "#{@score2}"
-
-    @eyes1.x = @player1.x - 3
-    @eyes1.y = @player1.y - 12
-
-    @eyes2.x = @player2.x + 3
-    @eyes2.y = @player2.y - 12
-
-    if @player3 != nil
-      if @player3.y > @puck.y && rand(5) == 1
-        @player3.go_up
-      end
-      if @player3.y < @puck.y && rand(5) == 1
-        @player3.go_down
-      end
-    end
-
+  def move_referee
     if @referee.y > @puck.y && rand(20) == 1
       @referee.go_up
     end
@@ -185,6 +138,31 @@ class Field < Chingu::GameState
     end
     if @referee.x < @puck.x && rand(20) == 1
       @referee.go_right
+    end
+  end
+
+  def collision_check
+    Player1.each_collision(Star) do |player, star|    # Collide player with stars
+      star.destroy            # pick up star
+      $stars += 1             # add star in star meter (gui.rb)
+      if $stars != 3          # not 3 stars yet?
+        $star_grab.play(0.6)   # play normal power-up sound
+      else                    # 3 stars?
+        $power_up.play(0.6)    # play mighty power-up sound
+        $stars = 0             # reset star meter
+        $weapon += 1           # Upgrade Weapon (see Player.fire in objects.rb)
+      end
+    end
+    Player2.each_collision(Star) do |player, star|    # Collide player with stars
+      star.destroy            # pick up star
+      $stars2 += 1             # add star in star meter (gui.rb)
+      if $stars2 != 3          # not 3 stars yet?
+        $star_grab.play(0.6)   # play normal power-up sound
+      else                    # 3 stars?
+        $power_up.play(0.6)    # play mighty power-up sound
+        $stars2 = 0             # reset star meter
+        $weapon += 1           # Upgrade Weapon (see Player.fire in objects.rb)
+      end
     end
 
     FireCube.each_collision(Player1) do |puck, player|
@@ -208,8 +186,9 @@ class Field < Chingu::GameState
         @bump = @bump_delay
       end
     end
-    FireCube.each_collision(Referee) do |puck, player|
+    FireCube.each_collision(Referee) do |puck, referee|     # ITEM DROPS
       if @bump == 0
+        Star.create(:x => referee.x, :y => referee.y, :velocity_x => -puck.velocity_x/3*2, :velocity_y => puck.velocity_y/3*2 )
         puck.velocity_x = -puck.velocity_x
         puck.die!
         if rand(2) == 1
@@ -217,10 +196,6 @@ class Field < Chingu::GameState
         end
         @bump = @bump_delay
       end
-    end
-
-    if @bump > 0
-      @bump -= 1
     end
 
     FireCube.each do |particle|      # SCORING AND WALL-BOUNCING
@@ -245,9 +220,41 @@ class Field < Chingu::GameState
         end
       end
     end
+  end
 
+  def draw
+    $window.caption = "Stick Ball!     Go team go!                                             Objects: #{game_objects.size}, FPS: #{$window.fps}"
+    fill_gradient(:from => Color.new(255,0,0,0), :to => Color.new(255,60,60,80), :rect => [0,0,$window.width,@ground_y])
+    fill_gradient(:from => Color.new(255,100,100,100), :to => Color.new(255,50,50,50), :rect => [0,@ground_y,$window.width,$window.height-@ground_y])
+    super
+  end
+
+
+  def update
+    super
+    move_referee
+    collision_check
+    if @bump > 0
+      @bump -= 1
+    end
     if @bounce > 0
       @bounce -= 1
+    end
+
+    @score1_text.text = "#{@score1}"
+    @score2_text.text = "#{@score2}"
+    @eyes1.x = @player1.x - 3
+    @eyes1.y = @player1.y - 12
+    @eyes2.x = @player2.x + 3
+    @eyes2.y = @player2.y - 12
+
+    if @player3 != nil
+      if @player3.y > @puck.y && rand(5) == 1
+        @player3.go_up
+      end
+      if @player3.y < @puck.y && rand(5) == 1
+        @player3.go_down
+      end
     end
 
     self.game_objects.destroy_if { |object| object.color.alpha == 0 }
