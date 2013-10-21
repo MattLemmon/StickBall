@@ -4,13 +4,19 @@ DEBUG = false  # Set to true to see bounding circles used for collision detectio
 class CharWheel < Chingu::GameObject
   def setup
     @speed = 3
-    @picture = ["players/boy.png", "players/monk.png", "players/tanooki.png",
-                "players/cult_leader.png", "players/villager.png", "players/knight.png",
-                "players/sorceror.png" ]
+    @picture = ["boy", "monk", "tanooki",
+                "cult_leader", "villager", "knight",
+                "sorceror" ]
+#    @picture = ["players/boy.png", "players/monk.png", "players/tanooki.png",
+#                "players/cult_leader.png", "players/villager.png", "players/knight.png",
+#                "players/sorceror.png" ]
     @p = 0
-    @image = Gosu::Image[@picture[@p]]
+    @image = Gosu::Image["players/#{@picture[@p]}.png"]
+#    @image = Gosu::Image[@picture[@p]]
     @click = Sound["media/audio/keypress.ogg"]
     @ready = false
+    @text = Chingu::Text.create("#{@picture[@p]}", :y => @y - 150, :size => 45, :color => Colors::Dark_Orange, :zorder => Zorder::GUI)
+    @text.x = @x - @text.width/2 # center text
   end
 
   def p
@@ -21,6 +27,7 @@ class CharWheel < Chingu::GameObject
     @ready = true
   end
 
+=begin
   def go_left
     if @ready == false
       @click.play
@@ -29,7 +36,10 @@ class CharWheel < Chingu::GameObject
       else
         @p = 6
       end
-      @image = Gosu::Image[@picture[@p]]
+      @image = Gosu::Image["players/#{@picture[@p]}.png"]
+      @text.text = "#{@picture[@p]}"
+      $image1 = "#{@picture[@p]}"
+#      @image = Gosu::Image[@picture[@p]]
     end
   end
 
@@ -41,10 +51,12 @@ class CharWheel < Chingu::GameObject
       else
         @p = 0
       end
-      @image = Gosu::Image[@picture[@p]]
+      @image = Gosu::Image["players/#{@picture[@p]}.png"]
+      $image1 = "#{@picture[@p]}"
+#      @image = Gosu::Image[@picture[@p]]
     end
   end
-
+=end
   def go_up
     @y -= @speed
   end
@@ -66,6 +78,71 @@ class CharWheel < Chingu::GameObject
   end
 
 end
+
+
+class CharWheel1 < CharWheel
+  def go_left
+    if @ready == false
+      @click.play
+      if @p > 0
+        @p -= 1
+      else
+        @p = 6
+      end
+      @image = Gosu::Image["players/#{@picture[@p]}.png"]
+      @text.text = "#{@picture[@p]}"
+      $image1 = "#{@picture[@p]}"
+#      @image = Gosu::Image[@picture[@p]]
+    end
+  end
+  def go_right
+    if @ready == false
+      @click.play
+      if @p < 6
+        @p += 1
+      else
+        @p = 0
+      end
+      @image = Gosu::Image["players/#{@picture[@p]}.png"]
+      $image1 = "#{@picture[@p]}"
+#      @image = Gosu::Image[@picture[@p]]
+    end
+  end
+end
+
+
+class CharWheel2 < CharWheel
+  def go_left
+    if @ready == false
+      @click.play
+      if @p > 0
+        @p -= 1
+      else
+        @p = 6
+      end
+      @image = Gosu::Image["players/#{@picture[@p]}.png"]
+      @text.text = "#{@picture[@p]}"
+      $image2 = "#{@picture[@p]}"
+#      @image = Gosu::Image[@picture[@p]]
+    end
+  end
+  def go_right
+    if @ready == false
+      @click.play
+      if @p < 6
+        @p += 1
+      else
+        @p = 0
+      end
+      @image = Gosu::Image["players/#{@picture[@p]}.png"]
+      $image2 = "#{@picture[@p]}"
+#      @image = Gosu::Image[@picture[@p]]
+    end
+  end
+end
+
+
+
 
 
 
@@ -126,7 +203,7 @@ class Player1 < Player
   attr_reader :health, :score
   def initialize(health)
     super
-    @image = Gosu::Image["players/boy_left.png"]
+    @image = Gosu::Image["players/#{$image1}.png"]
     cache_bounding_box
   end
 
@@ -140,7 +217,7 @@ class Player2 < Player
   attr_reader :health, :score
   def initialize(health)
     super
-    @image = Gosu::Image["players/sorceror.png"]
+    @image = Gosu::Image["players/#{$image2}.png"]
     cache_bounding_box
   end
 end

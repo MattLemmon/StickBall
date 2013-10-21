@@ -21,12 +21,12 @@ class Introduction < Chingu::GameState
   trait :timer
 
   def setup
-    @player1_select = CharWheel.create(:x => 600, :y => 300, :zorder => Zorder::Main_Character)
+    @player1_select = CharWheel1.create(:x => 600, :y => 300, :zorder => Zorder::Main_Character)
     @player1_select.input = { :right_shift => :ready, :right => :go_right, :left => :go_left,
                               :holding_up => :go_up, :holding_down => :go_down}
     @ready1 = false
 
-    @player2_select = CharWheel.create(:x => 200, :y => 300, :zorder => Zorder::Main_Character)
+    @player2_select = CharWheel2.create(:x => 200, :y => 300, :zorder => Zorder::Main_Character)
     @player2_select.input = {:left_shift => :ready, :a => :go_left, :d => :go_right, :holding_w => :go_up, :holding_s => :go_down}
     @ready2 = false
 #    @n = nil

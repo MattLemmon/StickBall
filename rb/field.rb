@@ -203,6 +203,7 @@ class Field < Chingu::GameState
         if particle.x < 0 
           particle.velocity_x = -particle.velocity_x
           @score1 += 1
+          $bang.play(0.5)
           particle.die!
           screen_shake1
           @bounce = @bounce_delay
@@ -210,6 +211,7 @@ class Field < Chingu::GameState
         if particle.x > $window.width
           particle.velocity_x = -particle.velocity_x
           @score2 += 1
+          $bang.play(0.5)
           particle.die!
           screen_shake2
           @bounce = @bounce_delay
