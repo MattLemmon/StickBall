@@ -218,7 +218,7 @@ class Referee < Player
       @growth = 0.95
     end
     if @grow_count == 0
-      self.factor = 1.0
+      self.factor_x = 1.0
       @grow = 1
       @growing = false
     end
@@ -228,7 +228,7 @@ class Referee < Player
   def update
     if @growing == true
       grow_counter
-      self.factor *= @growth
+      self.factor_x *= @growth
     end
 
     if rand(@rand) == 5

@@ -77,6 +77,8 @@ class GameWindow < Chingu::Window
     $star_grab = Sound["media/audio/star_pickup.ogg"]
     $power_up = Sound["media/audio/power_up.ogg"]
     $bang = Sound["media/audio/bang.ogg"]
+    $bang1 = Sound["media/audio/bang1.ogg"]
+    $bang2 = Sound["media/audio/bang2.ogg"]
     $guitar_riff = Sound["media/audio/guitar_riff.ogg"]
     self.caption = "Stick Ball"
     @cursor = true # comment out to hide cursor
