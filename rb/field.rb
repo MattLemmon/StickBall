@@ -142,7 +142,7 @@ class Field < Chingu::GameState
   end
 
   def collision_check
-    Player1.each_collision(Star) do |player, star|    # Collide player with stars
+    Player1.each_collision(Star) do |player, star|    # PICKUP STARS
       star.destroy            # pick up star
       $stars += 1             # add star in star meter (gui.rb)
       if $stars != 3          # not 3 stars yet?
@@ -153,7 +153,7 @@ class Field < Chingu::GameState
         $weapon += 1           # Upgrade Weapon (see Player.fire in objects.rb)
       end
     end
-    Player2.each_collision(Star) do |player, star|    # Collide player with stars
+    Player2.each_collision(Star) do |player, star|    # PICKUP STARS
       star.destroy            # pick up star
       $stars2 += 1             # add star in star meter (gui.rb)
       if $stars2 != 3          # not 3 stars yet?
@@ -188,6 +188,7 @@ class Field < Chingu::GameState
     end
     FireCube.each_collision(Referee) do |puck, referee|     # ITEM DROPS
       if @bump == 0
+        referee.wobble
         Star.create(:x => referee.x, :y => referee.y, :velocity_x => -puck.velocity_x/3*2, :velocity_y => puck.velocity_y/3*2 )
         puck.velocity_x = -puck.velocity_x
         puck.die!

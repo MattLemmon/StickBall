@@ -21,14 +21,7 @@ class Introduction < Chingu::GameState
   trait :timer
 
   def setup
-    @player1_select = CharWheel1.create(:x => 600, :y => 300, :zorder => Zorder::Main_Character)
-    @player1_select.input = { :right_shift => :ready, :right => :go_right, :left => :go_left,
-                              :holding_up => :go_up, :holding_down => :go_down}
-    @ready1 = false
 
-    @player2_select = CharWheel2.create(:x => 200, :y => 300, :zorder => Zorder::Main_Character)
-    @player2_select.input = {:left_shift => :ready, :a => :go_left, :d => :go_right, :holding_w => :go_up, :holding_s => :go_down}
-    @ready2 = false
 #    @n = nil
 #    @nn = nil
 
@@ -53,10 +46,23 @@ class Introduction < Chingu::GameState
     @click = Sound["media/audio/pickup_chime.ogg"]
 
     after(600) {
+      @player1_select = CharWheel1.create(:x => 600, :y => 300, :zorder => Zorder::Main_Character)
+      @player1_select.input = { :right_shift => :ready, :right => :go_right, :left => :go_left,
+                              :holding_up => :go_up, :holding_down => :go_down}
+      @ready1 = false
+      @caption1 = Chingu::Text.create("#{$image1}", :y => @player1_select.y - 150, :size => 45, :color => Colors::Dark_Orange, :zorder => Zorder::GUI)
+      @caption1.x = @player1_select.x - @caption1.width/2 # center text
       @text2 = Chingu::Text.create("Choose Your Player", :y => 510, :font => "GeosansLight", :size => 45, :color => Colors::Dark_Orange, :zorder => Zorder::GUI)
       @text2.x =800/2 - @text2.width/2 # center text
     }
     after(900) {
+      @player2_select = CharWheel2.create(:x => 200, :y => 300, :zorder => Zorder::Main_Character)
+      @player2_select.input = {:left_shift => :ready, :a => :go_left, :d => :go_right, :holding_w => :go_up, :holding_s => :go_down}
+      @ready2 = false
+
+      @caption2 = Chingu::Text.create("#{$image2}", :y => @player2_select.y - 150, :size => 45, :color => Colors::Dark_Orange, :zorder => Zorder::GUI)
+      @caption2.x = @player2_select.x - @caption2.width/2 # center text
+
       @text = Chingu::Text.create("Press Shift", :y => 550, :font => "GeosansLight", :size => 45, :color => Colors::Dark_Orange, :zorder => Zorder::GUI)
       @text.x = 800/2 - @text.width/2 # center text
     }
@@ -81,7 +87,15 @@ class Introduction < Chingu::GameState
 
   def update
     super
-    @counter += @count 
+    @counter += @count
+    if @caption1 != nil
+      @caption1.text = $image1
+      @caption1.x = @player1_select.x - @caption1.width/2 # center text
+    end
+    if @caption2 != nil
+      @caption2.text = $image2
+      @caption2.x = @player2_select.x - @caption2.width/2 # center text
+    end
     if @song_fade == true # fade song if @song_fade is true
       @fade_count += 1
       if @fade_count == 20

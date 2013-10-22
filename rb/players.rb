@@ -15,8 +15,6 @@ class CharWheel < Chingu::GameObject
 #    @image = Gosu::Image[@picture[@p]]
     @click = Sound["media/audio/keypress.ogg"]
     @ready = false
-    @text = Chingu::Text.create("#{@picture[@p]}", :y => @y - 150, :size => 45, :color => Colors::Dark_Orange, :zorder => Zorder::GUI)
-    @text.x = @x - @text.width/2 # center text
   end
 
   def p
@@ -81,6 +79,26 @@ end
 
 
 class CharWheel1 < CharWheel
+  def setup
+    self.factor = -1
+    @speed = 3
+    @picture = ["boy", "monk", "tanooki",
+                "cult_leader", "villager", "knight",
+                "sorceror" ]
+#    @picture = ["players/boy.png", "players/monk.png", "players/tanooki.png",
+#                "players/cult_leader.png", "players/villager.png", "players/knight.png",
+#                "players/sorceror.png" ]
+    @p = 0
+    @image = Gosu::Image["players/#{@picture[@p]}.png"]
+#    @image = Gosu::Image[@picture[@p]]
+    @click = Sound["media/audio/keypress.ogg"]
+    @ready = false
+
+#    @caption = Chingu::Text.create("ttt#{$image1}", :y => self.y - 150, :size => 45, :color => Colors::Dark_Orange, :zorder => Zorder::GUI)
+#    @caption.x = self.x - @caption.width/2 # center text
+  end
+
+
   def go_left
     if @ready == false
       @click.play
@@ -90,7 +108,8 @@ class CharWheel1 < CharWheel
         @p = 6
       end
       @image = Gosu::Image["players/#{@picture[@p]}.png"]
-      @text.text = "#{@picture[@p]}"
+#      @caption.text = "#{@picture[@p]}"
+#      @caption.x = @x - @caption.width/2 # center text
       $image1 = "#{@picture[@p]}"
 #      @image = Gosu::Image[@picture[@p]]
     end
@@ -121,7 +140,6 @@ class CharWheel2 < CharWheel
         @p = 6
       end
       @image = Gosu::Image["players/#{@picture[@p]}.png"]
-      @text.text = "#{@picture[@p]}"
       $image2 = "#{@picture[@p]}"
 #      @image = Gosu::Image[@picture[@p]]
     end
@@ -177,9 +195,42 @@ class Referee < Player
 #    @picture2 = Gosu::Image["players/player_blink.png"]
     @rand = 30
     @speed = 5
+    @growing = false
+    @grow = 1
+    @growth = 1.01
+    @grow_count = 0
     cache_bounding_circle
   end
+
+  def wobble
+    if @grow_count == 0
+#      @grow_count = 0
+      @growth = 1.06
+      @growing = true
+    end
+  end
+
+
+  def grow_counter
+    @grow_count += @grow
+    if @grow_count >= 8
+      @grow *= -1
+      @growth = 0.95
+    end
+    if @grow_count == 0
+      self.factor = 1.0
+      @grow = 1
+      @growing = false
+    end
+
+  end
+
   def update
+    if @growing == true
+      grow_counter
+      self.factor *= @growth
+    end
+
     if rand(@rand) == 5
       @x += @speed
     end
