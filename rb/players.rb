@@ -107,33 +107,33 @@ class CharWheel2 < CharWheel
   end
 end
 
-
-
-=begin
-class Player < Chingu::GameObject
-  trait :bounding_box, :debug => DEBUG
-  traits :velocity, :collision_detection
-#  def setup
-#    @speed = 12
-#  end
-  def go_left
-    @x -= $speed1
+class Eyes
+  def initialize parent
+    @parent = parent
+    @image = Gosu::Image["players/eye_sockets.png"]
+    @eye_ball = Gosu::Image["players/eye_ball.png"]
+    @x = 0
+    @y = 0
   end
-  def go_right
-    @x += $speed1
+  
+  def update
+    @x = @parent.x + 3 * @parent.direction
+    @y = @parent.y - 6
+    puck = @parent.game_state.puck
+    @eye_angle = Gosu.angle @x, @y, puck.x, puck.y
   end
-  def go_up
-    @y -= $speed1
-  end
-  def go_down
-    @y += $speed1
+  
+  def draw
+    @image.draw_rot @x, @y, Zorder::Eyes, 0, 0.5, 1.0
+    @eye_ball.draw_rot @x-7+Gosu.offset_x(@eye_angle, 3), @y-2+Gosu.offset_y(@eye_angle, 2), Zorder::Eyes, 0, 0.5, 1.0
+    @eye_ball.draw_rot @x+7+Gosu.offset_x(@eye_angle, 3), @y-2+Gosu.offset_y(@eye_angle, 2), Zorder::Eyes, 0, 0.5, 1.0
   end
 end
-=end
+
 
 class Referee < Chingu::GameObject
-  traits :velocity, :collision_detection
   trait :bounding_circle, :debug => DEBUG
+  traits :velocity, :collision_detection
   def setup
 #    super
     @image = Gosu::Image["players/referee.png"]
@@ -144,6 +144,7 @@ class Referee < Chingu::GameObject
     @grow = 1
     @growth = 1.01
     @grow_count = 0
+    @eyes = Eyes.new self
     cache_bounding_circle
   end
 
@@ -201,12 +202,16 @@ end
 class Player1 < Chingu::GameObject
   traits :velocity, :collision_detection
   trait :bounding_box, :debug => DEBUG
-  attr_reader :health, :score
+  attr_reader :health, :score, :direction
   def initialize(health)
     super
     @image = Gosu::Image["players/#{$image1}.png"]
     self.factor_x = -1
+    @direction = -1
     cache_bounding_box
+  end
+  def setup
+    @eyes = Eyes.new self
   end
   def go_left
     @velocity_x = -$speed1
@@ -223,6 +228,12 @@ class Player1 < Chingu::GameObject
   def update
     @velocity_x *= 0.5
     @velocity_y *= 0.5
+    @eyes.update
+  end
+
+  def draw
+    super
+    @eyes.draw
   end
 
 end
@@ -234,11 +245,15 @@ end
 class Player2 < Chingu::GameObject
   traits :velocity, :collision_detection
   trait :bounding_box, :debug => DEBUG
-  attr_reader :health, :score
+  attr_reader :health, :score, :direction
   def initialize(health)
     super
     @image = Gosu::Image["players/#{$image2}.png"]
+    @direction = 1
     cache_bounding_box
+  end
+  def setup
+    @eyes = Eyes.new self
   end
   def go_left
     @x -= $speed2
@@ -251,6 +266,16 @@ class Player2 < Chingu::GameObject
   end
   def go_down
     @y += $speed2
+  end
+  def update
+    @velocity_x *= 0.5
+    @velocity_y *= 0.5
+    @eyes.update
+  end
+
+  def draw
+    super
+    @eyes.draw
   end
 end
 
