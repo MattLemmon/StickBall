@@ -4,101 +4,44 @@ DEBUG = false  # Set to true to see bounding circles used for collision detectio
 class CharWheel < Chingu::GameObject
   def setup
     @speed = 3
-    @picture = ["boy", "monk", "tanooki",
-                "cult_leader", "villager", "knight",
-                "sorceror" ]
-#    @picture = ["players/boy.png", "players/monk.png", "players/tanooki.png",
-#                "players/cult_leader.png", "players/villager.png", "players/knight.png",
-#                "players/sorceror.png" ]
+    @picture = ["boy", "monk", "tanooki", "cult_leader",
+                 "villager", "knight", "sorceror" ]
     @p = 0
     @image = Gosu::Image["players/#{@picture[@p]}.png"]
-#    @image = Gosu::Image[@picture[@p]]
     @click = Sound["media/audio/keypress.ogg"]
     @ready = false
   end
-
   def p
     @picture[@p]
   end
-
   def ready
     @ready = true
   end
-
-=begin
-  def go_left
-    if @ready == false
-      @click.play
-      if @p > 0
-        @p -= 1
-      else
-        @p = 6
-      end
-      @image = Gosu::Image["players/#{@picture[@p]}.png"]
-      @text.text = "#{@picture[@p]}"
-      $image1 = "#{@picture[@p]}"
-#      @image = Gosu::Image[@picture[@p]]
-    end
-  end
-
-  def go_right
-    if @ready == false
-      @click.play
-      if @p < 6
-        @p += 1
-      else
-        @p = 0
-      end
-      @image = Gosu::Image["players/#{@picture[@p]}.png"]
-      $image1 = "#{@picture[@p]}"
-#      @image = Gosu::Image[@picture[@p]]
-    end
-  end
-=end
   def go_up
     @y -= @speed
   end
-
   def go_down
     @y += @speed
   end
-
-  def enlargen
-    if self.factor < 3.0
-      self.factor *= 1.02
-    end
-  end
-
   def update
     if @ready == true
       enlargen
     end
   end
-
 end
 
 
 class CharWheel1 < CharWheel
   def setup
-    self.factor = -1
+    self.factor_x = -1
     @speed = 3
-    @picture = ["boy", "monk", "tanooki",
-                "cult_leader", "villager", "knight",
-                "sorceror" ]
-#    @picture = ["players/boy.png", "players/monk.png", "players/tanooki.png",
-#                "players/cult_leader.png", "players/villager.png", "players/knight.png",
-#                "players/sorceror.png" ]
+    @picture = ["boy", "monk", "tanooki", "cult_leader",
+                "villager", "knight", "sorceror" ]
     @p = 0
     @image = Gosu::Image["players/#{@picture[@p]}.png"]
-#    @image = Gosu::Image[@picture[@p]]
     @click = Sound["media/audio/keypress.ogg"]
     @ready = false
-
-#    @caption = Chingu::Text.create("ttt#{$image1}", :y => self.y - 150, :size => 45, :color => Colors::Dark_Orange, :zorder => Zorder::GUI)
-#    @caption.x = self.x - @caption.width/2 # center text
   end
-
-
   def go_left
     if @ready == false
       @click.play
@@ -108,10 +51,7 @@ class CharWheel1 < CharWheel
         @p = 6
       end
       @image = Gosu::Image["players/#{@picture[@p]}.png"]
-#      @caption.text = "#{@picture[@p]}"
-#      @caption.x = @x - @caption.width/2 # center text
       $image1 = "#{@picture[@p]}"
-#      @image = Gosu::Image[@picture[@p]]
     end
   end
   def go_right
@@ -124,7 +64,12 @@ class CharWheel1 < CharWheel
       end
       @image = Gosu::Image["players/#{@picture[@p]}.png"]
       $image1 = "#{@picture[@p]}"
-#      @image = Gosu::Image[@picture[@p]]
+    end
+  end
+  def enlargen
+    if self.factor_y < 3.0
+      self.factor_x *= 1.02
+      self.factor_y *= 1.02
     end
   end
 end
@@ -141,7 +86,6 @@ class CharWheel2 < CharWheel
       end
       @image = Gosu::Image["players/#{@picture[@p]}.png"]
       $image2 = "#{@picture[@p]}"
-#      @image = Gosu::Image[@picture[@p]]
     end
   end
   def go_right
@@ -154,41 +98,42 @@ class CharWheel2 < CharWheel
       end
       @image = Gosu::Image["players/#{@picture[@p]}.png"]
       $image2 = "#{@picture[@p]}"
-#      @image = Gosu::Image[@picture[@p]]
+    end
+  end
+  def enlargen
+    if self.factor < 3.0
+      self.factor *= 1.02
     end
   end
 end
 
 
 
-
-
-
-
-
+=begin
 class Player < Chingu::GameObject
   trait :bounding_box, :debug => DEBUG
   traits :velocity, :collision_detection
-  def setup
-    @speed = 12
-  end
+#  def setup
+#    @speed = 12
+#  end
   def go_left
-    @x -= @speed
+    @x -= $speed1
   end
   def go_right
-    @x += @speed
+    @x += $speed1
   end
   def go_up
-    @y -= @speed
+    @y -= $speed1
   end
   def go_down
-    @y += @speed
+    @y += $speed1
   end
 end
+=end
 
-
-class Referee < Player
-    trait :bounding_circle, :debug => DEBUG
+class Referee < Chingu::GameObject
+  traits :velocity, :collision_detection
+  trait :bounding_circle, :debug => DEBUG
   def setup
 #    super
     @image = Gosu::Image["players/referee.png"]
@@ -210,7 +155,6 @@ class Referee < Player
     end
   end
 
-
   def grow_counter
     @grow_count += @grow
     if @grow_count >= 8
@@ -222,7 +166,19 @@ class Referee < Player
       @grow = 1
       @growing = false
     end
+  end
 
+  def go_left
+    @x -= @speed
+  end
+  def go_right
+    @x += @speed
+  end
+  def go_up
+    @y -= @speed
+  end
+  def go_down
+    @y += @speed
   end
 
   def update
@@ -230,7 +186,6 @@ class Referee < Player
       grow_counter
       self.factor_x *= @growth
     end
-
     if rand(@rand) == 5
       @x += @speed
     end
@@ -250,12 +205,31 @@ end
 #
 #  PLAYER 1 CLASS
 #
-class Player1 < Player
+class Player1 < Chingu::GameObject
+  traits :velocity, :collision_detection
+  trait :bounding_box, :debug => DEBUG
   attr_reader :health, :score
   def initialize(health)
     super
     @image = Gosu::Image["players/#{$image1}.png"]
+    self.factor_x = -1
     cache_bounding_box
+  end
+  def go_left
+    @velocity_x = -$speed1
+  end
+  def go_right
+    @velocity_x = $speed1
+  end
+  def go_up
+    @velocity_y = -$speed1
+  end
+  def go_down
+    @velocity_y = $speed1
+  end
+  def update
+    @velocity_x *= 0.5
+    @velocity_y *= 0.5
   end
 
 end
@@ -264,12 +238,26 @@ end
 #
 #  PLAYER 2 CLASS
 #
-class Player2 < Player
+class Player2 < Chingu::GameObject
+  traits :velocity, :collision_detection
+  trait :bounding_box, :debug => DEBUG
   attr_reader :health, :score
   def initialize(health)
     super
     @image = Gosu::Image["players/#{$image2}.png"]
     cache_bounding_box
+  end
+  def go_left
+    @x -= $speed2
+  end
+  def go_right
+    @x += $speed2
+  end
+  def go_up
+    @y -= $speed2
+  end
+  def go_down
+    @y += $speed2
   end
 end
 

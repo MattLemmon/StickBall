@@ -5,7 +5,7 @@
 class Beginning < Chingu::GameState
   trait :timer
   def setup
-    self.input = { :esc => :exit } #, [:enter, :return] => OpeningCredits, :p => Pause, :r => lambda{current_game_state.setup} }
+    self.input = { :esc => :exit,  [:right_shift, :left_shift] => OpeningCredits } #, :p => Pause, :r => lambda{current_game_state.setup} }
     $music = Song["audio/guitar_solo.ogg"]
     $music.volume = 0.9
     after(5) { $music.play(true) }
@@ -15,18 +15,12 @@ end
 
 
 #
-#  INTRODUCTION GAMESTATE
+#  INTRO GAMESTATE
 #
-class Introduction < Chingu::GameState
+class Intro < Chingu::GameState
   trait :timer
-
   def setup
-
-#    @n = nil
-#    @nn = nil
-
-    self.input = { [:enter, :return] => Field,
-                    :p => Pause,
+    self.input = { [:enter, :return] => Field, :p => Pause,
                     :r => lambda{current_game_state.setup},
                     :right_shift => :ready1,
                     :left_shift => :ready2, }
@@ -35,12 +29,13 @@ class Introduction < Chingu::GameState
  #                   :l => :toggle_right,
  #                   :i => :toggle_up,
  #                   :k => :toggle_down,
-
     Chingu::Text.destroy_all 
+    CharWheel1.destroy_all
+    CharWheel2.destroy_all
     $window.caption = "StickBall"
     @counter = 0  
     @count = 1    
-    @nxt = false  # used for :next method ('enter')
+    @transition = false
     @song_fade = false
     @fade_count = 0
     @click = Sound["media/audio/pickup_chime.ogg"]
@@ -105,7 +100,26 @@ class Introduction < Chingu::GameState
     end
 
     if @ready1 == true && @ready2 == true
-      after(1600) {push_game_state(Field)}
+      if @transition == false
+        @transition = true
+         after(400) {
+          @song_fade = true
+          $guitar_riff.play(0.6) }
+        after(1500) {
+          @text3 = Chingu::Text.create("Prepare for Battle", :y => 100, :size => 40, :color => Colors::White, :zorder => Zorder::GUI)
+          @text3.x = 400 - @text3.width/2 }
+        after(2000) { @text3.text = "" }
+        after(2500) { @text3.text = "Prepare for Battle" }
+        after(3000) { @text3.text = "" }
+        after(3500) { @text3.text = "Prepare for Battle" }
+        after(4000) { @text3.text = "" }
+        after(4500) {
+          @text3.text = "Prepare for Battle"
+          @song_fade = false
+          $music.volume = 0.9
+          push_game_state(Chingu::GameStates::FadeTo.new(Field.new, :speed => 8)) }
+#          push_game_state(Field)}
+      end
     end
 
   end
@@ -115,13 +129,13 @@ end
 
 
 #
-#  Transition GAMESTATE
+#  PRE-INTRO GAMESTATE
 #
-class Transition < Chingu::GameState
+class PreIntro < Chingu::GameState
   trait :timer
   def initialize
     super
-    self.input = { [:enter, :return] => :next, :p => Pause, :r => lambda{current_game_state.setup} }
+    self.input = { [:left_shift, :right_shift] => :next, :p => Pause, :r => lambda{current_game_state.setup} }
   end
 
   def setup
@@ -139,24 +153,25 @@ class Transition < Chingu::GameState
       @text.x = 800/2 - @text.width/2 # center text
     }
     after(600) {
-      @text2 = Chingu::Text.create("Press ENTER to play", :y => 510, :font => "GeosansLight", :size => 45, :color => Colors::Dark_Orange, :zorder => Zorder::GUI)
+      @text2 = Chingu::Text.create("Use arrow keys to make selections", :y => 510, :font => "GeosansLight", :size => 45, :color => Colors::Dark_Orange, :zorder => Zorder::GUI)
       @text2.x =800/2 - @text2.width/2 # center text
     }
-
+    after(900) {
+      @text2 = Chingu::Text.create("Press shift to begin", :y => 300, :font => "GeosansLight", :size => 45, :zorder => Zorder::GUI)
+      @text2.x =800/2 - @text2.width/2 # center text
+    }
   end
-
-
 
   def next
     if @nxt == true  # if you've already pressed 'enter' once, pressing it again skips ahead
       @nxt = false
-      push_game_state(Field)
+      push_game_state(Intro)
     else
       @nxt = true    # transition to Field
       @click.play
       after(200) { puts 1 }
       after(600) { puts 2 }
-      after(1000) { push_game_state(Field) }
+      after(1000) { push_game_state(Intro) }
     end
   end
 
@@ -194,7 +209,7 @@ class OpeningCredits < Chingu::GameState
   end
 
   def intro # pressing 'enter' skips ahead to the Introduction
-    push_game_state(Chingu::GameStates::FadeTo.new(Introduction.new, :speed => 11))
+    push_game_state(Chingu::GameStates::FadeTo.new(PreIntro.new, :speed => 11))
   end
 
   def draw
@@ -218,10 +233,10 @@ class OpeningCredits2 < Chingu::GameState
     after(900) { @sparkle.turnify4 }
     after(1900) { @sparkle.turnify5 }
     after(2200) { @sparkle.turnify6 }
-    after (2400) { push_game_state(Chingu::GameStates::FadeTo.new(Introduction.new, :speed => 8)) }
+    after (2400) { push_game_state(Chingu::GameStates::FadeTo.new(PreIntro.new, :speed => 8)) }
   end
   def intro # pressing 'enter' skips ahead to the Introduction
-    push_game_state(Chingu::GameStates::FadeTo.new(Introduction.new, :speed => 11))
+    push_game_state(Chingu::GameStates::FadeTo.new(PreIntro.new, :speed => 11))
   end
   def draw
     Image["objects/ruby-logo.png"].draw(0, 0, 0)

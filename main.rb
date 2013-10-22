@@ -13,6 +13,7 @@ require_relative 'rb/beginning'
 
 module Zorder  # define some frequently used Zorders
   GUI = 400
+  GUI_Bkgrd = 399
   Text = 300
   Main_Character = 200
   Eyes = 201
@@ -73,7 +74,10 @@ class GameWindow < Chingu::Window
     $score = 0
     $stars1 = 0
     $stars2 = 0
-    $weapon = 1   # starting weapon is 1
+    $power_ups1 = 0
+    $power_ups2 = 0
+    $speed1 = 8
+    $speed2 = 8
     $image1 = "boy"
     $image2 = "boy"
     $star_grab = Sound["media/audio/star_pickup.ogg"]
@@ -81,7 +85,7 @@ class GameWindow < Chingu::Window
     $bang = Sound["media/audio/bang.ogg"]
     $bang1 = Sound["media/audio/bang1.ogg"]
     $bang2 = Sound["media/audio/bang2.ogg"]
-    $guitar_riff = Sound["media/audio/guitar_riff.ogg"]
+    $guitar_riff = Sound["media/audio/guitar_riff_short.ogg"]
     self.caption = "Stick Ball"
     @cursor = true # comment out to hide cursor
     self.input = { :esc => :exit,
@@ -108,11 +112,9 @@ class GameWindow < Chingu::Window
 
   def pop
     puts "pop"
-#    if $window.current_game_state.to_s == "Introduction" or $window.current_game_state.to_s == "Level_1" then
-#      pop_game_state(:setup => true)
-#    elsif $window.current_game_state.to_s != "OpeningCredits"
-#      pop_game_state(:setup => false)
-#    end
+    if $window.current_game_state.to_s != "Beginning"
+      pop_game_state(:setup => true)
+    end
   end
 end
 

@@ -11,6 +11,8 @@ class Field < Chingu::GameState
     LenseFlares.load_images $window, './media/lense_flares'
     @lense_flares = LenseFlares.new $window.width/2.0, $window.height/2.0
 
+    @transition = true
+
     self.input = { :p => Pause,
                    :space => :fire,
                    :j => :toggle_left,
@@ -26,6 +28,10 @@ class Field < Chingu::GameState
 
   def setup
     super
+    $speed1 = 8
+    $speed2 = 8
+    $chest_bump1 = false
+    $chest_bump2 = false
     game_objects.destroy_all
     Referee.destroy_all
     Player1.destroy_all
@@ -58,7 +64,7 @@ class Field < Chingu::GameState
 
 #    @player3 = Player2.create(:x => 60, :y => 300, :zorder => Zorder::Main_Character)#(:x => $player_x, :y => $player_y, :angle => $player_angle, :zorder => Zorder::Main_Character)
 
-    @puck = FireCube.create(:x => rand($window.width), :y => rand($window.height), :zorder => Zorder::Projectile)
+    @puck = FireCube.create(:x => rand(550), :y => rand(600), :zorder => Zorder::Projectile)
     @puck_flare = @lense_flares.create @puck.x, @puck.y, Zorder::LenseFlare
     @puck_flare.brightness = 0.25
     @puck_flare.strength = 0.3
@@ -79,8 +85,10 @@ class Field < Chingu::GameState
     @shake1 = 10
     @shake2 = 5
 
-    @gui = GUI.create      # create GUI
-    @gui1 = GUI1.create
+    @gui2 = GUI.create      # create GUI
+    @gui1 = GUI3.create
+
+    after(300) { @transition = false }
   end
   
   def fire;  FireCube.create(:x => rand($window.width), :y => rand($window.height), :zorder => Zorder::Projectile);  end
@@ -139,59 +147,127 @@ class Field < Chingu::GameState
     end
   end
 
+  def player1_power_up
+    if $power_ups1 == 1
+      $speed1 = 12
+    end
+    if $power_ups1 == 2
+      $chest_bump1 = true
+    end
+  end
+
+  def player2_power_up
+    if $power_ups2 == 1
+      $speed2 = 12
+    end
+    if $power_ups2 == 2
+      $chest_bump2 = true
+    end
+  end
+
   def collision_check
     Player1.each_collision(Star) do |player, star|    # PICKUP STARS
       star.destroy            # pick up star
       $stars1 += 1             # add star in star meter (gui.rb)
-      if $stars1 != 3          # not 3 stars yet?
+      if $stars1 != 1          # not 3 stars yet?
         $star_grab.play(0.6)   # play normal power-up sound
       else                    # 3 stars?
         $power_up.play(0.6)    # play mighty power-up sound
         $stars1 = 0             # reset star meter
-        $weapon += 1           # Upgrade Weapon (see Player.fire in objects.rb)
+        $power_ups1 += 1           # Upgrade Weapon (see Player.fire in objects.rb)
+        player1_power_up
       end
     end
     Player2.each_collision(Star) do |player, star|    # PICKUP STARS
       star.destroy            # pick up star
       $stars2 += 1             # add star in star meter (gui.rb)
-      if $stars2 != 3          # not 3 stars yet?
+      if $stars2 != 1          # not 3 stars yet?
         $star_grab.play(0.6)   # play normal power-up sound
       else                    # 3 stars?
         $power_up.play(0.6)    # play mighty power-up sound
         $stars2 = 0             # reset star meter
-        $weapon += 1           # Upgrade Weapon (see Player.fire in objects.rb)
+        $power_ups2 += 1           # Upgrade Weapon (see Player.fire in objects.rb)
+        player2_power_up
       end
     end
 
     FireCube.each_collision(Player1) do |puck, player|
       if @bump == 0
-        puck.velocity_x = -puck.velocity_x
         puck.die!
-        if rand(2) == 1
-          puck.velocity_y = -puck.velocity_y
+        if puck.velocity_x < 0
+          puck.velocity_x = 10
+        else
+          puck.velocity_x = -10
+        end
+        if player.y - puck.y < -48
+          puck.velocity_y = 11
+        elsif player.y - puck.y < -40
+          puck.velocity_y = 5
+        elsif player.y - puck.y < -25
+          puck.velocity_y = 3
+        elsif player.y - puck.y < 25
+          if puck.velocity_y >= 2.0 || puck.velocity_y <= 2.0
+            puck.velocity_y = -puck.velocity_y*0.2
+            if $chest_bump1 == true
+              puck.velocity_x *= -0.05
+            end
+          end
+        elsif player.y - puck.y < 40
+          puck.velocity_y = -3
+        elsif player.y - puck.y < 48
+          puck.velocity_y = -5
+        else
+          puck.velocity_y = -11
         end
         @bump = @bump_delay
       end
     end
     FireCube.each_collision(Player2) do |puck, player|
       if @bump == 0
-        puck.velocity_x = -puck.velocity_x
         puck.die!
-        if rand(2) == 1
-          puck.velocity_y = -puck.velocity_y
-          @bump = @bump_delay
+        if puck.velocity_x > 0
+          puck.velocity_x = -10
+        else
+          puck.velocity_x = 10
+        end
+        if player.y - puck.y < -48
+          puck.velocity_y = 11
+        elsif player.y - puck.y < -40
+          puck.velocity_y = 5
+        elsif player.y - puck.y < -25
+          puck.velocity_y = 3
+        elsif player.y - puck.y < 25
+          if puck.velocity_y >= 2.0 || puck.velocity_y <= 2.0
+            puck.velocity_y = -puck.velocity_y*0.2
+            if $chest_bump2 == true
+              puck.velocity_x *= -0.05
+            end
+          end
+        elsif player.y - puck.y < 40
+          puck.velocity_y = -3
+        elsif player.y - puck.y < 48
+          puck.velocity_y = -5
+        else
+          puck.velocity_y = -11
         end
         @bump = @bump_delay
       end
     end
+
     FireCube.each_collision(Referee) do |puck, referee|     # ITEM DROPS
       if @bump == 0
         referee.wobble
         Star.create(:x => referee.x, :y => referee.y, :velocity_x => -puck.velocity_x/3*2, :velocity_y => puck.velocity_y/3*2 )
-        puck.velocity_x = -puck.velocity_x
         puck.die!
+        if puck.velocity_x > 0
+          puck.velocity_x = -10
+        else
+          puck.velocity_x = 10
+        end
         if rand(2) == 1
-          puck.velocity_y = -puck.velocity_y
+          puck.velocity_y = 3.5
+        else
+          puck.velocity_y = -3.5
         end
         @bump = @bump_delay
       end
@@ -226,19 +302,23 @@ class Field < Chingu::GameState
   end
 
   def draw
+      @lense_flares.draw
+    if @transition == false
+      fill_gradient(:from => Color.new(255,0,0,0), :to => Color.new(255,60,60,80), :rect => [0,0,$window.width,@ground_y])
+      fill_gradient(:from => Color.new(255,100,100,100), :to => Color.new(255,50,50,50), :rect => [0,@ground_y,$window.width,$window.height-@ground_y])
+    end
     $window.caption = "Stick Ball!     Go team go!                                             Objects: #{game_objects.size}, FPS: #{$window.fps}"
-    fill_gradient(:from => Color.new(255,0,0,0), :to => Color.new(255,60,60,80), :rect => [0,0,$window.width,@ground_y])
-    fill_gradient(:from => Color.new(255,100,100,100), :to => Color.new(255,50,50,50), :rect => [0,@ground_y,$window.width,$window.height-@ground_y])
-    @lense_flares.draw
     super
   end
 
 
   def update
-    @puck_flare.x = @puck.x
-    @puck_flare.y = @puck.y
-    @puck_flare.color = @puck.color
-    @lense_flares.update
+    if @transition == false
+      @puck_flare.x = @puck.x
+      @puck_flare.y = @puck.y
+      @puck_flare.color = @puck.color
+      @lense_flares.update
+    end
     super
 
     move_referee
