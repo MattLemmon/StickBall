@@ -1,13 +1,16 @@
 
+require_relative 'lense_flares'
+
 #
 # FIELD GAMESTATE
 #
 class Field < Chingu::GameState    
   trait :timer
-  def initialize#(n, nn)
-#    @n = n
-#    @nn = nn
+  def initialize
     super
+    LenseFlares.load_images $window, './media/lense_flares'
+    @lense_flares = LenseFlares.new $window.width/2.0, $window.height/2.0
+
     self.input = { :p => Pause,
                    :space => :fire,
                    :j => :toggle_left,
@@ -56,6 +59,10 @@ class Field < Chingu::GameState
 #    @player3 = Player2.create(:x => 60, :y => 300, :zorder => Zorder::Main_Character)#(:x => $player_x, :y => $player_y, :angle => $player_angle, :zorder => Zorder::Main_Character)
 
     @puck = FireCube.create(:x => rand($window.width), :y => rand($window.height), :zorder => Zorder::Projectile)
+    @puck_flare = @lense_flares.create @puck.x, @puck.y, Zorder::LenseFlare
+    @puck_flare.brightness = 0.25
+    @puck_flare.strength = 0.3
+    @puck_flare.scale = 1.0
 
     @ground_y = ($window.height * 0.95).to_i
 
@@ -73,16 +80,7 @@ class Field < Chingu::GameState
     @shake2 = 5
 
 #    @gui = GUI.create(@player1)      # create GUI
-#    1.times { fire }
 
-#    @shaking = true                 # screen_shake cooldown
-#    after(1000) {@shaking = false}
-#    @player.cool_down      # player cannot be damaged when blinking (Player.cool_down from objects.rb)
-#    $music = Song["media/audio/music/stageoids.ogg"]  # switch music track to Stageoids theme by ExplodingCookie
-#    after(100) {           # plays game music by ExplodingCookie after brief pause
-#      $music.play(true)
-#      $music.volume = 0.25
-#    }
   end
   
   def fire;  FireCube.create(:x => rand($window.width), :y => rand($window.height), :zorder => Zorder::Projectile);  end
@@ -229,12 +227,18 @@ class Field < Chingu::GameState
     $window.caption = "Stick Ball!     Go team go!                                             Objects: #{game_objects.size}, FPS: #{$window.fps}"
     fill_gradient(:from => Color.new(255,0,0,0), :to => Color.new(255,60,60,80), :rect => [0,0,$window.width,@ground_y])
     fill_gradient(:from => Color.new(255,100,100,100), :to => Color.new(255,50,50,50), :rect => [0,@ground_y,$window.width,$window.height-@ground_y])
+    @lense_flares.draw
     super
   end
 
 
   def update
+    @puck_flare.x = @puck.x
+    @puck_flare.y = @puck.y
+    @puck_flare.color = @puck.color
+    @lense_flares.update
     super
+
     move_referee
     collision_check
     if @bump > 0
@@ -246,8 +250,10 @@ class Field < Chingu::GameState
 
     @score1_text.text = "#{@score1}"
     @score2_text.text = "#{@score2}"
+
     @eyes1.x = @player1.x - 3
     @eyes1.y = @player1.y - 12
+
     @eyes2.x = @player2.x + 3
     @eyes2.y = @player2.y - 12
 

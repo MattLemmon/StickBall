@@ -19,6 +19,7 @@ module Zorder  # define some frequently used Zorders
   Main_Character_Particles = 199
   Object = 50
   Projectile = 220
+  LenseFlare = 221
   Particle = 210
 end
 
