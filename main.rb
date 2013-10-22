@@ -68,8 +68,10 @@ class GameWindow < Chingu::Window
     $scr_edge = 15
     $cooling_down = 70
     $health = 6
+    $health1 = 6
+    $health2 = 6
     $score = 0
-    $stars = 0
+    $stars1 = 0
     $stars2 = 0
     $weapon = 1   # starting weapon is 1
     $image1 = "boy"

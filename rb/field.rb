@@ -66,8 +66,8 @@ class Field < Chingu::GameState
 
     @ground_y = ($window.height * 0.95).to_i
 
-    @score1 = 0
-    @score2 = 0
+    $score1 = 0
+    $score2 = 0
     @score1_text = Chingu::Text.create(:text=>"", :x=>440, :y=>10, :size=>46)
     @score2_text = Chingu::Text.create(:text=>"", :x=>330, :y=>10, :size=>46)
 
@@ -79,8 +79,8 @@ class Field < Chingu::GameState
     @shake1 = 10
     @shake2 = 5
 
-#    @gui = GUI.create(@player1)      # create GUI
-
+    @gui = GUI.create      # create GUI
+    @gui1 = GUI1.create
   end
   
   def fire;  FireCube.create(:x => rand($window.width), :y => rand($window.height), :zorder => Zorder::Projectile);  end
@@ -142,12 +142,12 @@ class Field < Chingu::GameState
   def collision_check
     Player1.each_collision(Star) do |player, star|    # PICKUP STARS
       star.destroy            # pick up star
-      $stars += 1             # add star in star meter (gui.rb)
-      if $stars != 3          # not 3 stars yet?
+      $stars1 += 1             # add star in star meter (gui.rb)
+      if $stars1 != 3          # not 3 stars yet?
         $star_grab.play(0.6)   # play normal power-up sound
       else                    # 3 stars?
         $power_up.play(0.6)    # play mighty power-up sound
-        $stars = 0             # reset star meter
+        $stars1 = 0             # reset star meter
         $weapon += 1           # Upgrade Weapon (see Player.fire in objects.rb)
       end
     end
@@ -201,16 +201,18 @@ class Field < Chingu::GameState
       if @bounce == 0
         if particle.x < 0 
           particle.velocity_x = -particle.velocity_x
-          @score1 += 1
-          $bang1.play(0.7)
+          $score1 += 1
+          $bang2.play(0.7)
+          if $health2 > 1; $health2 -=1; end
           particle.die!
           screen_shake1
           @bounce = @bounce_delay
         end
         if particle.x > $window.width
           particle.velocity_x = -particle.velocity_x
-          @score2 += 1
-          $bang2.play(0.8)
+          $score2 += 1
+          $bang1.play(0.8)
+          if $health1 > 1; $health1 -=1; end
           particle.die!
           screen_shake2
           @bounce = @bounce_delay
@@ -248,8 +250,8 @@ class Field < Chingu::GameState
       @bounce -= 1
     end
 
-    @score1_text.text = "#{@score1}"
-    @score2_text.text = "#{@score2}"
+    @score1_text.text = "#{$score1}"
+    @score2_text.text = "#{$score2}"
 
     @eyes1.x = @player1.x - 3
     @eyes1.y = @player1.y - 12
