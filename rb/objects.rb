@@ -119,7 +119,7 @@ end
 
 #
 #   EXPLOSION
-#     called in levels.rb when meteors are destroyed and when player dies
+# 
 class Explosion < Chingu::GameObject
   trait :timer
   def setup
@@ -133,8 +133,8 @@ end
 
 
 #
-#   STAR CLASS
-#     stars can be picked up by players
+#   STAR
+#                                used for power_ups
 class Star < Chingu::GameObject
   trait :bounding_circle, :debug => DEBUG
   traits :velocity, :collision_detection
@@ -146,8 +146,6 @@ class Star < Chingu::GameObject
     self.zorder = 200
     self.color = Gosu::Color.from_hsv(rand(360), 1, 1)
     self.factor = 0.65
-#    self.x = rand * 800
-#    self.y = rand * 600
     cache_bounding_circle     # A cached bounding circle will not adapt to changes in size, but it will follow objects X / Y
   end
   
@@ -160,6 +158,26 @@ class Star < Chingu::GameObject
   end
 end
 
+
+
+#
+#   HEART
+#
+class Heart < Chingu::GameObject
+  trait :bounding_circle, :debug => DEBUG
+  traits :velocity, :collision_detection
+
+  def setup
+    @image = Image["gui/heart.png"]
+    self.factor = 0.8
+    cache_bounding_circle
+  end
+
+  def update
+    self.velocity_x *= 0.97
+    self.velocity_y *= 0.97
+  end
+end
 
 
 #

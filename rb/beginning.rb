@@ -149,11 +149,11 @@ class PreIntro < Chingu::GameState
     @click = Sound["media/audio/keypress.ogg"]
 
     after(300) {
-      @text = Chingu::Text.create("StickBall!!!", :y => 60, :font => "GeosansLight", :size => 45, :color => Colors::Dark_Orange, :zorder => Zorder::GUI)
+      @text = Chingu::Text.create("StickBall", :y => 60, :font => "GeosansLight", :size => 45, :color => Colors::Dark_Orange, :zorder => Zorder::GUI)
       @text.x = 800/2 - @text.width/2 # center text
     }
     after(600) {
-      @text2 = Chingu::Text.create("Use arrow keys to make selections", :y => 510, :font => "GeosansLight", :size => 45, :color => Colors::Dark_Orange, :zorder => Zorder::GUI)
+      @text2 = Chingu::Text.create("Select score limit", :y => 510, :font => "GeosansLight", :size => 45, :color => Colors::Dark_Orange, :zorder => Zorder::GUI)
       @text2.x =800/2 - @text2.width/2 # center text
     }
     after(900) {
@@ -163,7 +163,7 @@ class PreIntro < Chingu::GameState
   end
 
   def next
-    if @nxt == true  # if you've already pressed 'enter' once, pressing it again skips ahead
+    if @nxt == true  # if you've already pressed 'shift' once, pressing it again skips ahead
       @nxt = false
       push_game_state(Intro)
     else

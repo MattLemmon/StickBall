@@ -16,6 +16,8 @@ class Field < Chingu::GameState
 
     @rare_drops = ["heart", "stun", "fog"]
     @r = 0
+    @drop_vel_x = 0
+    @drop_vel_y = 0
     @transition = true
 
     self.input = { :p => Pause,
@@ -49,6 +51,7 @@ class Field < Chingu::GameState
 
     FireCube.destroy_all
     Star.destroy_all
+#    LenseFlares.destroy_all
 
     Explosion.destroy_all
     Bullet.destroy_all   # destroy lingering GameObjects
@@ -90,8 +93,8 @@ class Field < Chingu::GameState
     @shake1 = 10
     @shake2 = 5
 
-    @gui2 = GUI.create      # create GUI
-    @gui1 = GUI3.create
+    @gui1 = GUI1.create
+    @gui2 = GUI2.create
 
     after(300) { @transition = false }
   end
@@ -198,7 +201,18 @@ class Field < Chingu::GameState
       end
     end
 
-    @star_flares.each do |star,flare|
+   Player1.each_collision(Heart) do |player, heart|    # PICKUP HEARTS
+      heart.destroy
+      $health1 += 1
+      $power_up.play(0.6)
+    end
+    Player2.each_collision(Heart) do |player, heart|    # PICKUP HEARTS
+      heart.destroy
+      $health2 += 1
+      $power_up.play(0.6)
+    end
+
+    @star_flares.each do |star,flare|        # UPDATE STAR FLARES
       flare.x = star.x
       flare.y = star.y
     end
@@ -270,13 +284,16 @@ class Field < Chingu::GameState
       end
     end
 
-    FireCube.each_collision(Referee) do |puck, referee|     # ITEM DROPS
+    FireCube.each_collision(Referee) do |puck, referee|      # ITEM DROPS  ITEM DROPS  ITEM DROPS
       if @bump == 0
         referee.wobble
         puck.die!
         @bump = @bump_delay
         if rand(4) == 1
           rare_drop
+          @drop_vel_x = -puck.velocity_x/3*2
+          @drop_vel_y = puck.velocity_y/3*2
+          create_heart
         else
           add_star :x => referee.x, :y => referee.y, :velocity_x => -puck.velocity_x/3*2, :velocity_y => puck.velocity_y/3*2
         end
@@ -293,7 +310,7 @@ class Field < Chingu::GameState
       end
     end
 
-    FireCube.each do |particle|      # SCORING AND WALL-BOUNCING
+    FireCube.each do |particle|             # SCORING AND WALL-BOUNCING
       if @bounce == 0
         if particle.x < 0
           particle.x = 0
@@ -352,6 +369,12 @@ class Field < Chingu::GameState
     $rare_drop = @rare_drops[@r]
     puts $rare_drop
   end
+
+  def create_heart
+#    FireCube.create(:x => rand($window.width), :y => rand($window.height), :zorder => Zorder::Projectile)
+    Heart.create(:x => @referee.x, :y => @referee.y, :velocity_x => @drop_vel_x, :velocity_y => @drop_vel_y )
+  end
+
 
   def draw
       @lense_flares.draw

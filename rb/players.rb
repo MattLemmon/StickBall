@@ -234,9 +234,13 @@ class Player1 < Chingu::GameObject
     @velocity_y = $speed1
   end
   def update
-    @velocity_x *= 0.5
-    @velocity_y *= 0.5
+    @velocity_x *= 0.25
+    @velocity_y *= 0.25
     @eyes.update
+    if @x < -$scr_edge; @x = $max_x; end  # wrap beyond screen edge
+    if @y < -$scr_edge; @y = $max_y; end
+    if @x > $max_x; @x = -$scr_edge; end
+    if @y > $max_y; @y = -$scr_edge; end
   end
 
   def draw
@@ -264,26 +268,30 @@ class Player2 < Chingu::GameObject
     @eyes = Eyes.new self
   end
   def go_left
-    @x -= $speed2
+    @velocity_x -= $speed2
   end
   def go_right
-    @x += $speed2
+    @velocity_x += $speed2
   end
   def go_up
-    @y -= $speed2
+    @velocity_y -= $speed2
   end
   def go_down
-    @y += $speed2
+    @velocity_y += $speed2
   end
   def update
-    @velocity_x *= 0.5
-    @velocity_y *= 0.5
+    @velocity_x *= 0.25
+    @velocity_y *= 0.25
     @eyes.update
   end
 
   def draw
     super
     @eyes.draw
+    if @x < -$scr_edge; @x = $max_x; end  # wrap beyond screen edge
+    if @y < -$scr_edge; @y = $max_y; end
+    if @x > $max_x; @x = -$scr_edge; end
+    if @y > $max_y; @y = -$scr_edge; end
   end
 end
 
