@@ -13,6 +13,10 @@ class LenseFlares
   def destroy_all
     @lense_flares = []
   end
+
+  def delete flare
+    @lense_flares.delete flare
+  end
   
   def create x, y, z
     lense_flare = LenseFlare.new self, x, y, z

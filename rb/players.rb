@@ -182,22 +182,15 @@ class Referee < Chingu::GameObject
   end
 
   def update
+#    super
     if @growing == true
       grow_counter
       self.factor_x *= @growth
     end
-    if rand(@rand) == 5
-      @x += @speed
-    end
-    if rand(@rand) == 5
-      @y += @speed
-    end
-    if rand(@rand) == 5
-      @x -= @speed
-    end
-    if rand(@rand) == 5
-      @y -= @speed
-    end
+    go_right if rand(@rand) == 5
+    go_down  if rand(@rand) == 5
+    go_left  if rand(@rand) == 5
+    go_up    if rand(@rand) == 5
   end
 end
 

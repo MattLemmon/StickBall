@@ -10,6 +10,7 @@ class Field < Chingu::GameState
     super
     LenseFlares.load_images $window, './media/lense_flares'
     @lense_flares = LenseFlares.new $window.width/2.0, $window.height/2.0
+    @star_flares = {}
 
     @transition = true
 
@@ -97,39 +98,39 @@ class Field < Chingu::GameState
   def toggle_up;  end
   def toggle_down;  end
 
+  def blink_flare
+    after(30)  { @puck_flare.brightness += 0.6; @puck_flare.strength += 0.3;  }
+    after(90)  { @puck_flare.brightness -= 0.3; @puck_flare.strength -= 0.15;  }
+    after(100) { @puck_flare.brightness -= 0.3; @puck_flare.strength -= 0.15;  }
+  end
+
 
   def screen_shake1
-#    if @shaking == false   # if screen shake is cooled down
-      game_objects.each do |object|
-        object.x += @shake1
-        after(30) {object.y += @shake2}
-        after(60) {object.x -= @shake1}
-        after(90) {object.y -= @shake2}
-        after(120) {object.x += @shake1}
-        after(150) {object.y += @shake2}
-        after(180) {object.x -= @shake1}
-        after(210) {object.y -= @shake2}
-      end
-#      @shaking = true  # screen_shake won't occur again until this becomes false
-#      after(1000) {@shaking = false}  # after 1000 ms, screen can shake again
-#    end
+    blink_flare
+    game_objects.each do |object|
+      object.x += @shake1
+      after(30) {object.y += @shake2}
+      after(60) {object.x -= @shake1}
+      after(90) {object.y -= @shake2}
+      after(120) {object.x += @shake1}
+      after(150) {object.y += @shake2}
+      after(180) {object.x -= @shake1}
+      after(210) {object.y -= @shake2}
+    end
   end
 
   def screen_shake2
-#    if @shaking == false   # if screen shake is cooled down
-      game_objects.each do |object|  # move each object left first
-        object.x -= @shake1
-        after(30) {object.y += @shake2}
-        after(60) {object.x += @shake1}
-        after(90) {object.y -= @shake2}
-        after(120) {object.x -= @shake1}
-        after(150) {object.y += @shake2}
-        after(180) {object.x += @shake1}
-        after(210) {object.y -= @shake2}
-      end
-#      @shaking = true  # screen_shake won't occur again until this becomes false
-#      after(1000) {@shaking = false}  # after 1000 ms, screen can shake again
-#    end
+    blink_flare
+    game_objects.each do |object|  # move each object left first
+      object.x -= @shake1
+      after(30) {object.y += @shake2}
+      after(60) {object.x += @shake1}
+      after(90) {object.y -= @shake2}
+      after(120) {object.x -= @shake1}
+      after(150) {object.y += @shake2}
+      after(180) {object.x += @shake1}
+      after(210) {object.y -= @shake2}
+    end
   end
 
   def move_referee
@@ -167,7 +168,8 @@ class Field < Chingu::GameState
 
   def collision_check
     Player1.each_collision(Star) do |player, star|    # PICKUP STARS
-      star.destroy            # pick up star
+      remove_star star
+
       $stars1 += 1             # add star in star meter (gui.rb)
       if $stars1 != 3          # not 3 stars yet?
         $star_grab.play(0.6)   # play normal power-up sound
@@ -179,7 +181,8 @@ class Field < Chingu::GameState
       end
     end
     Player2.each_collision(Star) do |player, star|    # PICKUP STARS
-      star.destroy            # pick up star
+      remove_star star
+
       $stars2 += 1             # add star in star meter (gui.rb)
       if $stars2 != 3          # not 3 stars yet?
         $star_grab.play(0.6)   # play normal power-up sound
@@ -189,6 +192,11 @@ class Field < Chingu::GameState
         $power_ups2 += 1           # Upgrade Weapon (see Player.fire in objects.rb)
         player2_power_up
       end
+    end
+
+    @star_flares.each do |star,flare|
+      flare.x = star.x
+      flare.y = star.y
     end
 
     FireCube.each_collision(Player1) do |puck, player|
@@ -261,7 +269,8 @@ class Field < Chingu::GameState
     FireCube.each_collision(Referee) do |puck, referee|     # ITEM DROPS
       if @bump == 0
         referee.wobble
-        Star.create(:x => referee.x, :y => referee.y, :velocity_x => -puck.velocity_x/3*2, :velocity_y => puck.velocity_y/3*2 )
+        add_star :x => referee.x, :y => referee.y, :velocity_x => -puck.velocity_x/3*2, :velocity_y => puck.velocity_y/3*2
+#        Star.create(:x => referee.x, :y => referee.y, :velocity_x => -puck.velocity_x/3*2, :velocity_y => puck.velocity_y/3*2 )
         puck.die!
         if puck.velocity_x > 0
           puck.velocity_x = -10
@@ -303,6 +312,23 @@ class Field < Chingu::GameState
         end
       end
     end
+  end
+
+  def add_star options
+    star = Star.create options
+    flare = @lense_flares.create star.x, star.y, Zorder::LenseFlare
+    flare.color = star.color
+    flare.strength = 0.25
+    flare.brightness = 0.3
+    flare.scale = 1.25
+    flare.flickering = 0.1
+    @star_flares[star] = flare
+  end
+  
+  def remove_star star
+    flare = @star_flares.delete star
+    @lense_flares.delete flare
+    star.destroy
   end
 
   def draw

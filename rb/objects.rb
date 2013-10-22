@@ -144,11 +144,8 @@ class Star < Chingu::GameObject
     @animation = Chingu::Animation.new(:file => "objects/living.png", :size => 64)
     @image = @animation.next
     self.zorder = 200
-    self.color = Gosu::Color.new(0xff000000)
-    self.color.red = rand(255 - 40) + 40
-    self.color.green = rand(255 - 40) + 40
-    self.color.blue = rand(255 - 40) + 40
-    self.factor = 0.5
+    self.color = Gosu::Color.from_hsv(rand(360), 1, 1)
+    self.factor = 0.65
 #    self.x = rand * 800
 #    self.y = rand * 600
     cache_bounding_circle     # A cached bounding circle will not adapt to changes in size, but it will follow objects X / Y
