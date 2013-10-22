@@ -209,7 +209,9 @@ class Field < Chingu::GameState
           if puck.velocity_y >= 2.0 || puck.velocity_y <= 2.0
             puck.velocity_y = -puck.velocity_y*0.2
             if $chest_bump1 == true
-              puck.velocity_x *= -0.05
+              if puck.velocity_x < 0
+                puck.velocity_x *= -0.05
+              end
             end
           end
         elsif player.y - puck.y < 40
@@ -240,7 +242,9 @@ class Field < Chingu::GameState
           if puck.velocity_y >= 2.0 || puck.velocity_y <= 2.0
             puck.velocity_y = -puck.velocity_y*0.2
             if $chest_bump2 == true
-              puck.velocity_x *= -0.05
+              if puck.velocity_x > 0
+                puck.velocity_x *= -0.05
+              end
             end
           end
         elsif player.y - puck.y < 40
