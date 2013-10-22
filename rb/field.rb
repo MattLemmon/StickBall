@@ -169,7 +169,7 @@ class Field < Chingu::GameState
     Player1.each_collision(Star) do |player, star|    # PICKUP STARS
       star.destroy            # pick up star
       $stars1 += 1             # add star in star meter (gui.rb)
-      if $stars1 != 1          # not 3 stars yet?
+      if $stars1 != 3          # not 3 stars yet?
         $star_grab.play(0.6)   # play normal power-up sound
       else                    # 3 stars?
         $power_up.play(0.6)    # play mighty power-up sound
@@ -181,7 +181,7 @@ class Field < Chingu::GameState
     Player2.each_collision(Star) do |player, star|    # PICKUP STARS
       star.destroy            # pick up star
       $stars2 += 1             # add star in star meter (gui.rb)
-      if $stars2 != 1          # not 3 stars yet?
+      if $stars2 != 3          # not 3 stars yet?
         $star_grab.play(0.6)   # play normal power-up sound
       else                    # 3 stars?
         $power_up.play(0.6)    # play mighty power-up sound
