@@ -134,6 +134,8 @@ end
 class Referee < Chingu::GameObject
   trait :bounding_circle, :debug => DEBUG
   traits :velocity, :collision_detection
+  attr_reader :direction
+
   def setup
 #    super
     @image = Gosu::Image["players/referee.png"]
@@ -144,6 +146,7 @@ class Referee < Chingu::GameObject
     @grow = 1
     @growth = 1.01
     @grow_count = 0
+    @direction = 1
     @eyes = Eyes.new self
     cache_bounding_circle
   end
@@ -183,7 +186,7 @@ class Referee < Chingu::GameObject
   end
 
   def update
-#    super
+    @eyes.update
     if @growing == true
       grow_counter
       self.factor_x *= @growth
@@ -192,6 +195,11 @@ class Referee < Chingu::GameObject
     go_down  if rand(@rand) == 5
     go_left  if rand(@rand) == 5
     go_up    if rand(@rand) == 5
+  end
+
+  def draw
+    super
+    @eyes.draw
   end
 end
 

@@ -14,6 +14,8 @@ class Field < Chingu::GameState
     @lense_flares = LenseFlares.new $window.width/2.0, $window.height/2.0
     @star_flares = {}
 
+    @rare_drops = ["heart", "stun", "fog"]
+    @r = 0
     @transition = true
 
     self.input = { :p => Pause,
@@ -271,9 +273,13 @@ class Field < Chingu::GameState
     FireCube.each_collision(Referee) do |puck, referee|     # ITEM DROPS
       if @bump == 0
         referee.wobble
-        add_star :x => referee.x, :y => referee.y, :velocity_x => -puck.velocity_x/3*2, :velocity_y => puck.velocity_y/3*2
-#        Star.create(:x => referee.x, :y => referee.y, :velocity_x => -puck.velocity_x/3*2, :velocity_y => puck.velocity_y/3*2 )
         puck.die!
+        @bump = @bump_delay
+        if rand(4) == 1
+          rare_drop
+        else
+          add_star :x => referee.x, :y => referee.y, :velocity_x => -puck.velocity_x/3*2, :velocity_y => puck.velocity_y/3*2
+        end
         if puck.velocity_x > 0
           puck.velocity_x = -10
         else
@@ -284,13 +290,13 @@ class Field < Chingu::GameState
         else
           puck.velocity_y = -3.5
         end
-        @bump = @bump_delay
       end
     end
 
     FireCube.each do |particle|      # SCORING AND WALL-BOUNCING
       if @bounce == 0
-        if particle.x < 0 
+        if particle.x < 0
+          particle.x = 0
           particle.velocity_x = -particle.velocity_x
           $score1 += 1
           $bang2.play(0.7)
@@ -300,6 +306,7 @@ class Field < Chingu::GameState
           @bounce = @bounce_delay
         end
         if particle.x > $window.width
+          particle.x = $window.width
           particle.velocity_x = -particle.velocity_x
           $score2 += 1
           $bang1.play(0.8)
@@ -308,7 +315,13 @@ class Field < Chingu::GameState
           screen_shake2
           @bounce = @bounce_delay
         end
-        if particle.y < 0 || particle.y > $window.height
+        if particle.y < 0
+          particle.y = 0
+          particle.velocity_y = -particle.velocity_y
+          @bounce = @bounce_delay
+        end
+        if particle.y > $window.height
+          particle.y = $window.height
           particle.velocity_y = -particle.velocity_y
           @bounce = @bounce_delay
         end
@@ -331,6 +344,13 @@ class Field < Chingu::GameState
     flare = @star_flares.delete star
     @lense_flares.delete flare
     star.destroy
+  end
+
+  def rare_drop
+    puts "rare_drop"
+    @r = rand(3)
+    $rare_drop = @rare_drops[@r]
+    puts $rare_drop
   end
 
   def draw
