@@ -41,8 +41,12 @@ class Field < Chingu::GameState
     $health2 = 10
     $speed1 = 8
     $speed2 = 8
+    $creep1 = false
+    $creep2 = false
     $chest_bump1 = false
     $chest_bump2 = false
+    $kick1 = true
+    $kick2 = false
     $spell1 = "none"
     $spell2 = "none"
     $score1 = 0
@@ -108,17 +112,17 @@ class Field < Chingu::GameState
   end
 
   def right_attack
-    @player1.cast_spell
-#    if $spell1 == "stun"
+    if $spell1 == "stun"
       @player2.stun
-#    end
+    end
+    @player1.cast_spell
   end
   
   def left_attack
-    @player2.cast_spell
-#    if $spell2 == "stun"
+    if $spell2 == "stun"
       @player1.stun
-#    end
+    end
+    @player2.cast_spell
   end
 
   def fire;  FireCube.create(:x => rand($window.width), :y => rand($window.height), :zorder => Zorder::Projectile);  end
@@ -182,7 +186,13 @@ class Field < Chingu::GameState
       $speed1 = 12
     end
     if $power_ups1 == 2
+      $creep1 = true
+    end
+    if $power_ups1 == 3
       $chest_bump1 = true
+    end
+    if $power_ups1 == 4
+      $kick1 = true
     end
   end
 
@@ -191,7 +201,13 @@ class Field < Chingu::GameState
       $speed2 = 12
     end
     if $power_ups2 == 2
+      $creep2 = true
+    end
+    if $power_ups2 == 3
       $chest_bump2 = true
+    end
+    if $power_ups2 == 4
+      $kick2 = true
     end
   end
 
@@ -239,63 +255,71 @@ class Field < Chingu::GameState
       $power_up.play(0.6)
     end
 
-   Player1.each_collision(Stun) do |player, stun|    # PICKUP stunS
+   Player1.each_collision(Stun) do |player, stun|    # PICKUP STUNS
       stun.destroy
       $spell1 = "stun"
       $power_up.play(0.6)
     end
-    Player2.each_collision(Stun) do |player, stun|    # PICKUP stunS
+    Player2.each_collision(Stun) do |player, stun|    # PICKUP STUNS
       stun.destroy
       $spell2 = "stun"
       $power_up.play(0.6)
     end
 
-   Player1.each_collision(Mist) do |player, mist|    # PICKUP mistS
+   Player1.each_collision(Mist) do |player, mist|    # PICKUP MISTS
       mist.destroy
       $spell1 = "mist"
       $power_up.play(0.6)
     end
-    Player2.each_collision(Mist) do |player, mist|    # PICKUP mistS
+    Player2.each_collision(Mist) do |player, mist|    # PICKUP MISTS
       mist.destroy
       $spell2 = "mist"
       $power_up.play(0.6)
     end
 
 
-    FireCube.each_collision(Player1) do |puck, player|
+    FireCube.each_collision(Player1) do |puck, player|           # PUCK / PLAYER 1
       if @bump == 0
         puck.die!
-        if puck.velocity_x < 0
-          puck.velocity_x = 10
-        else
-          puck.velocity_x = -10
-        end
-        if player.y - puck.y < -48
-          puck.velocity_y = 11
-        elsif player.y - puck.y < -40
-          puck.velocity_y = 5
-        elsif player.y - puck.y < -25
-          puck.velocity_y = 3
-        elsif player.y - puck.y < 25
-          if puck.velocity_y >= 2.0 || puck.velocity_y <= 2.0
-            puck.velocity_y = -puck.velocity_y*0.2
-            if $chest_bump1 == true
-              if puck.velocity_x < 0
-                puck.velocity_x *= -0.05
+        @bump = @bump_delay
+        if $kick1 == false || player.velocity_x == 0 # && player.velocity_y == 0
+          if puck.velocity_x < 0
+            puck.velocity_x = 10
+          else
+            puck.velocity_x = -10
+          end
+          if player.y - puck.y < -48
+            puck.velocity_y = 11
+          elsif player.y - puck.y < -40
+            puck.velocity_y = 5
+          elsif player.y - puck.y < -25
+            puck.velocity_y = 3
+          elsif player.y - puck.y < 25
+            if puck.velocity_y >= 2.0 || puck.velocity_y <= 2.0
+              puck.velocity_y = -puck.velocity_y*0.2
+              if $chest_bump1 == true                # Chest Bump Ability
+                if puck.velocity_x < 0
+                  puck.velocity_x *= -0.05
+                end
               end
             end
+          elsif player.y - puck.y < 40
+            puck.velocity_y = -3
+          elsif player.y - puck.y < 48
+            puck.velocity_y = -5
+          else
+            puck.velocity_y = -11
           end
-        elsif player.y - puck.y < 40
-          puck.velocity_y = -3
-        elsif player.y - puck.y < 48
-          puck.velocity_y = -5
-        else
-          puck.velocity_y = -11
+        else                                         #  Kick Ability
+          puck.velocity_x = player.velocity_x * 10
+          puck.velocity_y = player.velocity_y * 10
+          if puck.velocity_x > 0
+            puck.velocity_x *= -1
+          end
         end
-        @bump = @bump_delay
       end
     end
-    FireCube.each_collision(Player2) do |puck, player|
+    FireCube.each_collision(Player2) do |puck, player|           # PUCK / PLAYER 2
       if @bump == 0
         puck.die!
         if puck.velocity_x > 0
@@ -334,12 +358,11 @@ class Field < Chingu::GameState
         referee.wobble
         puck.die!
         @bump = @bump_delay
+        add_star :x => referee.x, :y => referee.y, :velocity_x => -puck.velocity_x/3*2, :velocity_y => puck.velocity_y/3*2
         if 1 == 1
           @drop_vel_x = -puck.velocity_x/3*2
           @drop_vel_y = puck.velocity_y/3*2
           rare_drop
-        else
-          add_star :x => referee.x, :y => referee.y, :velocity_x => -puck.velocity_x/3*2, :velocity_y => puck.velocity_y/3*2
         end
         if puck.velocity_x > 0
           puck.velocity_x = -10
@@ -410,9 +433,10 @@ class Field < Chingu::GameState
   def rare_drop
     @r = rand(3)
     $rare_drop = @rare_drops[@r]
-    puts $rare_drop
+#    puts $rare_drop
     if $rare_drop == "heart"
       create_heart
+      create_stun
     end
     if $rare_drop == "stun"
       create_stun

@@ -189,8 +189,8 @@ class Heart < Chingu::GameObject
     end
 
     self.factor -= @factorizer
-    self.velocity_x *= 0.95
-    self.velocity_y *= 0.95
+    self.velocity_x *= 0.93
+    self.velocity_y *= 0.93
   end
 end
 

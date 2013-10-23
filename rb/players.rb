@@ -247,9 +247,12 @@ class Player1 < Chingu::GameObject
     @creeping = true
   end
   def stun
-    Zapper.create(:x=>@x,:y=>@y)
-    @stun = true
-    after(2000) {@stun = false}
+    puts $spell2
+    if $spell2 == "stun"
+      Zapper.create(:x=>@x,:y=>@y)
+      @stun = true
+      after(2000) {@stun = false}
+    end
   end
 
   def update
@@ -319,9 +322,12 @@ class Player2 < Chingu::GameObject
     @creeping = true
   end
   def stun
-    Zapper.create(:x=>@x,:y=>@y)
-    @stun = true
-    after(2000) {@stun = false}
+    if $spell1 == "stun"
+      puts "stun"
+      Zapper.create(:x=>@x,:y=>@y)
+      @stun = true
+      after(2000) {@stun = false}
+    end
   end
 
   def update
