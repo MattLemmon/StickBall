@@ -23,12 +23,7 @@ class Intro < Chingu::GameState
     self.input = { [:enter, :return] => Field, :p => Pause,
                     :r => lambda{current_game_state.setup},
                     :right_shift => :ready1,
-                    :left_shift => :ready2, }
- #                   :space => :fire,
- #                   :j => :toggle_left,
- #                   :l => :toggle_right,
- #                   :i => :toggle_up,
- #                   :k => :toggle_down,
+                    :left_shift => :ready2 }
     Chingu::Text.destroy_all 
     CharWheel1.destroy_all
     CharWheel2.destroy_all

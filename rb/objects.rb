@@ -169,11 +169,26 @@ class Heart < Chingu::GameObject
 
   def setup
     @image = Image["gui/heart.png"]
-    self.factor = 0.8
     cache_bounding_circle
+    @counter = 0
+    @count = 1
+    @count_tot = 13
+    @factorizer = 0.05
+    self.factor = 1.30
   end
 
   def update
+    @counter += @count
+    if @counter == @count_tot
+      @factorizer *= -1
+      @count = -1
+    end
+    if @counter == -@count_tot
+      @factorizer *= -1
+      @count = 1
+    end
+
+    self.factor -= @factorizer
     self.velocity_x *= 0.95
     self.velocity_y *= 0.95
   end
@@ -188,11 +203,26 @@ class Stun < Chingu::GameObject
 
   def setup
     @image = Image["objects/stun.png"]
+    @counter = 0
+    @count = 1
+    @count_tot = 13
+    @factorizer = 0.05
     self.factor = 0.6
     cache_bounding_circle
   end
 
   def update
+    @counter += @count
+    if @counter == @count_tot
+      @factorizer *= -1
+      @count = -1
+    end
+    if @counter == -@count_tot
+      @factorizer *= -1
+      @count = 1
+    end
+
+    self.factor -= @factorizer
     self.velocity_x *= 0.95
     self.velocity_y *= 0.95
   end
@@ -207,11 +237,26 @@ class Mist < Chingu::GameObject
 
   def setup
     @image = Image["objects/mist.png"]
+    @counter = 0
+    @count = 1
+    @count_tot = 13
+    @factorizer = 0.05
     self.factor = 0.6
     cache_bounding_circle
   end
 
   def update
+    @counter += @count
+    if @counter == @count_tot
+      @factorizer *= -1
+      @count = -1
+    end
+    if @counter == -@count_tot
+      @factorizer *= -1
+      @count = 1
+    end
+
+    self.factor -= @factorizer
     self.velocity_x *= 0.95
     self.velocity_y *= 0.95
   end

@@ -39,8 +39,8 @@ class Field < Chingu::GameState
     $speed2 = 8
     $chest_bump1 = false
     $chest_bump2 = false
-    $weapon1 = ""
-    $weapon2 = ""
+    $spell1 = ""
+    $spell2 = ""
     game_objects.destroy_all
     Referee.destroy_all
     Player1.destroy_all
@@ -183,11 +183,11 @@ class Field < Chingu::GameState
       $stars1 += 1             # add star in star meter (gui.rb)
       if $stars1 != 3          # not 3 stars yet?
         $star_grab.play(0.6)   # play normal power-up sound
-      else                    # 3 stars?
+      else                     # 3 stars?
         $power_up.play(0.6)    # play mighty power-up sound
-        $stars1 = 0             # reset star meter
-        $power_ups1 += 1           # Upgrade Weapon (see Player.fire in objects.rb)
-        player1_power_up
+        $stars1 = 0            # reset star meter
+        $power_ups1 += 1
+        player1_power_up       # Power Up!
       end
     end
     Player2.each_collision(Star) do |player, star|    # PICKUP STARS
@@ -196,11 +196,11 @@ class Field < Chingu::GameState
       $stars2 += 1             # add star in star meter (gui.rb)
       if $stars2 != 3          # not 3 stars yet?
         $star_grab.play(0.6)   # play normal power-up sound
-      else                    # 3 stars?
+      else                     # 3 stars?
         $power_up.play(0.6)    # play mighty power-up sound
-        $stars2 = 0             # reset star meter
-        $power_ups2 += 1           # Upgrade Weapon (see Player.fire in objects.rb)
-        player2_power_up
+        $stars2 = 0            # reset star meter
+        $power_ups2 += 1
+        player2_power_up       # Power Up!
       end
     end
 
@@ -222,23 +222,23 @@ class Field < Chingu::GameState
 
    Player1.each_collision(Stun) do |player, stun|    # PICKUP stunS
       stun.destroy
-      $weapon1 = "stun"
+      $spell1 = "stun"
       $power_up.play(0.6)
     end
     Player2.each_collision(Stun) do |player, stun|    # PICKUP stunS
       stun.destroy
-      $weapon2 = "stun"
+      $spell2 = "stun"
       $power_up.play(0.6)
     end
 
    Player1.each_collision(Mist) do |player, mist|    # PICKUP mistS
       mist.destroy
-      $weapon1 = "mist"
+      $spell1 = "mist"
       $power_up.play(0.6)
     end
     Player2.each_collision(Mist) do |player, mist|    # PICKUP mistS
       mist.destroy
-      $weapon2 = "mist"
+      $spell2 = "mist"
       $power_up.play(0.6)
     end
 
@@ -315,7 +315,7 @@ class Field < Chingu::GameState
         referee.wobble
         puck.die!
         @bump = @bump_delay
-        if rand(4) == 1
+        if rand(3) == 1
           @drop_vel_x = -puck.velocity_x/3*2
           @drop_vel_y = puck.velocity_y/3*2
           rare_drop
