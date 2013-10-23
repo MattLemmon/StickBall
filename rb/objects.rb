@@ -174,7 +174,7 @@ class Heart < Chingu::GameObject
     @count = 1
     @count_tot = 13
     @factorizer = 0.05
-    self.factor = 1.30
+    self.factor = 1.4
   end
 
   def update
@@ -206,7 +206,7 @@ class Stun < Chingu::GameObject
     @counter = 0
     @count = 1
     @count_tot = 13
-    @factorizer = 0.05
+    @factorizer = 0.025
     self.factor = 0.6
     cache_bounding_circle
   end
@@ -240,7 +240,7 @@ class Mist < Chingu::GameObject
     @counter = 0
     @count = 1
     @count_tot = 13
-    @factorizer = 0.05
+    @factorizer = 0.025
     self.factor = 0.6
     cache_bounding_circle
   end
@@ -262,13 +262,51 @@ class Mist < Chingu::GameObject
   end
 end
 
+#
+#  SPELL
+#                thrown at opponent when spell is cast
+class Spell < Chingu::GameObject
+  trait :bounding_circle, :debug => DEBUG
+  traits :velocity, :collision_detection
+  attr_accessor :color
 
+  def setup
+    @animation = Chingu::Animation.new(:file => "objects/living.png", :size => 64)
+    @image = @animation.next
+    self.zorder = 200
+    self.color = Gosu::Color.from_hsv(rand(360), 1, 1)
+    self.factor = 0.95
+    cache_bounding_circle     # A cached bounding circle will not adapt to changes in size, but it will follow objects X / Y
+  end
+  def update
+    @image = @animation.next
+    self.velocity_x *= 0.999
+    self.velocity_y *= 0.999
+  end
+end
+
+#
+#  ZAPPER
+#                 lightning bolt .bmp thanks to WanderingWeezard
+class Zapper < Chingu::GameObject
+  trait :timer
+  def setup
+    @animation = Chingu::Animation.new(:file => "objects/lightning.bmp")
+#    @animation = Gosu::Image.load_tiles($window, "objects/lightning.bmp", 95, 112, false)
+    self.zorder = 500
+#    self.factor = 0.65
+  end
+  def update
+    @image = @animation.next  # move animation forward
+    after(2000) {self.destroy}
+  end
+end
 
 
 
 #
 #  SPARKLE
-#    called in OpeningCredits2 gamestate (Ruby logo)
+#
 class Sparkle < Chingu::GameObject
   def setup
     @image = Image["objects/sparkle.png"]

@@ -12,28 +12,35 @@ class GUI1 < Chingu::GameObject
 	  @star_half = Gosu::Image.new($window, "./media/gui/star_half.png")
 	  @star_empty = Gosu::Image.new($window, "./media/gui/star_empty.png")
 
-    @score_text = Chingu::Text.create("Power Ups: #{$power_ups1}", :y => 50, :font => "GeosansLight", :size => 20, :color => Colors::White, :zorder => Zorder::GUI)
-    @score_text.x = 500 - @score_text.width/2
+    @power_ups_text = Chingu::Text.create("Power Ups: #{$power_ups1}", :y => 50, :font => "GeosansLight", :size => 26, :color => Colors::White, :zorder => Zorder::GUI)
+    @power_ups_text.x = 600 - @power_ups_text.width/2
+    @spell_text = Chingu::Text.create("Spell: #{$spell1}", :y => 80, :font => "GeosansLight", :size => 26, :color => Colors::White, :zorder => Zorder::GUI)
+    @spell_text.x = 600 - @spell_text.width/2
+
+    @hearts = $health1.to_i
+    puts @hearts
   end
 
   def update
     super
-    @score_text.text = "Power Ups: #{$power_ups1}"
+    @power_ups_text.text = "Power Ups: #{$power_ups1}"
+    @spell_text.text = "Spell: #{$spell1}"
+
   end
 
   def draw      # draw health meter and star meter according to $health and $stars
-    for i in 0..5
-      @heart_empty.draw(18*i+680, 0, Zorder::GUI_Bkgrd)
+    for i in 0..9
+      @heart_empty.draw(780-18*i, 0, Zorder::GUI_Bkgrd)
     end
     for i in 0..$health1 - 1
-      @heart_full.draw(18*i+680, 0, Zorder::GUI)
+      @heart_full.draw(780-18*i, 0, Zorder::GUI)
     end
 
     for i in 0..2
-      @star_empty.draw(18*i+740, 20, Zorder::GUI)
+      @star_empty.draw(780-18*i, 20, Zorder::GUI)
     end
     for i in 0..$stars1 - 1
-      @star_full.draw(18*i+740, 20, Zorder::GUI)
+      @star_full.draw(780-18*i, 20, Zorder::GUI)
     end
 	end
 end
@@ -52,17 +59,21 @@ class GUI2 < Chingu::GameObject
 	  @star_half = Gosu::Image.new($window, "./media/gui/star_half.png")
 	  @star_empty = Gosu::Image.new($window, "./media/gui/star_empty.png")
 
-    @score_text = Chingu::Text.create("Power Ups: #{$power_ups2}", :y => 50, :font => "GeosansLight", :size => 20, :color => Colors::White, :zorder => Zorder::GUI)
-    @score_text.x = 300 - @score_text.width/2
+    @power_ups_text = Chingu::Text.create("Power Ups: #{$power_ups2}", :y => 50, :font => "GeosansLight", :size => 26, :color => Colors::White, :zorder => Zorder::GUI)
+    @power_ups_text.x = 200 - @power_ups_text.width/2
+
+    @spell_text = Chingu::Text.create("Spell: #{$spell1}", :y => 80, :font => "GeosansLight", :size => 26, :color => Colors::White, :zorder => Zorder::GUI)
+    @spell_text.x = 200 - @spell_text.width/2
   end
 
   def update
 		 super
-		 @score_text.text = "Power Ups: #{$power_ups2}"
+    @power_ups_text.text = "Power Ups: #{$power_ups2}"
+    @spell_text.text = "Spell: #{$spell2}"
 	 end
 
   def draw      # draw health meter and star meter according to $health and $stars
-    for i in 0..5
+    for i in 0..9
       @heart_empty.draw(18*i+2, 0, Zorder::GUI_Bkgrd)
     end
     for i in 0..$health2 - 1

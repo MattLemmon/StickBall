@@ -210,6 +210,7 @@ end
 class Player1 < Chingu::GameObject
   traits :velocity, :collision_detection
   trait :bounding_box, :debug => DEBUG
+  trait :timer
   attr_reader :health, :score, :direction
   def initialize(health)
     super
@@ -219,21 +220,47 @@ class Player1 < Chingu::GameObject
     cache_bounding_box
   end
   def setup
+    @creeping = false
+    @stun = false
+    @speed = $speed1
     @eyes = Eyes.new self
   end
   def go_left
-    @velocity_x = -$speed1
+    @velocity_x = -@speed
   end
   def go_right
-    @velocity_x = $speed1
+    @velocity_x = @speed
   end
   def go_up
-    @velocity_y = -$speed1
+    @velocity_y = -@speed
   end
   def go_down
-    @velocity_y = $speed1
+    @velocity_y = @speed
   end
+  def cast_spell
+    puts "cast #{$spell1}"
+    @spell = Spell.create(:x=>@x, :y=>@y, :velocity_x=>-5)
+#    @spell.velocity_y = 1
+    $spell1 = "none"
+  end
+  def creep
+    @creeping = true
+  end
+  def stun
+    Zapper.create(:x=>@x,:y=>@y)
+    @stun = true
+    after(2000) {@stun = false}
+  end
+
   def update
+    if @stun == true
+      @speed = 0
+    elsif @creeping == true
+      @speed = 5
+    else
+      @speed = $speed1
+    end
+    @creeping = false
     @velocity_x *= 0.25
     @velocity_y *= 0.25
     @eyes.update
@@ -247,7 +274,6 @@ class Player1 < Chingu::GameObject
     super
     @eyes.draw
   end
-
 end
 
 
@@ -257,6 +283,7 @@ end
 class Player2 < Chingu::GameObject
   traits :velocity, :collision_detection
   trait :bounding_box, :debug => DEBUG
+  trait :timer
   attr_reader :health, :score, :direction
   def initialize(health)
     super
@@ -266,32 +293,58 @@ class Player2 < Chingu::GameObject
   end
   def setup
     @eyes = Eyes.new self
+    @speed = $speed2
+    @creeping = false
+    @stun = false
   end
   def go_left
-    @velocity_x -= $speed2
+    @velocity_x -= @speed
   end
   def go_right
-    @velocity_x += $speed2
+    @velocity_x += @speed
   end
   def go_up
-    @velocity_y -= $speed2
+    @velocity_y -= @speed
   end
   def go_down
-    @velocity_y += $speed2
+    @velocity_y += @speed
   end
+  def cast_spell
+    puts "cast #{$spell2}"
+    @spell = Spell.create(:x=>@x, :y=>@y, :velocity_x=>5)
+#    @spell.velocity_y = 1
+    $spell2 = "none"
+  end
+  def creep
+    @creeping = true
+  end
+  def stun
+    Zapper.create(:x=>@x,:y=>@y)
+    @stun = true
+    after(2000) {@stun = false}
+  end
+
   def update
+    if @stun == true
+      @speed = 0
+    elsif @creeping == true
+      @speed = 5
+    else
+      @speed = $speed2
+    end
+    @creeping = false
     @velocity_x *= 0.25
     @velocity_y *= 0.25
     @eyes.update
+    if @x < -$scr_edge; @x = $max_x; end  # wrap beyond screen edge
+    if @y < -$scr_edge; @y = $max_y; end
+    if @x > $max_x; @x = -$scr_edge; end
+    if @y > $max_y; @y = -$scr_edge; end
   end
 
   def draw
     super
     @eyes.draw
-    if @x < -$scr_edge; @x = $max_x; end  # wrap beyond screen edge
-    if @y < -$scr_edge; @y = $max_y; end
-    if @x > $max_x; @x = -$scr_edge; end
-    if @y > $max_y; @y = -$scr_edge; end
   end
 end
 

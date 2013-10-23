@@ -68,9 +68,6 @@ class GameWindow < Chingu::Window
     $max_y = 615
     $scr_edge = 15
     $cooling_down = 70
-    $health = 6
-    $health1 = 6
-    $health2 = 6
     $score = 0
     $stars1 = 0
     $stars2 = 0

@@ -27,7 +27,9 @@ class Field < Chingu::GameState
                    :i => :toggle_up,
                    :k => :toggle_down,
                    :p => Pause,
-                   :return => lambda{current_game_state.setup}
+                   :return => lambda{current_game_state.setup},
+                   :right_shift=>:right_attack,
+                   :left_shift=>:left_attack
                  }
 
     $window.caption = "Stick Ball! Go team go!"
@@ -35,12 +37,17 @@ class Field < Chingu::GameState
 
   def setup
     super
+    $health1 = 10
+    $health2 = 10
     $speed1 = 8
     $speed2 = 8
     $chest_bump1 = false
     $chest_bump2 = false
-    $spell1 = ""
-    $spell2 = ""
+    $spell1 = "none"
+    $spell2 = "none"
+    $score1 = 0
+    $score2 = 0
+
     game_objects.destroy_all
     Referee.destroy_all
     Player1.destroy_all
@@ -63,12 +70,12 @@ class Field < Chingu::GameState
 #    @referee.input = {:holding_left => :go_left, :holding_right => :go_right, :holding_up => :go_up, :holding_down => :go_down}
 
     @player1 = Player1.create(:x => 740, :y => 300, :zorder => Zorder::Main_Character)#(:x => $player_x, :y => $player_y, :angle => $player_angle, :zorder => Zorder::Main_Character)
-    @player1.input = {:holding_left => :go_left, :holding_right => :go_right, :holding_up => :go_up, :holding_down => :go_down}
+    @player1.input = {:holding_right_ctrl=>:creep,:holding_left=>:go_left,:holding_right=>:go_right,:holding_up=>:go_up,:holding_down=>:go_down}
 
 #    @eyes1 = EyesLeft.create(:zorder => Zorder::Eyes)
 
     @player2 = Player2.create(:x => 60, :y => 300, :zorder => Zorder::Main_Character)#(:x => $player_x, :y => $player_y, :angle => $player_angle, :zorder => Zorder::Main_Character)
-    @player2.input = {:holding_a => :go_left, :holding_d => :go_right, :holding_w => :go_up, :holding_s => :go_down}
+    @player2.input = {:holding_left_ctrl=>:creep,:holding_a=>:go_left,:holding_d=>:go_right,:holding_w=>:go_up,:holding_s=>:go_down}
 
 #    @eyes2 = EyesRight.create(:zorder => Zorder::Eyes)
 
@@ -82,11 +89,6 @@ class Field < Chingu::GameState
 
     @ground_y = ($window.height * 0.95).to_i
 
-    $score1 = 0
-    $score2 = 0
-    @score1_text = Chingu::Text.create(:text=>"", :x=>440, :y=>10, :size=>46)
-    @score2_text = Chingu::Text.create(:text=>"", :x=>330, :y=>10, :size=>46)
-
     @bump = 0
     @bump_delay = 15
     @bounce = 0
@@ -95,13 +97,30 @@ class Field < Chingu::GameState
     @shake1 = 10
     @shake2 = 5
 
+    @score1_text = Chingu::Text.create(:text=>"", :x=>440, :y=>10, :size=>46)
+    @score2_text = Chingu::Text.create(:text=>"", :x=>330, :y=>10, :size=>46)
+
     @gui1 = GUI1.create
     @gui2 = GUI2.create
 
-    2.times { fire }
+#    2.times { fire }
     after(300) { @transition = false }
   end
+
+  def right_attack
+    @player1.cast_spell
+#    if $spell1 == "stun"
+      @player2.stun
+#    end
+  end
   
+  def left_attack
+    @player2.cast_spell
+#    if $spell2 == "stun"
+      @player1.stun
+#    end
+  end
+
   def fire;  FireCube.create(:x => rand($window.width), :y => rand($window.height), :zorder => Zorder::Projectile);  end
   def toggle_left;  end
   def toggle_right;  end
@@ -315,7 +334,7 @@ class Field < Chingu::GameState
         referee.wobble
         puck.die!
         @bump = @bump_delay
-        if rand(3) == 1
+        if 1 == 1
           @drop_vel_x = -puck.velocity_x/3*2
           @drop_vel_y = puck.velocity_y/3*2
           rare_drop
