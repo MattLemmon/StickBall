@@ -14,7 +14,7 @@ class Field < Chingu::GameState
     @lense_flares = LenseFlares.new $window.width/2.0, $window.height/2.0
     @star_flares = {}
 
-    @rare_drops = ["heart", "stun", "fog"]
+    @rare_drops = ["heart", "stun", "mist"]
     @r = 0
     @drop_vel_x = 0
     @drop_vel_y = 0
@@ -39,6 +39,8 @@ class Field < Chingu::GameState
     $speed2 = 8
     $chest_bump1 = false
     $chest_bump2 = false
+    $weapon1 = ""
+    $weapon2 = ""
     game_objects.destroy_all
     Referee.destroy_all
     Player1.destroy_all
@@ -96,6 +98,7 @@ class Field < Chingu::GameState
     @gui1 = GUI1.create
     @gui2 = GUI2.create
 
+    2.times { fire }
     after(300) { @transition = false }
   end
   
@@ -201,6 +204,11 @@ class Field < Chingu::GameState
       end
     end
 
+    @star_flares.each do |star,flare|        # UPDATE STAR FLARES
+      flare.x = star.x
+      flare.y = star.y
+    end
+
    Player1.each_collision(Heart) do |player, heart|    # PICKUP HEARTS
       heart.destroy
       $health1 += 1
@@ -212,10 +220,28 @@ class Field < Chingu::GameState
       $power_up.play(0.6)
     end
 
-    @star_flares.each do |star,flare|        # UPDATE STAR FLARES
-      flare.x = star.x
-      flare.y = star.y
+   Player1.each_collision(Stun) do |player, stun|    # PICKUP stunS
+      stun.destroy
+      $weapon1 = "stun"
+      $power_up.play(0.6)
     end
+    Player2.each_collision(Stun) do |player, stun|    # PICKUP stunS
+      stun.destroy
+      $weapon2 = "stun"
+      $power_up.play(0.6)
+    end
+
+   Player1.each_collision(Mist) do |player, mist|    # PICKUP mistS
+      mist.destroy
+      $weapon1 = "mist"
+      $power_up.play(0.6)
+    end
+    Player2.each_collision(Mist) do |player, mist|    # PICKUP mistS
+      mist.destroy
+      $weapon2 = "mist"
+      $power_up.play(0.6)
+    end
+
 
     FireCube.each_collision(Player1) do |puck, player|
       if @bump == 0
@@ -290,10 +316,9 @@ class Field < Chingu::GameState
         puck.die!
         @bump = @bump_delay
         if rand(4) == 1
-          rare_drop
           @drop_vel_x = -puck.velocity_x/3*2
           @drop_vel_y = puck.velocity_y/3*2
-          create_heart
+          rare_drop
         else
           add_star :x => referee.x, :y => referee.y, :velocity_x => -puck.velocity_x/3*2, :velocity_y => puck.velocity_y/3*2
         end
@@ -364,17 +389,31 @@ class Field < Chingu::GameState
   end
 
   def rare_drop
-    puts "rare_drop"
     @r = rand(3)
     $rare_drop = @rare_drops[@r]
     puts $rare_drop
+    if $rare_drop == "heart"
+      create_heart
+    end
+    if $rare_drop == "stun"
+      create_stun
+    end
+    if $rare_drop == "mist"
+      create_mist
+    end
   end
 
   def create_heart
-#    FireCube.create(:x => rand($window.width), :y => rand($window.height), :zorder => Zorder::Projectile)
     Heart.create(:x => @referee.x, :y => @referee.y, :velocity_x => @drop_vel_x, :velocity_y => @drop_vel_y )
   end
 
+  def create_stun
+    Stun.create(:x => @referee.x, :y => @referee.y, :velocity_x => @drop_vel_x, :velocity_y => @drop_vel_y )
+  end
+
+  def create_mist
+    Mist.create(:x => @referee.x, :y => @referee.y, :velocity_x => @drop_vel_x, :velocity_y => @drop_vel_y )
+  end
 
   def draw
       @lense_flares.draw

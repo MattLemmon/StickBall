@@ -174,10 +174,51 @@ class Heart < Chingu::GameObject
   end
 
   def update
-    self.velocity_x *= 0.97
-    self.velocity_y *= 0.97
+    self.velocity_x *= 0.95
+    self.velocity_y *= 0.95
   end
 end
+
+#
+#   STUN
+#
+class Stun < Chingu::GameObject
+  trait :bounding_circle, :debug => DEBUG
+  traits :velocity, :collision_detection
+
+  def setup
+    @image = Image["objects/stun.png"]
+    self.factor = 0.6
+    cache_bounding_circle
+  end
+
+  def update
+    self.velocity_x *= 0.95
+    self.velocity_y *= 0.95
+  end
+end
+
+#
+#   MIST
+#
+class Mist < Chingu::GameObject
+  trait :bounding_circle, :debug => DEBUG
+  traits :velocity, :collision_detection
+
+  def setup
+    @image = Image["objects/mist.png"]
+    self.factor = 0.6
+    cache_bounding_circle
+  end
+
+  def update
+    self.velocity_x *= 0.95
+    self.velocity_y *= 0.95
+  end
+end
+
+
+
 
 
 #
