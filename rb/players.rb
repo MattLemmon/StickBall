@@ -222,6 +222,7 @@ class Player1 < Chingu::GameObject
   def setup
     @creeping = false
     @stun = false
+    @mist = false
     @speed = $speed1
     @eyes = Eyes.new self
   end
@@ -247,12 +248,17 @@ class Player1 < Chingu::GameObject
     @creeping = true
   end
   def stun
-    puts $spell2
-    if $spell2 == "stun"
+#    puts $spell2
+#    if $spell2 == "stun"
       Zapper.create(:x=>@x,:y=>@y)
       @stun = true
       after(2000) {@stun = false}
-    end
+#    end
+  end
+  def mist
+#    Zapper.create(:x=>@x,:y=>@y)
+    @mist = true
+    after(3000) {@mist = false}
   end
 
   def update
@@ -274,8 +280,10 @@ class Player1 < Chingu::GameObject
   end
 
   def draw
-    super
-    @eyes.draw
+    if @mist == false
+      super
+      @eyes.draw
+    end
   end
 end
 
@@ -299,6 +307,7 @@ class Player2 < Chingu::GameObject
     @speed = $speed2
     @creeping = false
     @stun = false
+    @mist = false
   end
   def go_left
     @velocity_x -= @speed
@@ -322,12 +331,17 @@ class Player2 < Chingu::GameObject
     @creeping = true
   end
   def stun
-    if $spell1 == "stun"
-      puts "stun"
+#    if $spell1 == "stun"
+#      puts "stun"
       Zapper.create(:x=>@x,:y=>@y)
       @stun = true
       after(2000) {@stun = false}
-    end
+#    end
+  end
+  def mist
+#    Zapper.create(:x=>@x,:y=>@y)
+    @mist = true
+    after(3000) {@mist = false}
   end
 
   def update
@@ -349,14 +363,16 @@ class Player2 < Chingu::GameObject
   end
 
   def draw
-    super
-    @eyes.draw
+    if @mist == false
+      super
+      @eyes.draw
+    end
   end
 end
 
 
 #
-#   EYES
+#   OLD EYES
 #
 class EyesLeft < Chingu::GameObject
   def setup

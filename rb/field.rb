@@ -115,12 +115,18 @@ class Field < Chingu::GameState
     if $spell1 == "stun"
       @player2.stun
     end
+    if $spell1 == "mist"
+      @player2.mist
+    end
     @player1.cast_spell
   end
   
   def left_attack
     if $spell2 == "stun"
       @player1.stun
+    end
+    if $spell2 == "mist"
+      @player1.mist
     end
     @player2.cast_spell
   end
@@ -353,7 +359,7 @@ class Field < Chingu::GameState
       end
     end
 
-    FireCube.each_collision(Referee) do |puck, referee|      # ITEM DROPS  ITEM DROPS  ITEM DROPS
+    FireCube.each_collision(Referee) do |puck, referee|      # ITEM DROPS  ITEM DROPS  REFEREE
       if @bump == 0
         referee.wobble
         puck.die!
@@ -436,7 +442,11 @@ class Field < Chingu::GameState
 #    puts $rare_drop
     if $rare_drop == "heart"
       create_heart
-      create_stun
+      if rand(2) == 1
+        create_stun
+      else
+        create_mist
+      end
     end
     if $rare_drop == "stun"
       create_stun
