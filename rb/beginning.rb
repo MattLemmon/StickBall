@@ -9,7 +9,7 @@ class Beginning < Chingu::GameState
     $music = Song["audio/guitar_solo.ogg"]
     $music.volume = 0.9
     after(5) { $music.play(true) }
-    after(15) { push_game_state(Chingu::GameStates::FadeTo.new(Intro.new, :speed => 8)) }
+    after(5) { push_game_state(Chingu::GameStates::FadeTo.new(Intro.new, :speed => 20)) }
   end
 end
 
@@ -72,16 +72,16 @@ class Intro < Chingu::GameState
     @ready1 = true
     puts "ready"
     $chime.play
-    after(400) { if @text1_5 != nil; @text1_5.destroy; end }
-    after(800) { if @text1 != nil; @text1.destroy; end }
+    after(800) { if @text1_5 != nil; @text1_5.destroy; end }
+    after(1600) { if @text1 != nil; @text1.destroy; end }
   end
 
   def ready2
     @ready2 = true
     puts "ready"
     $chime.play
-    after(400) { if @text2_5 != nil; @text2_5.destroy; end }
-    after(800) { if @text2 != nil; @text2.destroy; end }
+    after(800) { if @text2_5 != nil; @text2_5.destroy; end }
+    after(1600) { if @text2 != nil; @text2.destroy; end }
   end
 
   def update
@@ -105,33 +105,42 @@ class Intro < Chingu::GameState
 
     if @ready1 == true && @ready2 == true
       if @transition == false
-        @transition = true
-         after(400) {
-          @song_fade = true
-          $guitar_riff.play(0.6) }
-        after(1500) {
-          @text3 = Chingu::Text.create("#{@chant}", :y => 50, :size => 60, :color => Colors::White, :zorder => Zorder::GUI)
-          @text3.x = 400 - @text3.width/2 }
-        after(2000) { @text3.text = "" }
-        after(2400) { @text3.text = "#{@chant}" }
-        after(2800) { @text3.text = "" }
-        after(3200) { @text3.text = "#{@chant}" }
-        after(3600) { @text3.text = "" }
-        after(4000) { @text3.text = "#{@chant}" }
-        after(4400) { @text3.text = "" }
-        after(4800) { @text3.text = "#{@chant}" }
-        after(5500) {
-          $music1.stop
+        transition1
+      end
+    end
+  end
+
+  def transition1
+    puts "need to add score limit selection here"
+    transition2
+  end
+
+  def transition2
+    @transition = true
+     after(400) {
+      @song_fade = true
+      $guitar_riff.play(0.6) }
+    after(1500) {
+      @text3 = Chingu::Text.create("#{@chant}", :y => 50, :size => 60, :color => Colors::White, :zorder => Zorder::GUI)
+      @text3.x = 400 - @text3.width/2 }
+    after(2000) { @text3.text = "" }
+    after(2400) { @text3.text = "#{@chant}" }
+    after(2800) { @text3.text = "" }
+    after(3200) { @text3.text = "#{@chant}" }
+    after(3600) { @text3.text = "" }
+    after(4000) { @text3.text = "#{@chant}" }
+    after(4400) { @text3.text = "" }
+    after(4800) { @text3.text = "#{@chant}" }
+    after(5500) {
+      $music1.stop
 #          @song_fade = false
 #          $music2.volume = 0.9
 #          $music2.play
 #          $music1.volume = 0.9
 #          $music1.play
 #          push_game_state(Chingu::GameStates::FadeTo.new(Field.new, :speed => 8)) }
-          push_game_state(Field)}
-      end
-    end
-
+      push_game_state(Field)
+    }
   end
 end
 

@@ -115,7 +115,7 @@ class Field < Chingu::GameState
 
     $music2.volume = 0.9
     $music2.play 
-    after(300)  { @transition = false }
+    after(2400)  { @transition = false }
 #    after(6000) { $music1.stop }
 
   end
@@ -278,10 +278,10 @@ class Field < Chingu::GameState
         spell.velocity_y = -20.0
       end
       if spell.x < @player2.x
-        spell.velocity_x = 40.0
+        spell.velocity_x = 30.0
       end
       if spell.x > @player2.x
-        spell.velocity_x = -40.0
+        spell.velocity_x = -30.0
       end
     end
 
@@ -293,10 +293,10 @@ class Field < Chingu::GameState
         spell.velocity_y = -20.0
       end
       if spell.x < @player1.x
-        spell.velocity_x = 40.0
+        spell.velocity_x = 30.0
       end
       if spell.x > @player1.x
-        spell.velocity_x = -40.0
+        spell.velocity_x = -30.0
       end
     end
 
@@ -540,10 +540,10 @@ class Field < Chingu::GameState
     end
 =end
     @lense_flares.draw
-#    if @transition == false
-#    end
+    if @transition == false
     fill_gradient(:from => Color.new(255,0,0,0), :to => Color.new(255,60,60,80), :rect => [0,0,$window.width,@ground_y])
     fill_gradient(:from => Color.new(255,100,100,100), :to => Color.new(255,50,50,50), :rect => [0,@ground_y,$window.width,$window.height-@ground_y])
+    end
     super
   end
 
