@@ -71,12 +71,16 @@ class Intro < Chingu::GameState
     @ready1 = true
     puts "ready"
     $chime.play
+    @text1.text = ""
+    @text1_5.text = ""
   end
 
   def ready2
     @ready2 = true
     puts "ready"
     $chime.play
+    @text2.text = ""
+    @text2_5.text = ""
   end
 
   def update

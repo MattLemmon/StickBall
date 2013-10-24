@@ -153,8 +153,8 @@ class Star < Chingu::GameObject
     # Move the animation forward by fetching the next frame and putting it into @image
     # @image is drawn by default by GameObject#draw
     @image = @animation.next
-    self.velocity_x *= 0.97
-    self.velocity_y *= 0.97
+    self.velocity_x *= 0.95
+    self.velocity_y *= 0.95
   end
 end
 
@@ -189,8 +189,8 @@ class Heart < Chingu::GameObject
     end
 
     self.factor -= @factorizer
-    self.velocity_x *= 0.93
-    self.velocity_y *= 0.93
+    self.velocity_x *= 0.91
+    self.velocity_y *= 0.91
   end
 end
 
@@ -223,8 +223,8 @@ class Stun < Chingu::GameObject
     end
 
     self.factor -= @factorizer
-    self.velocity_x *= 0.95
-    self.velocity_y *= 0.95
+    self.velocity_x *= 0.93
+    self.velocity_y *= 0.93
   end
 end
 
@@ -257,8 +257,8 @@ class Mist < Chingu::GameObject
     end
 
     self.factor -= @factorizer
-    self.velocity_x *= 0.95
-    self.velocity_y *= 0.95
+    self.velocity_x *= 0.94
+    self.velocity_y *= 0.94
   end
 end
 
@@ -269,8 +269,10 @@ class Spell1 < Chingu::GameObject
   trait :bounding_circle, :debug => DEBUG
   traits :velocity, :collision_detection
   attr_accessor :color
+  attr_reader :spell_type
 
   def setup
+    @spell_type = $spell1
     @mode = :default
     @animation = Chingu::Animation.new(:file => "objects/living.png", :size => 64)
     @image = @animation.next
@@ -284,7 +286,6 @@ class Spell1 < Chingu::GameObject
   def update
     @image = @animation.next
     self.velocity_x *= 0.97
-#    self.velocity_y *= 0.99
     if self.x < -300
       self.destroy
     end 
@@ -301,8 +302,10 @@ class Spell2 < Chingu::GameObject
   trait :bounding_circle, :debug => DEBUG
   traits :velocity, :collision_detection
   attr_accessor :color
+  attr_reader :spell_type
 
   def setup
+    @spell_type = $spell2
     @animation = Chingu::Animation.new(:file => "objects/living.png", :size => 64)
     @image = @animation.next
     self.zorder = 200

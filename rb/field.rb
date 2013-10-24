@@ -46,7 +46,7 @@ class Field < Chingu::GameState
     $creep2 = false
     $chest_bump1 = false
     $chest_bump2 = false
-    $kick1 = true
+    $kick1 = false
     $kick2 = false
     $spell1 = "none"
     $spell2 = "none"
@@ -98,7 +98,8 @@ class Field < Chingu::GameState
     @bump_delay = 15
     @bounce = 0
     @bounce_delay = 6
-
+    @spell1_hit = false
+    @spell2_hit = false
     @shake1 = 10
     @shake2 = 5
 
@@ -108,28 +109,20 @@ class Field < Chingu::GameState
     @gui1 = GUI1.create
     @gui2 = GUI2.create
 
-#    2.times { fire }
+#    1.times { fire }
     after(300) { @transition = false }
   end
 
   def right_attack
-    if $spell1 == "stun"
-      @player2.stun
-    end
-    if $spell1 == "mist"
-      @player2.mist
-    end
     @player1.cast_spell
+#    if $spell1 == "stun"; @player2.stun; end
+#    if $spell1 == "mist"; @player2.mist; end
   end
   
   def left_attack
-    if $spell2 == "stun"
-      @player1.stun
-    end
-    if $spell2 == "mist"
-      @player1.mist
-    end
     @player2.cast_spell
+#    if $spell2 == "stun"; @player1.stun; end
+#    if $spell2 == "mist"; @player1.mist; end
   end
 
   def fire;  FireCube.create(:x => rand($window.width), :y => rand($window.height), :zorder => Zorder::Projectile);  end
@@ -217,44 +210,121 @@ class Field < Chingu::GameState
     end
   end
 
-  def collision_check
+  def add_star options
+    star = Star.create options
+    flare = @lense_flares.create star.x, star.y, Zorder::LenseFlare
+    flare.color = star.color
+    flare.strength = 0.25
+    flare.brightness = 0.3
+    flare.scale = 1.25
+    flare.flickering = 0.1
+    @star_flares[star] = flare
+  end
+  
+  def remove_star star
+    flare = @star_flares.delete star
+    @lense_flares.delete flare
+    star.destroy
+  end
 
+  def create_heart
+    Heart.create(:x => @referee.x, :y => @referee.y, :velocity_x => @drop_vel_x, :velocity_y => @drop_vel_y )
+  end
+  def create_stun
+    Stun.create(:x => @referee.x, :y => @referee.y, :velocity_x => @drop_vel_x, :velocity_y => @drop_vel_y )
+  end
+  def create_mist
+    Mist.create(:x => @referee.x, :y => @referee.y, :velocity_x => @drop_vel_x, :velocity_y => @drop_vel_y )
+  end
+
+  def rare_drop
+    @r = rand(3)
+    $rare_drop = @rare_drops[@r]
+#    puts $rare_drop
+    if $rare_drop == "heart"
+      create_heart
+      if rand(2) == 1
+        create_stun
+        @drop_vel_y *= -1
+        create_mist
+      end
+    end
+    if $rare_drop == "stun"
+      create_stun
+    end
+    if $rare_drop == "mist"
+      create_mist
+    end
+  end
+
+  def collision_check
     @star_flares.each do |star,flare|        # UPDATE STAR FLARES
       flare.x = star.x
       flare.y = star.y
     end
 
-    Spell1.each do |spell|
+    Spell1.each do |spell|                   # SPELL 1 MOVEMENT
       if spell.y < @player2.y
-        spell.velocity_y = 8.0
+        spell.velocity_y = 20.0
       end
       if spell.y > @player2.y
-        spell.velocity_y = -8.0
+        spell.velocity_y = -20.0
       end
-
       if spell.x < @player2.x
-        spell.velocity_x = 8.0
+        spell.velocity_x = 40.0
       end
-
       if spell.x > @player2.x
-        spell.velocity_x = -8.0
+        spell.velocity_x = -40.0
       end
-
-
     end
 
-    Spell2.each do |spell|
+    Spell2.each do |spell|                   # SPELL 2 MOVEMENT
       if spell.y < @player1.y
-        spell.velocity_y += 0.1
+        spell.velocity_y = 20.0
       end
       if spell.y > @player1.y
-        spell.velocity_y -= 0.1
+        spell.velocity_y = -20.0
+      end
+      if spell.x < @player1.x
+        spell.velocity_x = 40.0
+      end
+      if spell.x > @player1.x
+        spell.velocity_x = -40.0
       end
     end
 
-
-
-
+    Player1.each_collision(Spell2) do |player, spell|    # HIT PLAYER 1 WITH SPELL2S
+      if @spell2_hit == false
+        @spell2_hit = true
+        if spell.spell_type == "stun"
+          player.stun
+        end
+        if spell.spell_type == "mist"
+          player.mist
+        end
+        spell.destroy
+        after(2000) { @spell2_hit = false }
+      else
+        after(100) { spell.destroy }
+      end
+      break   #   Explosion.create(:x => spell.x, :y => spell.y)
+    end
+    Player2.each_collision(Spell1) do |player, spell|    # HIT PLAYER 2 WITH SPELL1S
+     if @spell1_hit == false
+        @spell1_hit = true
+        if spell.spell_type == "stun"
+          player.stun
+        end
+        if spell.spell_type == "mist"
+          player.mist
+        end
+        spell.destroy
+        after(2000) { @spell1_hit = false }
+      else
+        after(100) { spell.destroy }
+      end
+      break   #   Explosion.create(:x => spell.x, :y => spell.y)
+    end
 
     Player1.each_collision(Star) do |player, star|    # PICKUP STARS
       remove_star star
@@ -398,6 +468,7 @@ class Field < Chingu::GameState
         puck.die!
         @bump = @bump_delay
         add_star :x => referee.x, :y => referee.y, :velocity_x => -puck.velocity_x/3*2, :velocity_y => puck.velocity_y/3*2
+        add_star :x => referee.x, :y => referee.y, :velocity_x => -puck.velocity_x/3*2, :velocity_y => -puck.velocity_y/3*2
         if 1 == 1
           @drop_vel_x = -puck.velocity_x/3*2
           @drop_vel_y = puck.velocity_y/3*2
@@ -450,55 +521,6 @@ class Field < Chingu::GameState
         end
       end
     end
-  end
-
-  def add_star options
-    star = Star.create options
-    flare = @lense_flares.create star.x, star.y, Zorder::LenseFlare
-    flare.color = star.color
-    flare.strength = 0.25
-    flare.brightness = 0.3
-    flare.scale = 1.25
-    flare.flickering = 0.1
-    @star_flares[star] = flare
-  end
-  
-  def remove_star star
-    flare = @star_flares.delete star
-    @lense_flares.delete flare
-    star.destroy
-  end
-
-  def rare_drop
-    @r = rand(3)
-    $rare_drop = @rare_drops[@r]
-#    puts $rare_drop
-    if $rare_drop == "heart"
-      create_heart
-      if rand(2) == 1
-        create_stun
-      else
-        create_mist
-      end
-    end
-    if $rare_drop == "stun"
-      create_stun
-    end
-    if $rare_drop == "mist"
-      create_mist
-    end
-  end
-
-  def create_heart
-    Heart.create(:x => @referee.x, :y => @referee.y, :velocity_x => @drop_vel_x, :velocity_y => @drop_vel_y )
-  end
-
-  def create_stun
-    Stun.create(:x => @referee.x, :y => @referee.y, :velocity_x => @drop_vel_x, :velocity_y => @drop_vel_y )
-  end
-
-  def create_mist
-    Mist.create(:x => @referee.x, :y => @referee.y, :velocity_x => @drop_vel_x, :velocity_y => @drop_vel_y )
   end
 
   def draw

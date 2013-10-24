@@ -252,11 +252,19 @@ class Player1 < Chingu::GameObject
     @velocity_y = @speed
   end
   def cast_spell
-    puts "cast #{$spell1}"
-    3.times { @spell = Spell1.create(:x=>@x, :y=>@y, :velocity_x=>-25) }
-#    @spell.velocity_y = 1
-    $spell1 = "none"
+
+    if $spell1 != "none"
+      puts "cast #{$spell1}"
+      3.times { Spell1.create(:x=>@x, :y=>@y ) }
+      $spell1 = "none"
+    end
+#    if $spell1 == "mist"
+#      @player2.mist
+#    end
+
   end
+
+
   def creep
     @creeping = true
   end
@@ -338,10 +346,11 @@ class Player2 < Chingu::GameObject
     @velocity_y += @speed
   end
   def cast_spell
-    puts "cast #{$spell2}"
-    @spell = Spell2.create(:x=>@x, :y=>@y, :velocity_x=>25)
-#    @spell.velocity_y = 1
+    if $spell2 != "none"
+      puts "cast #{$spell2}"
+      3.times { Spell2.create(:x=>@x, :y=>@y) }
     $spell2 = "none"
+    end
   end
   def creep
     @creeping = true
