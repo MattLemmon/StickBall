@@ -30,7 +30,9 @@ class CharWheel < Chingu::GameObject
   end
 end
 
-
+#
+#  CHARWHEEL 1
+#
 class CharWheel1 < CharWheel
   def setup
     self.factor_x = -1
@@ -74,7 +76,9 @@ class CharWheel1 < CharWheel
   end
 end
 
-
+#
+#  CHARWHEEL 2
+#
 class CharWheel2 < CharWheel
   def go_left
     if @ready == false
@@ -107,6 +111,10 @@ class CharWheel2 < CharWheel
   end
 end
 
+
+#
+#  EYES
+#
 class Eyes
   def initialize parent
     @parent = parent
@@ -130,7 +138,9 @@ class Eyes
   end
 end
 
-
+#
+#  REFEREE
+#
 class Referee < Chingu::GameObject
   trait :bounding_circle, :debug => DEBUG
   traits :velocity, :collision_detection
@@ -211,7 +221,7 @@ class Player1 < Chingu::GameObject
   traits :velocity, :collision_detection
   trait :bounding_box, :debug => DEBUG
   trait :timer
-  attr_reader :health, :score, :direction
+  attr_reader :health, :score, :direction, :mist
   def initialize(health)
     super
     @image = Gosu::Image["players/#{$image1}.png"]
@@ -295,7 +305,7 @@ class Player2 < Chingu::GameObject
   traits :velocity, :collision_detection
   trait :bounding_box, :debug => DEBUG
   trait :timer
-  attr_reader :health, :score, :direction
+  attr_reader :health, :score, :direction, :mist
   def initialize(health)
     super
     @image = Gosu::Image["players/#{$image2}.png"]
@@ -389,7 +399,7 @@ end
 
 #
 #  KNIGHT
-#    called in beginning.rb, in Introduction gamestate
+#
 class Knight < Chingu::GameObject
   def initialize(options)
     super
@@ -397,16 +407,16 @@ class Knight < Chingu::GameObject
     @voice = Sound["audio/mumble.ogg"]
     @velox = 0     # x velocity starts as 0
     @veloy = 0     # y velocity starts as 0
-    @factoring = 1 # used for shrinking Knight when he enters the ship
+    @factoring = 1
   end
-  def movement   # called in Introduction gamestate
+  def movement
     @velox = -7  # move left
   end
-  def enter_ship # called in Introduction gamestate
+  def enter_ship
     @veloy = 2
     @factoring = 0.98
   end
-  def speak      # called in Introduction gamestate
+  def speak
     @voice.play
   end
   def update

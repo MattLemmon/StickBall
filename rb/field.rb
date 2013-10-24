@@ -13,6 +13,7 @@ class Field < Chingu::GameState
     LenseFlares.load_images $window, './media/lense_flares'
     @lense_flares = LenseFlares.new $window.width/2.0, $window.height/2.0
     @star_flares = {}
+    @mist = Ashton::Shader.new fragment: './rb/mist.frag', uniforms: { time: 0.0, alpha: 0.5, mist_color: [230/255.0, 250/255.0, 255/255.0, 1.0] }
 
     @rare_drops = ["heart", "stun", "mist"]
     @r = 0
@@ -142,7 +143,6 @@ class Field < Chingu::GameState
     after(90)  { @puck_flare.brightness -= 0.3; @puck_flare.strength -= 0.15;  }
     after(100) { @puck_flare.brightness -= 0.3; @puck_flare.strength -= 0.15;  }
   end
-
 
   def screen_shake1
     blink_flare
@@ -469,12 +469,19 @@ class Field < Chingu::GameState
   end
 
   def draw
-      @lense_flares.draw
-    if @transition == false
-      fill_gradient(:from => Color.new(255,0,0,0), :to => Color.new(255,60,60,80), :rect => [0,0,$window.width,@ground_y])
-      fill_gradient(:from => Color.new(255,100,100,100), :to => Color.new(255,50,50,50), :rect => [0,@ground_y,$window.width,$window.height-@ground_y])
+=begin
+    if @player1.mist == true && rand(20) == 1
+      puts "player 1 misted"
     end
-    $window.caption = "Stick Ball!     Go team go!                                             Objects: #{game_objects.size}, FPS: #{$window.fps}"
+    if @player2.mist == true && rand(20) == 1
+      puts "player 2 misted"
+    end
+=end
+    @lense_flares.draw
+#    if @transition == false
+#    end
+    fill_gradient(:from => Color.new(255,0,0,0), :to => Color.new(255,60,60,80), :rect => [0,0,$window.width,@ground_y])
+    fill_gradient(:from => Color.new(255,100,100,100), :to => Color.new(255,50,50,50), :rect => [0,@ground_y,$window.width,$window.height-@ground_y])
     super
   end
 
@@ -486,6 +493,7 @@ class Field < Chingu::GameState
       @puck_flare.color = @puck.color
       @lense_flares.update
     end
+    @mist.time = Gosu.milliseconds/1000.0
     super
 
     move_referee
@@ -499,6 +507,7 @@ class Field < Chingu::GameState
 
     @score1_text.text = "#{$score1}"
     @score2_text.text = "#{$score2}"
+    $window.caption = "Stick Ball!     Go team go!                                             Objects: #{game_objects.size}, FPS: #{$window.fps}"
 
 #    @eyes1.x = @player1.x - 3
 #    @eyes1.y = @player1.y - 12

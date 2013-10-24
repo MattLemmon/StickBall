@@ -33,6 +33,7 @@ class Intro < Chingu::GameState
     @transition = false
     @song_fade = false
     @fade_count = 0
+    @chant = "Prepare for Battle"
     @click = Sound["media/audio/pickup_chime.ogg"]
 
     after(600) {
@@ -40,39 +41,42 @@ class Intro < Chingu::GameState
       @player1_select.input = { :right_shift => :ready, :right => :go_right, :left => :go_left,
                               :holding_up => :go_up, :holding_down => :go_down}
       @ready1 = false
-      @caption1 = Chingu::Text.create("#{$image1}", :y => @player1_select.y - 150, :size => 45, :color => Colors::Dark_Orange, :zorder => Zorder::GUI)
+      @caption1 = Chingu::Text.create("#{$image1}", :y => @player1_select.y - 150, :size => 45, :color => Colors::White, :zorder => Zorder::GUI)
       @caption1.x = @player1_select.x - @caption1.width/2 # center text
-      @text2 = Chingu::Text.create("Choose Your Player", :y => 510, :font => "GeosansLight", :size => 45, :color => Colors::Dark_Orange, :zorder => Zorder::GUI)
-      @text2.x =800/2 - @text2.width/2 # center text
     }
     after(900) {
       @player2_select = CharWheel2.create(:x => 200, :y => 300, :zorder => Zorder::Main_Character)
       @player2_select.input = {:left_shift => :ready, :a => :go_left, :d => :go_right, :holding_w => :go_up, :holding_s => :go_down}
       @ready2 = false
 
-      @caption2 = Chingu::Text.create("#{$image2}", :y => @player2_select.y - 150, :size => 45, :color => Colors::Dark_Orange, :zorder => Zorder::GUI)
+      @caption2 = Chingu::Text.create("#{$image2}", :y => @player2_select.y - 150, :size => 45, :color => Colors::White, :zorder => Zorder::GUI)
       @caption2.x = @player2_select.x - @caption2.width/2 # center text
+    }
+    after(1500) {
+      @text1 = Chingu::Text.create("Right Shift", :y => 420, :size => 32, :color => Colors::White, :zorder => Zorder::GUI)
+      @text1.x = 614 - @text1.width/2 # center text
+      @text1_5 = Chingu::Text.create("to Select", :y => 452, :size => 32, :color => Colors::White, :zorder => Zorder::GUI)
+      @text1_5.x = 614 - @text1_5.width/2 # center text
 
-      @text = Chingu::Text.create("Press Shift", :y => 550, :font => "GeosansLight", :size => 45, :color => Colors::Dark_Orange, :zorder => Zorder::GUI)
-      @text.x = 800/2 - @text.width/2 # center text
+      @text2 = Chingu::Text.create("Left Shift", :y => 420, :size => 32, :color => Colors::White, :zorder => Zorder::GUI)
+      @text2.x = 207 - @text2.width/2 # center text
+      @text2_5 = Chingu::Text.create("to Select", :y => 452, :size => 32, :color => Colors::White, :zorder => Zorder::GUI)
+      @text2_5.x = 207 - @text2_5.width/2 # center text
     }
 
 #    after(2000) { if @text != nil; @text.destroy; end }
   end
 
-  def next
-#    Field.new(@n, @descr)
-#    push_game_state(Field)
-  end
-
   def ready1
     @ready1 = true
     puts "ready"
+    $chime.play
   end
 
   def ready2
     @ready2 = true
     puts "ready"
+    $chime.play
   end
 
   def update
@@ -101,19 +105,19 @@ class Intro < Chingu::GameState
           @song_fade = true
           $guitar_riff.play(0.6) }
         after(1500) {
-          @text3 = Chingu::Text.create("Prepare for Battle", :y => 100, :size => 40, :color => Colors::White, :zorder => Zorder::GUI)
+          @text3 = Chingu::Text.create("#{@chant}", :y => 50, :size => 60, :color => Colors::White, :zorder => Zorder::GUI)
           @text3.x = 400 - @text3.width/2 }
         after(2000) { @text3.text = "" }
-        after(2500) { @text3.text = "Prepare for Battle" }
+        after(2500) { @text3.text = "#{@chant}" }
         after(3000) { @text3.text = "" }
-        after(3500) { @text3.text = "Prepare for Battle" }
+        after(3500) { @text3.text = "#{@chant}" }
         after(4000) { @text3.text = "" }
-        after(4500) {
-          @text3.text = "Prepare for Battle"
+        after(4500) { @text3.text = "#{@chant}" }
+        after(4800) {
           @song_fade = false
           $music.volume = 0.9
-          push_game_state(Chingu::GameStates::FadeTo.new(Field.new, :speed => 8)) }
-#          push_game_state(Field)}
+#          push_game_state(Chingu::GameStates::FadeTo.new(Field.new, :speed => 8)) }
+          push_game_state(Field)}
       end
     end
 
@@ -143,28 +147,36 @@ class PreIntro < Chingu::GameState
     @fade_count = 0
     @click = Sound["media/audio/keypress.ogg"]
 
-    after(300) {
-      @text = Chingu::Text.create("StickBall", :y => 60, :font => "GeosansLight", :size => 45, :color => Colors::Dark_Orange, :zorder => Zorder::GUI)
-      @text.x = 800/2 - @text.width/2 # center text
+    after(200) {
+      @text1 = Chingu::Text.create("StickBall", :y => 60, :font => "GeosansLight", :size => 45, :color => Colors::White, :zorder => Zorder::GUI)
+      @text1.x = 800/2 - @text1.width/2 # center text
+    }
+    after(400) {
+      @text2 = Chingu::Text.create("Opponent CPU or PL2", :y => 300, :font => "GeosansLight", :size => 45, :color => Colors::White, :zorder => Zorder::GUI)
+      @text2.x =800/2 - @text2.width/2 # center text
     }
     after(600) {
-      @text2 = Chingu::Text.create("Select score limit", :y => 510, :font => "GeosansLight", :size => 45, :color => Colors::Dark_Orange, :zorder => Zorder::GUI)
-      @text2.x =800/2 - @text2.width/2 # center text
+      @text3 = Chingu::Text.create("Select score limit", :y => 400, :font => "GeosansLight", :size => 45, :color => Colors::White, :zorder => Zorder::GUI)
+      @text3.x =800/2 - @text3.width/2 # center text
     }
-    after(900) {
-      @text2 = Chingu::Text.create("Press shift to begin", :y => 300, :font => "GeosansLight", :size => 45, :zorder => Zorder::GUI)
-      @text2.x =800/2 - @text2.width/2 # center text
+    after(800) {
+      @text4 = Chingu::Text.create("Left Shift to begin", :y => 500, :font => "GeosansLight", :size => 45, :zorder => Zorder::GUI)
+      @text4.x = 200 - @text4.width/2 # center text
+      @text5 = Chingu::Text.create("Right Shift to begin", :y => 500, :font => "GeosansLight", :size => 45, :zorder => Zorder::GUI)
+      @text5.x = 600 - @text5.width/2 # center text
+
     }
   end
 
   def next
     if @nxt == true  # if you've already pressed 'shift' once, pressing it again skips ahead
       @nxt = false
+      @click.play
       push_game_state(Intro)
     else
       @nxt = true    # transition to Field
       @click.play
-      after(200) { puts 1 }
+      after(300) { puts 1 }
       after(600) { puts 2 }
       after(1000) { push_game_state(Intro) }
     end
@@ -275,10 +287,10 @@ class Introduction2 < Chingu::GameState
     end
 
     after(300) {
-      @text = Chingu::Text.create("StickBall!!!", :y => 60, :font => "GeosansLight", :size => 45, :color => Colors::Dark_Orange, :zorder => Zorder::GUI)
+      @text = Chingu::Text.create("StickBall!!!", :y => 60, :font => "GeosansLight", :size => 45, :color => Colors::White, :zorder => Zorder::GUI)
       @text.x = 800/2 - @text.width/2 # center text
       after(300) {
-        @text2 = Chingu::Text.create("Press ENTER to play", :y => 510, :font => "GeosansLight", :size => 45, :color => Colors::Dark_Orange, :zorder => Zorder::GUI)
+        @text2 = Chingu::Text.create("Press ENTER to play", :y => 510, :font => "GeosansLight", :size => 45, :color => Colors::White, :zorder => Zorder::GUI)
         @text2.x =800/2 - @text2.width/2 # center text
         after(300) {
 #          @player = EndPlayer.create(:x => 400, :y => 450, :zorder => Zorder::Main_Character)
