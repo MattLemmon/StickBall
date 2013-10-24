@@ -218,6 +218,44 @@ class Field < Chingu::GameState
   end
 
   def collision_check
+
+    @star_flares.each do |star,flare|        # UPDATE STAR FLARES
+      flare.x = star.x
+      flare.y = star.y
+    end
+
+    Spell1.each do |spell|
+      if spell.y < @player2.y
+        spell.velocity_y = 8.0
+      end
+      if spell.y > @player2.y
+        spell.velocity_y = -8.0
+      end
+
+      if spell.x < @player2.x
+        spell.velocity_x = 8.0
+      end
+
+      if spell.x > @player2.x
+        spell.velocity_x = -8.0
+      end
+
+
+    end
+
+    Spell2.each do |spell|
+      if spell.y < @player1.y
+        spell.velocity_y += 0.1
+      end
+      if spell.y > @player1.y
+        spell.velocity_y -= 0.1
+      end
+    end
+
+
+
+
+
     Player1.each_collision(Star) do |player, star|    # PICKUP STARS
       remove_star star
 
@@ -243,11 +281,6 @@ class Field < Chingu::GameState
         $power_ups2 += 1
         player2_power_up       # Power Up!
       end
-    end
-
-    @star_flares.each do |star,flare|        # UPDATE STAR FLARES
-      flare.x = star.x
-      flare.y = star.y
     end
 
    Player1.each_collision(Heart) do |player, heart|    # PICKUP HEARTS

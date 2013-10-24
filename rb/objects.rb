@@ -263,9 +263,41 @@ class Mist < Chingu::GameObject
 end
 
 #
-#  SPELL
+#  SPELL 1
 #                thrown at opponent when spell is cast
-class Spell < Chingu::GameObject
+class Spell1 < Chingu::GameObject
+  trait :bounding_circle, :debug => DEBUG
+  traits :velocity, :collision_detection
+  attr_accessor :color
+
+  def setup
+    @mode = :default
+    @animation = Chingu::Animation.new(:file => "objects/living.png", :size => 64)
+    @image = @animation.next
+    self.zorder = 200
+    self.color = Gosu::Color.from_hsv(rand(360), 1, 1)
+    self.factor = 0.95
+    @x = @x - 5 + rand(10)
+    @y = @y - 5 + rand(10)
+    cache_bounding_circle     # A cached bounding circle will not adapt to changes in size, but it will follow objects X / Y
+  end
+  def update
+    @image = @animation.next
+    self.velocity_x *= 0.97
+#    self.velocity_y *= 0.99
+    if self.x < -300
+      self.destroy
+    end 
+    if self.x > 1100
+      self.destroy
+    end 
+  end
+end
+
+#
+#  SPELL 2
+#                thrown at opponent when spell is cast
+class Spell2 < Chingu::GameObject
   trait :bounding_circle, :debug => DEBUG
   traits :velocity, :collision_detection
   attr_accessor :color
@@ -280,10 +312,21 @@ class Spell < Chingu::GameObject
   end
   def update
     @image = @animation.next
-    self.velocity_x *= 0.999
-    self.velocity_y *= 0.999
+    self.velocity_x *= 0.97
+#    self.velocity_y *= 0.95
+    if self.x < -300
+      self.destroy
+    end 
+    if self.x > 1100
+      self.destroy
+    end 
+
+
   end
 end
+
+
+
 
 #
 #  ZAPPER

@@ -253,7 +253,7 @@ class Player1 < Chingu::GameObject
   end
   def cast_spell
     puts "cast #{$spell1}"
-    @spell = Spell.create(:x=>@x, :y=>@y, :velocity_x=>-5)
+    3.times { @spell = Spell1.create(:x=>@x, :y=>@y, :velocity_x=>-25) }
 #    @spell.velocity_y = 1
     $spell1 = "none"
   end
@@ -339,7 +339,7 @@ class Player2 < Chingu::GameObject
   end
   def cast_spell
     puts "cast #{$spell2}"
-    @spell = Spell.create(:x=>@x, :y=>@y, :velocity_x=>5)
+    @spell = Spell2.create(:x=>@x, :y=>@y, :velocity_x=>25)
 #    @spell.velocity_y = 1
     $spell2 = "none"
   end
