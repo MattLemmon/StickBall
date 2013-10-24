@@ -1,6 +1,7 @@
 
 require 'chingu'
 require 'gosu'
+require 'ashton'
 include Chingu
 include Gosu
 
