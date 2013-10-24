@@ -1,5 +1,7 @@
 DEBUG = false  # Set to true to see bounding circles used for collision detection
 
+require_relative 'player/mouth'
+
 
 class CharWheel < Chingu::GameObject
   def setup
@@ -235,6 +237,7 @@ class Player1 < Chingu::GameObject
     @mist = false
     @speed = $speed1
     @eyes = Eyes.new self
+    @mouth = Mouth.new self
   end
   def go_left
     @velocity_x = -@speed
@@ -283,6 +286,7 @@ class Player1 < Chingu::GameObject
     @velocity_x *= 0.25
     @velocity_y *= 0.25
     @eyes.update
+    @mouth.update
     if @x < -$scr_edge; @x = $max_x; end  # wrap beyond screen edge
     if @y < -$scr_edge; @y = $max_y; end
     if @x > $max_x; @x = -$scr_edge; end
@@ -293,6 +297,7 @@ class Player1 < Chingu::GameObject
     if @mist == false
       super
       @eyes.draw
+      @mouth.draw
     end
   end
 end
@@ -314,6 +319,7 @@ class Player2 < Chingu::GameObject
   end
   def setup
     @eyes = Eyes.new self
+    @mouth = Mouth.new self
     @speed = $speed2
     @creeping = false
     @stun = false
@@ -366,6 +372,7 @@ class Player2 < Chingu::GameObject
     @velocity_x *= 0.25
     @velocity_y *= 0.25
     @eyes.update
+    @mouth.update
     if @x < -$scr_edge; @x = $max_x; end  # wrap beyond screen edge
     if @y < -$scr_edge; @y = $max_y; end
     if @x > $max_x; @x = -$scr_edge; end
@@ -376,6 +383,7 @@ class Player2 < Chingu::GameObject
     if @mist == false
       super
       @eyes.draw
+      @mouth.draw
     end
   end
 end
