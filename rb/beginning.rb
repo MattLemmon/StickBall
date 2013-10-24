@@ -34,7 +34,8 @@ class Intro < Chingu::GameState
     @song_fade = false
     @fade_count = 0
     @chant = "Prepare for Battle"
-    @click = Sound["media/audio/pickup_chime.ogg"]
+    
+
 
     after(600) {
       @player1_select = CharWheel1.create(:x => 600, :y => 300, :zorder => Zorder::Main_Character)
@@ -71,16 +72,16 @@ class Intro < Chingu::GameState
     @ready1 = true
     puts "ready"
     $chime.play
-    @text1.text = ""
-    @text1_5.text = ""
+    after(400) { if @text1_5 != nil; @text1_5.destroy; end }
+    after(800) { if @text1 != nil; @text1.destroy; end }
   end
 
   def ready2
     @ready2 = true
     puts "ready"
     $chime.play
-    @text2.text = ""
-    @text2_5.text = ""
+    after(400) { if @text2_5 != nil; @text2_5.destroy; end }
+    after(800) { if @text2 != nil; @text2.destroy; end }
   end
 
   def update
@@ -96,9 +97,9 @@ class Intro < Chingu::GameState
     end
     if @song_fade == true # fade song if @song_fade is true
       @fade_count += 1
-      if @fade_count == 20
+      if @fade_count == 10
         @fade_count = 0
-        $music.volume -= 0.1
+        $music1.volume -= 0.1
       end
     end
 
@@ -112,14 +113,20 @@ class Intro < Chingu::GameState
           @text3 = Chingu::Text.create("#{@chant}", :y => 50, :size => 60, :color => Colors::White, :zorder => Zorder::GUI)
           @text3.x = 400 - @text3.width/2 }
         after(2000) { @text3.text = "" }
-        after(2500) { @text3.text = "#{@chant}" }
-        after(3000) { @text3.text = "" }
-        after(3500) { @text3.text = "#{@chant}" }
-        after(4000) { @text3.text = "" }
-        after(4500) { @text3.text = "#{@chant}" }
-        after(4800) {
-          @song_fade = false
-          $music.volume = 0.9
+        after(2400) { @text3.text = "#{@chant}" }
+        after(2800) { @text3.text = "" }
+        after(3200) { @text3.text = "#{@chant}" }
+        after(3600) { @text3.text = "" }
+        after(4000) { @text3.text = "#{@chant}" }
+        after(4400) { @text3.text = "" }
+        after(4800) { @text3.text = "#{@chant}" }
+        after(5500) {
+          $music1.stop
+#          @song_fade = false
+#          $music2.volume = 0.9
+#          $music2.play
+#          $music1.volume = 0.9
+#          $music1.play
 #          push_game_state(Chingu::GameStates::FadeTo.new(Field.new, :speed => 8)) }
           push_game_state(Field)}
       end
@@ -149,7 +156,6 @@ class PreIntro < Chingu::GameState
     @nxt = false  # used for :next method ('enter')
     @song_fade = false
     @fade_count = 0
-    @click = Sound["media/audio/keypress.ogg"]
 
     after(200) {
       @text1 = Chingu::Text.create("StickBall", :y => 60, :font => "GeosansLight", :size => 45, :color => Colors::White, :zorder => Zorder::GUI)
@@ -175,11 +181,11 @@ class PreIntro < Chingu::GameState
   def next
     if @nxt == true  # if you've already pressed 'shift' once, pressing it again skips ahead
       @nxt = false
-      @click.play
+      $click.play
       push_game_state(Intro)
     else
       @nxt = true    # transition to Field
-      @click.play
+      $click.play
       after(300) { puts 1 }
       after(600) { puts 2 }
       after(1000) { push_game_state(Intro) }
@@ -280,7 +286,6 @@ class Introduction2 < Chingu::GameState
     @song_fade = false
     @fade_count = 0
     @knight = Knight.create(:x=>900,:y=>300,:zorder=>100) # creates Knight offscreen; Knight is defined in characters.rb
-    @click = Sound["media/audio/keypress.ogg"]
 
     if $intro == false
       $music = Song["media/audio/music/guitar_solo.ogg"]
@@ -309,7 +314,7 @@ class Introduction2 < Chingu::GameState
       push_game_state(Field)
     else
       @nxt = true    # transition to Level 1 - Knight enters and speaks; push Level_1 gamestate
-      @click.play
+      $click.play
       after(200) {
         if @text2 != nil; @text2.destroy; end  # only destroy @text2 if it exists
         after(200) {

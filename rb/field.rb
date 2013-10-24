@@ -102,6 +102,8 @@ class Field < Chingu::GameState
     @spell2_hit = false
     @shake1 = 10
     @shake2 = 5
+    @song_fade = false
+    @fade_count = 0
 
     @score1_text = Chingu::Text.create(:text=>"", :x=>440, :y=>10, :size=>46)
     @score2_text = Chingu::Text.create(:text=>"", :x=>330, :y=>10, :size=>46)
@@ -110,7 +112,12 @@ class Field < Chingu::GameState
     @gui2 = GUI2.create
 
 #    1.times { fire }
-    after(300) { @transition = false }
+
+    $music2.volume = 0.9
+    $music2.play 
+    after(300)  { @transition = false }
+#    after(6000) { $music1.stop }
+
   end
 
   def right_attack
@@ -303,9 +310,9 @@ class Field < Chingu::GameState
           player.mist
         end
         spell.destroy
-        after(2000) { @spell2_hit = false }
+        after(300) { @spell2_hit = false }
       else
-        after(100) { spell.destroy }
+        after(50) { spell.destroy }
       end
       break   #   Explosion.create(:x => spell.x, :y => spell.y)
     end
@@ -319,9 +326,9 @@ class Field < Chingu::GameState
           player.mist
         end
         spell.destroy
-        after(2000) { @spell1_hit = false }
+        after(300) { @spell1_hit = false }
       else
-        after(100) { spell.destroy }
+        after(50) { spell.destroy }
       end
       break   #   Explosion.create(:x => spell.x, :y => spell.y)
     end
@@ -563,6 +570,14 @@ class Field < Chingu::GameState
     @score1_text.text = "#{$score1}"
     @score2_text.text = "#{$score2}"
     $window.caption = "Stick Ball!     Go team go!                                             Objects: #{game_objects.size}, FPS: #{$window.fps}"
+
+    if @song_fade == true # fade song if @song_fade is true
+      @fade_count += 1
+      if @fade_count == 30
+        @fade_count = 0
+        $music1.volume -= 0.1
+      end
+    end
 
 #    @eyes1.x = @player1.x - 3
 #    @eyes1.y = @player1.y - 12
