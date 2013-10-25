@@ -7,7 +7,7 @@ class Beginning < Chingu::GameState
   def setup
     self.input = { :esc => :exit,  [:right_shift, :left_shift] => OpeningCredits } #, :p => Pause, :r => lambda{current_game_state.setup} }
     $music = Song["audio/guitar_solo.ogg"]
-    $music.volume = 0.9
+    $music.volume = 0.6
     after(5) { $music.play(true) }
     after(5) { push_game_state(Chingu::GameStates::FadeTo.new(Intro.new, :speed => 20)) }
   end
@@ -97,7 +97,7 @@ class Intro < Chingu::GameState
     end
     if @song_fade == true # fade song if @song_fade is true
       @fade_count += 1
-      if @fade_count == 10
+      if @fade_count == 6
         @fade_count = 0
         $music1.volume -= 0.1
       end
@@ -119,7 +119,7 @@ class Intro < Chingu::GameState
     @transition = true
      after(400) {
       @song_fade = true
-      $guitar_riff.play(0.6) }
+      $guitar_riff.play(0.4) }
     after(1500) {
       @text3 = Chingu::Text.create("#{@chant}", :y => 50, :size => 60, :color => Colors::White, :zorder => Zorder::GUI)
       @text3.x = 400 - @text3.width/2 }

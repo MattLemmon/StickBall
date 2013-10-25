@@ -113,7 +113,7 @@ class Field < Chingu::GameState
 
 #    1.times { fire }
 
-    $music2.volume = 0.9
+    $music2.volume = 0.5
     $music2.play 
     after(2400)  { @transition = false }
 #    after(6000) { $music1.stop }
@@ -498,7 +498,7 @@ class Field < Chingu::GameState
           particle.x = 0
           particle.velocity_x = -particle.velocity_x
           $score1 += 1
-          $bang2.play(0.7)
+          $bang2.play(0.4)
           if $health2 > 1; $health2 -=1; end
           particle.die!
           screen_shake1
@@ -508,7 +508,7 @@ class Field < Chingu::GameState
           particle.x = $window.width
           particle.velocity_x = -particle.velocity_x
           $score2 += 1
-          $bang1.play(0.8)
+          $bang1.play(0.5)
           if $health1 > 1; $health1 -=1; end
           particle.die!
           screen_shake2
