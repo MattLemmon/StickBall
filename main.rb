@@ -11,6 +11,7 @@ require_relative 'rb/players'
 require_relative 'rb/objects'
 require_relative 'rb/gui'
 require_relative 'rb/beginning'
+require_relative 'rb/ending'
 
 module Zorder  # define some frequently used Zorders
   GUI = 400

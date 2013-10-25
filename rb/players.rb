@@ -9,7 +9,7 @@ class CharWheel < Chingu::GameObject
     @picture = ["boy", "monk", "tanooki", "cult_leader",
                  "villager", "knight", "sorceror" ]
     @p = 0
-    @health = [5, 10, 20, 50]
+    @health = [5, 10, 15, 20]
     @h = 1
     @image = Gosu::Image["players/#{@picture[@p]}.png"]
     @ready = false
@@ -37,7 +37,7 @@ class CharWheel1 < CharWheel
     @picture = ["boy", "monk", "tanooki", "cult_leader",
                 "villager", "knight", "sorceror" ]
     @p = 0
-    @health = [5, 10, 20, 50]
+    @health = [5, 10, 15, 20]
     @h = 1
     @image = Gosu::Image["players/#{@picture[@p]}.png"]
     @ready = false

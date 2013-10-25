@@ -140,7 +140,7 @@ class Intro < Chingu::GameState
   end
 
   def transition1
-    puts "Opponent Selection Needed"
+    puts "Opponent Selection Needed (CPU or PL2)"
 #    transition2
   end
 

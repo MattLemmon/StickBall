@@ -52,6 +52,7 @@ class Field < Chingu::GameState
     $spell2 = "none"
     $score1 = 0
     $score2 = 0
+    $winner = ""
 
     @bump = 0
     @bump_delay = 15
@@ -137,8 +138,9 @@ class Field < Chingu::GameState
 #    if $spell2 == "mist"; @player1.mist; end
   end
 
-  def chant
+  def fire;  chant;  end
 
+  def chant
     if @multiball == false
       @multiball = true
       @chant_text = Chingu::Text.create("#{@chant}", :y => 520, :size => 50, :color => Colors::White, :zorder => Zorder::GUI)
@@ -147,11 +149,7 @@ class Field < Chingu::GameState
       after(800) { @chant_text.text = "#{@chant}" }
       after(1200) { @chant_text.text = "" }
       after(1600) { @chant_text.text = "#{@chant}" }
-      after(2000) { @chant_text.text = "" }
-      after(2400) { @chant_text.text = "#{@chant}" }
-      after(2800) { @chant_text.text = "" }
-      after(3200) { @chant_text.text = "#{@chant}" }
-      after(3600) { @chant_text.text = ""; start_multiball }
+      after(2000) { @chant_text.text = ""; start_multiball }
     end
   end
 
@@ -162,7 +160,6 @@ class Field < Chingu::GameState
   end
 
 #  def fire;  FireCube.create(:x => rand($window.width), :y => rand($window.height), :zorder => Zorder::Projectile);  end
-  def fire;  chant;  end
   def toggle_left;  end
   def toggle_right;  end
   def toggle_up;  end
@@ -538,7 +535,12 @@ class Field < Chingu::GameState
           particle.velocity_x = -particle.velocity_x
           $score1 += 1
           $bang2.play(0.4)
-          if $health2 > 1; $health2 -=1; end
+          if $health2 > 1
+            $health2 -=1
+          else
+            $winner = "right player"
+            push_game_state(GameOver)
+          end
           particle.die!
           screen_shake1
           @bounce = @bounce_delay
@@ -548,7 +550,13 @@ class Field < Chingu::GameState
           particle.velocity_x = -particle.velocity_x
           $score2 += 1
           $bang1.play(0.5)
-          if $health1 > 1; $health1 -=1; end
+          if $health1 > 1
+            $health1 -=1
+          else
+            $winner = "left player"
+            push_game_state(GameOver)
+          end
+
           particle.die!
           screen_shake2
           @bounce = @bounce_delay
