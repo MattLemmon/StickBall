@@ -12,6 +12,8 @@ require_relative 'rb/objects'
 require_relative 'rb/gui'
 require_relative 'rb/beginning'
 require_relative 'rb/ending'
+require_relative 'rb/backgrounds'
+
 
 module Zorder  # define some frequently used Zorders
   GUI = 400
@@ -25,6 +27,7 @@ module Zorder  # define some frequently used Zorders
   Projectile = 220
   LenseFlare = 221
   Particle = 210
+  Background = 5
 end
 
 

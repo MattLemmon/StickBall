@@ -317,7 +317,7 @@ class Introduction2 < Chingu::GameState
 #    Player.destroy_all
 #    EndPlayer.destroy_all
     Meteor.destroy_all
-    $window.caption = "StickBall!"
+    $window.caption = "StickBall"
     @counter = 0  # used for automated Meteor creation
     @count = 1    # used for automated Meteor creation
     @nxt = false  # used for :next method ('enter')

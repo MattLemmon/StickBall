@@ -118,8 +118,10 @@ class Field < Chingu::GameState
 
     $music2.volume = 0.4
     $music2.play 
+
+    Background1.create
+
     after(2400)  { @transition = false }
-#    after(20000) { puts 20000 }
 #    after(22500) { puts 22500 }
     after(23000) { $music2.volume = 0.2 }
 #    after(27500) { puts 27500 }
