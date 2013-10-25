@@ -196,16 +196,16 @@ class Field < Chingu::GameState
   end
 
   def move_referee
-    if @referee.y > @puck.y && rand(20) == 1
+    if @referee.y > @puck.y && rand(7) == 1
       @referee.go_up
     end
-    if @referee.y < @puck.y && rand(20) == 1
+    if @referee.y < @puck.y && rand(7) == 1
       @referee.go_down
     end
-    if @referee.x > @puck.x && rand(20) == 1
+    if @referee.x > @puck.x && rand(7) == 1
       @referee.go_left
     end
-    if @referee.x < @puck.x && rand(20) == 1
+    if @referee.x < @puck.x && rand(7) == 1
       @referee.go_right
     end
   end
