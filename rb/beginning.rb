@@ -20,52 +20,71 @@ end
 class Intro < Chingu::GameState
   trait :timer
   def setup
-    self.input = { [:enter, :return] => Field, :p => Pause,
-                    :r => lambda{current_game_state.setup},
-                    :right_shift => :ready1,
-                    :left_shift => :ready2 }
-    Chingu::Text.destroy_all 
-    CharWheel1.destroy_all
-    CharWheel2.destroy_all
+
+    $health1 = 10
+    $health2 = 10
     $window.caption = "StickBall"
+
     @counter = 0  
     @count = 1    
     @transition = false
     @song_fade = false
     @fade_count = 0
     @chant = "Prepare for Battle"
-    
 
+    self.input = { [:enter, :return] => Field, :p => Pause,
+                    :r => lambda{current_game_state.setup},
+                    :right_shift => :ready1,
+                    :left_shift => :ready2 }
+
+    Chingu::Text.destroy_all 
+    CharWheel1.destroy_all
+    CharWheel2.destroy_all
+
+    transition1
 
     after(600) {
-      @player1_select = CharWheel1.create(:x => 600, :y => 300, :zorder => Zorder::Main_Character)
+      @player1_select = CharWheel1.create(:x => 550, :y => 300, :zorder => Zorder::Main_Character)
       @player1_select.input = { :right_shift => :ready, :right => :go_right, :left => :go_left,
-                              :holding_up => :go_up, :holding_down => :go_down}
+                              :up => :go_up, :down => :go_down}
       @ready1 = false
       @caption1 = Chingu::Text.create("#{$image1}", :y => @player1_select.y - 150, :size => 45, :color => Colors::White, :zorder => Zorder::GUI)
       @caption1.x = @player1_select.x - @caption1.width/2 # center text
     }
     after(900) {
-      @player2_select = CharWheel2.create(:x => 200, :y => 300, :zorder => Zorder::Main_Character)
-      @player2_select.input = {:left_shift => :ready, :a => :go_left, :d => :go_right, :holding_w => :go_up, :holding_s => :go_down}
+      @player2_select = CharWheel2.create(:x => 250, :y => 300, :zorder => Zorder::Main_Character)
+      @player2_select.input = {:left_shift => :ready, :a => :go_left, :d => :go_right, :w => :go_up, :s => :go_down}
       @ready2 = false
 
       @caption2 = Chingu::Text.create("#{$image2}", :y => @player2_select.y - 150, :size => 45, :color => Colors::White, :zorder => Zorder::GUI)
       @caption2.x = @player2_select.x - @caption2.width/2 # center text
     }
+
+    after(1200) {
+      @text3 = Chingu::Text.create("Health", :y => 300, :size => 32, :color => Colors::White, :zorder => Zorder::GUI)
+      @text3.x = 714 - @text3.width/2 # center text
+      @text3_5 = Chingu::Text.create( $health1.to_s, :y => 270, :size => 40, :color => Colors::White, :zorder => Zorder::GUI)
+      @text3_5.x = 714 - @text3_5.width/2 # center text
+    }
     after(1500) {
+      @text4 = Chingu::Text.create("Health", :y => 300, :size => 32, :color => Colors::White, :zorder => Zorder::GUI)
+      @text4.x = 107 - @text4.width/2 # center text
+      @text4_5 = Chingu::Text.create( $health2.to_s, :y => 270, :size => 40, :color => Colors::White, :zorder => Zorder::GUI)
+      @text4_5.x = 107 - @text4_5.width/2 # center text
+    }
+    after(1800) {
       @text1 = Chingu::Text.create("Right Shift", :y => 420, :size => 32, :color => Colors::White, :zorder => Zorder::GUI)
       @text1.x = 614 - @text1.width/2 # center text
       @text1_5 = Chingu::Text.create("to Select", :y => 452, :size => 32, :color => Colors::White, :zorder => Zorder::GUI)
       @text1_5.x = 614 - @text1_5.width/2 # center text
-
+    }
+    after(2100) {
       @text2 = Chingu::Text.create("Left Shift", :y => 420, :size => 32, :color => Colors::White, :zorder => Zorder::GUI)
       @text2.x = 207 - @text2.width/2 # center text
       @text2_5 = Chingu::Text.create("to Select", :y => 452, :size => 32, :color => Colors::White, :zorder => Zorder::GUI)
       @text2_5.x = 207 - @text2_5.width/2 # center text
     }
 
-#    after(2000) { if @text != nil; @text.destroy; end }
   end
 
   def ready1
@@ -95,6 +114,16 @@ class Intro < Chingu::GameState
       @caption2.text = $image2
       @caption2.x = @player2_select.x - @caption2.width/2 # center text
     end
+    if @text3_5 != nil
+      @text3_5.text = $health1.to_s
+      @text3_5.x = 714 - @text3_5.width/2 # center text
+    end
+    if @text4_5 != nil
+      @text4_5.text = $health2.to_s
+      @text4_5.x = 107 - @text4_5.width/2 # center text
+    end
+
+
     if @song_fade == true # fade song if @song_fade is true
       @fade_count += 1
       if @fade_count == 7
@@ -105,14 +134,14 @@ class Intro < Chingu::GameState
 
     if @ready1 == true && @ready2 == true
       if @transition == false
-        transition1
+        transition2
       end
     end
   end
 
   def transition1
-    puts "need to add score limit selection here"
-    transition2
+    puts "Opponent Selection Needed"
+#    transition2
   end
 
   def transition2

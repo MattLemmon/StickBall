@@ -17,7 +17,8 @@ class GUI1 < Chingu::GameObject
     @spell_text = Chingu::Text.create("Spell: #{$spell1}", :y => 80, :font => "GeosansLight", :size => 26, :color => Colors::White, :zorder => Zorder::GUI)
     @spell_text.x = 600 - @spell_text.width/2
 
-    @hearts = $health1.to_i
+    @hearts = $health1 - 1
+#    @hearts = $health1.to_i
 #    puts @hearts
   end
 
@@ -29,18 +30,18 @@ class GUI1 < Chingu::GameObject
   end
 
   def draw      # draw health meter and star meter according to $health and $stars
-    for i in 0..9
-      @heart_empty.draw(780-18*i, 0, Zorder::GUI_Bkgrd)
+    for i in 0..@hearts
+      @heart_empty.draw(782-18*i, 0, Zorder::GUI_Bkgrd)
     end
     for i in 0..$health1 - 1
-      @heart_full.draw(780-18*i, 0, Zorder::GUI)
+      @heart_full.draw(782-18*i, 0, Zorder::GUI)
     end
 
-    for i in 0..2
-      @star_empty.draw(780-18*i, 20, Zorder::GUI)
+    for i in 0..4
+      @star_empty.draw(782-18*i, 20, Zorder::GUI)
     end
     for i in 0..$stars1 - 1
-      @star_full.draw(780-18*i, 20, Zorder::GUI)
+      @star_full.draw(782-18*i, 20, Zorder::GUI)
     end
 	end
 end
@@ -64,6 +65,7 @@ class GUI2 < Chingu::GameObject
 
     @spell_text = Chingu::Text.create("Spell: #{$spell1}", :y => 80, :font => "GeosansLight", :size => 26, :color => Colors::White, :zorder => Zorder::GUI)
     @spell_text.x = 200 - @spell_text.width/2
+    @hearts = $health2 - 1
   end
 
   def update
@@ -73,14 +75,14 @@ class GUI2 < Chingu::GameObject
 	 end
 
   def draw      # draw health meter and star meter according to $health and $stars
-    for i in 0..9
+    for i in 0..@hearts
       @heart_empty.draw(18*i+2, 0, Zorder::GUI_Bkgrd)
     end
     for i in 0..$health2 - 1
       @heart_full.draw(18*i+2, 0, Zorder::GUI)
     end
 
-    for i in 0..2
+    for i in 0..4
       @star_empty.draw(18*i+2, 20, Zorder::GUI_Bkgrd)
     end
     for i in 0..$stars2 - 1

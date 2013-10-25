@@ -9,6 +9,8 @@ class CharWheel < Chingu::GameObject
     @picture = ["boy", "monk", "tanooki", "cult_leader",
                  "villager", "knight", "sorceror" ]
     @p = 0
+    @health = [5, 10, 20, 50]
+    @h = 1
     @image = Gosu::Image["players/#{@picture[@p]}.png"]
     @ready = false
   end
@@ -17,12 +19,6 @@ class CharWheel < Chingu::GameObject
   end
   def ready
     @ready = true
-  end
-  def go_up
-    @y -= @speed
-  end
-  def go_down
-    @y += @speed
   end
   def update
     if @ready == true
@@ -41,6 +37,8 @@ class CharWheel1 < CharWheel
     @picture = ["boy", "monk", "tanooki", "cult_leader",
                 "villager", "knight", "sorceror" ]
     @p = 0
+    @health = [5, 10, 20, 50]
+    @h = 1
     @image = Gosu::Image["players/#{@picture[@p]}.png"]
     @ready = false
   end
@@ -68,6 +66,31 @@ class CharWheel1 < CharWheel
       $image1 = "#{@picture[@p]}"
     end
   end
+
+  def go_up
+    if @ready == false
+      $click.play(0.5)
+      if @h < 3
+        @h += 1
+      else
+        @h = 0
+      end
+      $health1 = @health[@h]
+    end
+  end
+
+  def go_down
+    if @ready == false
+      $click.play(0.5)
+      if @h > 0
+        @h -= 1
+      else
+        @h = 3
+      end
+      $health1 = @health[@h]
+    end
+  end
+
   def enlargen
     if self.factor_y < 3.0
       self.factor_x *= 1.02
@@ -102,6 +125,28 @@ class CharWheel2 < CharWheel
       end
       @image = Gosu::Image["players/#{@picture[@p]}.png"]
       $image2 = "#{@picture[@p]}"
+    end
+  end
+  def go_up
+    if @ready == false
+      $click.play(0.5)
+      if @h < 3
+        @h += 1
+      else
+        @h = 0
+      end
+      $health2 = @health[@h]
+    end
+  end
+  def go_down
+    if @ready == false
+      $click.play(0.5)
+      if @h > 0
+        @h -= 1
+      else
+        @h = 3
+      end
+      $health2 = @health[@h]
     end
   end
   def enlargen
@@ -150,7 +195,7 @@ class Referee < Chingu::GameObject
 #    super
     @image = Gosu::Image["players/referee.png"]
 #    @picture2 = Gosu::Image["players/player_blink.png"]
-    @rand = 30
+    @rand = 60
     @speed = 5
     @growing = false
     @grow = 1
@@ -201,10 +246,10 @@ class Referee < Chingu::GameObject
       grow_counter
       self.factor_x *= @growth
     end
-    go_right if rand(@rand) == 5
-    go_down  if rand(@rand) == 5
-    go_left  if rand(@rand) == 5
-    go_up    if rand(@rand) == 5
+    go_right if rand(@rand) == 1
+    go_down  if rand(@rand) == 1
+    go_left  if rand(@rand) == 1
+    go_up    if rand(@rand) == 1
   end
 
   def draw
@@ -238,16 +283,16 @@ class Player1 < Chingu::GameObject
     @mouth = Mouth.new self
   end
   def go_left
-    @velocity_x = -@speed
+    @velocity_x -= @speed
   end
   def go_right
-    @velocity_x = @speed
+    @velocity_x += @speed
   end
   def go_up
-    @velocity_y = -@speed
+    @velocity_y -= @speed
   end
   def go_down
-    @velocity_y = @speed
+    @velocity_y += @speed
   end
   def cast_spell
 

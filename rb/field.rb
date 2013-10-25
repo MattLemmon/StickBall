@@ -38,8 +38,8 @@ class Field < Chingu::GameState
 
   def setup
     super
-    $health1 = 10
-    $health2 = 10
+    $stars1 = 0
+    $stars2 = 0
     $speed1 = 8
     $speed2 = 8
     $creep1 = false
@@ -52,6 +52,19 @@ class Field < Chingu::GameState
     $spell2 = "none"
     $score1 = 0
     $score2 = 0
+
+    @bump = 0
+    @bump_delay = 15
+    @bounce = 0
+    @bounce_delay = 6
+    @spell1_hit = false
+    @spell2_hit = false
+    @shake1 = 10
+    @shake2 = 5
+    @song_fade = false
+    @fade_count = 0
+    @chant = "Prepare for MultiBall"
+    @multiball = false
 
     game_objects.destroy_all
     Referee.destroy_all
@@ -94,19 +107,8 @@ class Field < Chingu::GameState
 
     @ground_y = ($window.height * 0.95).to_i
 
-    @bump = 0
-    @bump_delay = 15
-    @bounce = 0
-    @bounce_delay = 6
-    @spell1_hit = false
-    @spell2_hit = false
-    @shake1 = 10
-    @shake2 = 5
-    @song_fade = false
-    @fade_count = 0
-
-    @score1_text = Chingu::Text.create(:text=>"", :x=>440, :y=>10, :size=>46)
-    @score2_text = Chingu::Text.create(:text=>"", :x=>330, :y=>10, :size=>46)
+    @health1_text = Chingu::Text.create(:text=>"", :x=>760, :y=>50, :size=>46)
+    @health2_text = Chingu::Text.create(:text=>"", :x=>40, :y=>50, :size=>46)
 
     @gui1 = GUI1.create
     @gui2 = GUI2.create
@@ -116,15 +118,11 @@ class Field < Chingu::GameState
     $music2.volume = 0.4
     $music2.play 
     after(2400)  { @transition = false }
-    after(20000) { puts 20000 }
-    after(22500) { puts 22500 }
-
-    after(23000) { $music2.volume = 0.2; puts 23000 }
-    after(27500) { puts 27500 }
-    after(30000) { puts 30000 }
-
-#    after(6000) { $music1.stop }
-
+#    after(20000) { puts 20000 }
+#    after(22500) { puts 22500 }
+    after(23000) { $music2.volume = 0.2 }
+#    after(27500) { puts 27500 }
+#    after(30000) { puts 30000 }
   end
 
   def right_attack
@@ -139,17 +137,36 @@ class Field < Chingu::GameState
 #    if $spell2 == "mist"; @player1.mist; end
   end
 
-  def fire;  FireCube.create(:x => rand($window.width), :y => rand($window.height), :zorder => Zorder::Projectile);  end
+  def chant
+
+    if @multiball == false
+      @multiball = true
+      @chant_text = Chingu::Text.create("#{@chant}", :y => 520, :size => 50, :color => Colors::White, :zorder => Zorder::GUI)
+      @chant_text.x = 400 - @chant_text.width/2
+      after(400) { @chant_text.text = "" }
+      after(800) { @chant_text.text = "#{@chant}" }
+      after(1200) { @chant_text.text = "" }
+      after(1600) { @chant_text.text = "#{@chant}" }
+      after(2000) { @chant_text.text = "" }
+      after(2400) { @chant_text.text = "#{@chant}" }
+      after(2800) { @chant_text.text = "" }
+      after(3200) { @chant_text.text = "#{@chant}" }
+      after(3600) { @chant_text.text = ""; start_multiball }
+    end
+  end
+
+  def start_multiball
+    @puck2 = FireCube.create(:x => rand($window.width), :y => rand($window.height), :zorder => Zorder::Projectile)
+    @puck3 = FireCube.create(:x => rand($window.width), :y => rand($window.height), :zorder => Zorder::Projectile)
+    after(10000) { @puck2.destroy; @puck3.destroy; @multiball = false }
+  end
+
+#  def fire;  FireCube.create(:x => rand($window.width), :y => rand($window.height), :zorder => Zorder::Projectile);  end
+  def fire;  chant;  end
   def toggle_left;  end
   def toggle_right;  end
   def toggle_up;  end
   def toggle_down;  end
-
-  def blink_flare
-    after(30)  { @puck_flare.brightness += 0.6; @puck_flare.strength += 0.3;  }
-    after(90)  { @puck_flare.brightness -= 0.3; @puck_flare.strength -= 0.15;  }
-    after(100) { @puck_flare.brightness -= 0.3; @puck_flare.strength -= 0.15;  }
-  end
 
   def screen_shake1
     blink_flare
@@ -224,6 +241,12 @@ class Field < Chingu::GameState
     end
   end
 
+  def blink_flare
+    after(30)  { @puck_flare.brightness += 0.6; @puck_flare.strength += 0.3;  }
+    after(90)  { @puck_flare.brightness -= 0.3; @puck_flare.strength -= 0.15;  }
+    after(100) { @puck_flare.brightness -= 0.3; @puck_flare.strength -= 0.15;  }
+  end
+
   def add_star options
     star = Star.create options
     flare = @lense_flares.create star.x, star.y, Zorder::LenseFlare
@@ -282,14 +305,19 @@ class Field < Chingu::GameState
       if spell.y > @player2.y
         spell.velocity_y = -20.0
       end
+      if spell.y == @player2.y
+        spell.velocity_y = 0
+      end
       if spell.x < @player2.x
         spell.velocity_x = 30.0
       end
       if spell.x > @player2.x
         spell.velocity_x = -30.0
       end
+      if spell.x == @player2.x
+        spell.velocity_x = 0
+      end
     end
-
     Spell2.each do |spell|                   # SPELL 2 MOVEMENT
       if spell.y < @player1.y
         spell.velocity_y = 20.0
@@ -297,11 +325,17 @@ class Field < Chingu::GameState
       if spell.y > @player1.y
         spell.velocity_y = -20.0
       end
+      if spell.y == @player1.y
+        spell.velocity_y = 0
+      end
       if spell.x < @player1.x
         spell.velocity_x = 30.0
       end
       if spell.x > @player1.x
         spell.velocity_x = -30.0
+      end
+      if spell.x == @player1.x
+        spell.velocity_x = 0
       end
     end
 
@@ -340,9 +374,8 @@ class Field < Chingu::GameState
 
     Player1.each_collision(Star) do |player, star|    # PICKUP STARS
       remove_star star
-
       $stars1 += 1             # add star in star meter (gui.rb)
-      if $stars1 != 3            # not 3 stars yet?
+      if $stars1 != 5            # not 3 stars yet?
         $star_grab.play(0.4)     # play normal power-up sound
       else                     # 3 stars?
         $power_up.play(0.3)      # play mighty power-up sound
@@ -353,9 +386,8 @@ class Field < Chingu::GameState
     end
     Player2.each_collision(Star) do |player, star|    # PICKUP STARS
       remove_star star
-
       $stars2 += 1             # add star in star meter (gui.rb)
-      if $stars2 != 3            # not 3 stars yet?
+      if $stars2 != 5            # not 3 stars yet?
         $star_grab.play(0.4)     # play normal power-up sound
       else                     # 3 stars?
         $power_up.play(0.3)      # play mighty power-up sound
@@ -499,7 +531,7 @@ class Field < Chingu::GameState
       end
     end
 
-    FireCube.each do |particle|             # SCORING AND WALL-BOUNCING
+    FireCube.each do |particle|             # SCORING AND WALL-BOUNCING  SCORING  SCORING
       if @bounce == 0
         if particle.x < 0
           particle.x = 0
@@ -572,8 +604,11 @@ class Field < Chingu::GameState
       @bounce -= 1
     end
 
-    @score1_text.text = "#{$score1}"
-    @score2_text.text = "#{$score2}"
+#    @score1_text.text = "#{$score1}"
+#    @score2_text.text = "#{$score2}"
+    @health1_text.text = $health1.to_s
+    @health2_text.text = $health2.to_s
+
     $window.caption = "Stick Ball!     Go team go!                                             Objects: #{game_objects.size}, FPS: #{$window.fps}"
 
     if @song_fade == true # fade song if @song_fade is true

@@ -22,6 +22,7 @@ class FireCube < Chingu::GameObject
     
     # initialize with a rightwards velocity with some damping to look more realistic
     self.velocity_x = 10
+    if rand(2) == 1; self.velocity_x = -10; end
     self.velocity_y = 4
     self.factor = 2.5
     cache_bounding_circle # This does a lot for performance
@@ -155,6 +156,10 @@ class Star < Chingu::GameObject
     @image = @animation.next
     self.velocity_x *= 0.95
     self.velocity_y *= 0.95
+    if @x < -$scr_edge; @x = $max_x; end  # wrap beyond screen edge
+    if @y < -$scr_edge; @y = $max_y; end
+    if @x > $max_x; @x = -$scr_edge; end
+    if @y > $max_y; @y = -$scr_edge; end
   end
 end
 
@@ -191,6 +196,10 @@ class Heart < Chingu::GameObject
     self.factor -= @factorizer
     self.velocity_x *= 0.91
     self.velocity_y *= 0.91
+    if @x < -$scr_edge; @x = $max_x; end  # wrap beyond screen edge
+    if @y < -$scr_edge; @y = $max_y; end
+    if @x > $max_x; @x = -$scr_edge; end
+    if @y > $max_y; @y = -$scr_edge; end
   end
 end
 
@@ -225,6 +234,10 @@ class Stun < Chingu::GameObject
     self.factor -= @factorizer
     self.velocity_x *= 0.93
     self.velocity_y *= 0.93
+    if @x < -$scr_edge; @x = $max_x; end  # wrap beyond screen edge
+    if @y < -$scr_edge; @y = $max_y; end
+    if @x > $max_x; @x = -$scr_edge; end
+    if @y > $max_y; @y = -$scr_edge; end
   end
 end
 
@@ -259,6 +272,10 @@ class Mist < Chingu::GameObject
     self.factor -= @factorizer
     self.velocity_x *= 0.94
     self.velocity_y *= 0.94
+    if @x < -$scr_edge; @x = $max_x; end  # wrap beyond screen edge
+    if @y < -$scr_edge; @y = $max_y; end
+    if @x > $max_x; @x = -$scr_edge; end
+    if @y > $max_y; @y = -$scr_edge; end
   end
 end
 
@@ -323,8 +340,6 @@ class Spell2 < Chingu::GameObject
     if self.x > 1100
       self.destroy
     end 
-
-
   end
 end
 
