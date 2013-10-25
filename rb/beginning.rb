@@ -97,7 +97,7 @@ class Intro < Chingu::GameState
     end
     if @song_fade == true # fade song if @song_fade is true
       @fade_count += 1
-      if @fade_count == 6
+      if @fade_count == 7
         @fade_count = 0
         $music1.volume -= 0.1
       end

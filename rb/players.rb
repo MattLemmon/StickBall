@@ -10,7 +10,6 @@ class CharWheel < Chingu::GameObject
                  "villager", "knight", "sorceror" ]
     @p = 0
     @image = Gosu::Image["players/#{@picture[@p]}.png"]
-    @click = Sound["media/audio/keypress.ogg"]
     @ready = false
   end
   def p
@@ -43,12 +42,11 @@ class CharWheel1 < CharWheel
                 "villager", "knight", "sorceror" ]
     @p = 0
     @image = Gosu::Image["players/#{@picture[@p]}.png"]
-    @click = Sound["media/audio/keypress.ogg"]
     @ready = false
   end
   def go_left
     if @ready == false
-      @click.play
+      $click.play(0.6)
       if @p > 0
         @p -= 1
       else
@@ -60,7 +58,7 @@ class CharWheel1 < CharWheel
   end
   def go_right
     if @ready == false
-      @click.play
+      $click.play(0.6)
       if @p < 6
         @p += 1
       else
@@ -84,7 +82,7 @@ end
 class CharWheel2 < CharWheel
   def go_left
     if @ready == false
-      @click.play
+      $click.play(0.6)
       if @p > 0
         @p -= 1
       else
@@ -96,7 +94,7 @@ class CharWheel2 < CharWheel
   end
   def go_right
     if @ready == false
-      @click.play
+      $click.play(0.6)
       if @p < 6
         @p += 1
       else

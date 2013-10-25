@@ -113,9 +113,16 @@ class Field < Chingu::GameState
 
 #    1.times { fire }
 
-    $music2.volume = 0.5
+    $music2.volume = 0.4
     $music2.play 
     after(2400)  { @transition = false }
+    after(20000) { puts 20000 }
+    after(22500) { puts 22500 }
+
+    after(23000) { $music2.volume = 0.2; puts 23000 }
+    after(27500) { puts 27500 }
+    after(30000) { puts 30000 }
+
 #    after(6000) { $music1.stop }
 
   end
@@ -335,11 +342,11 @@ class Field < Chingu::GameState
       remove_star star
 
       $stars1 += 1             # add star in star meter (gui.rb)
-      if $stars1 != 3          # not 3 stars yet?
-        $star_grab.play(0.6)   # play normal power-up sound
+      if $stars1 != 3            # not 3 stars yet?
+        $star_grab.play(0.4)     # play normal power-up sound
       else                     # 3 stars?
-        $power_up.play(0.6)    # play mighty power-up sound
-        $stars1 = 0            # reset star meter
+        $power_up.play(0.3)      # play mighty power-up sound
+        $stars1 = 0              # reset star meter
         $power_ups1 += 1
         player1_power_up       # Power Up!
       end
@@ -348,11 +355,11 @@ class Field < Chingu::GameState
       remove_star star
 
       $stars2 += 1             # add star in star meter (gui.rb)
-      if $stars2 != 3          # not 3 stars yet?
-        $star_grab.play(0.6)   # play normal power-up sound
+      if $stars2 != 3            # not 3 stars yet?
+        $star_grab.play(0.4)     # play normal power-up sound
       else                     # 3 stars?
-        $power_up.play(0.6)    # play mighty power-up sound
-        $stars2 = 0            # reset star meter
+        $power_up.play(0.3)      # play mighty power-up sound
+        $stars2 = 0              # reset star meter
         $power_ups2 += 1
         player2_power_up       # Power Up!
       end
@@ -361,34 +368,34 @@ class Field < Chingu::GameState
    Player1.each_collision(Heart) do |player, heart|    # PICKUP HEARTS
       heart.destroy
       $health1 += 1
-      $power_up.play(0.6)
+      $power_up.play(0.3)
     end
     Player2.each_collision(Heart) do |player, heart|    # PICKUP HEARTS
       heart.destroy
       $health2 += 1
-      $power_up.play(0.6)
+      $power_up.play(0.3)
     end
 
    Player1.each_collision(Stun) do |player, stun|    # PICKUP STUNS
       stun.destroy
       $spell1 = "stun"
-      $power_up.play(0.6)
+      $power_up.play(0.3)
     end
     Player2.each_collision(Stun) do |player, stun|    # PICKUP STUNS
       stun.destroy
       $spell2 = "stun"
-      $power_up.play(0.6)
+      $power_up.play(0.3)
     end
 
    Player1.each_collision(Mist) do |player, mist|    # PICKUP MISTS
       mist.destroy
       $spell1 = "mist"
-      $power_up.play(0.6)
+      $power_up.play(0.3)
     end
     Player2.each_collision(Mist) do |player, mist|    # PICKUP MISTS
       mist.destroy
       $spell2 = "mist"
-      $power_up.play(0.6)
+      $power_up.play(0.3)
     end
 
 
