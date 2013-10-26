@@ -1,6 +1,7 @@
 DEBUG = false  # Set to true to see bounding circles used for collision detection
 
-require_relative 'player/mouth'
+require_relative 'face/mouth'
+require_relative 'face/eyes'
 
 
 class CharWheel < Chingu::GameObject
@@ -156,7 +157,7 @@ class CharWheel2 < CharWheel
   end
 end
 
-
+=begin
 #
 #  EYES
 #
@@ -182,6 +183,7 @@ class Eyes
     @eye_ball.draw_rot @x+7+Gosu.offset_x(@eye_angle, 3), @y-2+Gosu.offset_y(@eye_angle, 2), Zorder::Eyes, 0, 0.5, 1.0
   end
 end
+=end
 
 #
 #  REFEREE
@@ -240,8 +242,11 @@ class Referee < Chingu::GameObject
     @y += @speed
   end
 
-  def update
+  def update_face
     @eyes.update
+  end
+
+  def update
     if @growing == true
       grow_counter
       self.factor_x *= @growth
@@ -250,6 +255,7 @@ class Referee < Chingu::GameObject
     go_down  if rand(@rand) == 1
     go_left  if rand(@rand) == 1
     go_up    if rand(@rand) == 1
+    update_face
   end
 
   def draw
@@ -304,10 +310,7 @@ class Player1 < Chingu::GameObject
 #    if $spell1 == "mist"
 #      @player2.mist
 #    end
-
   end
-
-
   def creep
     @creeping = true
   end
@@ -325,6 +328,11 @@ class Player1 < Chingu::GameObject
     after(3000) {@mist = false}
   end
 
+  def update_face
+    @eyes.update
+    @mouth.update
+  end
+
   def update
     if @stun == true
       @speed = 0
@@ -336,8 +344,7 @@ class Player1 < Chingu::GameObject
     @creeping = false
     @velocity_x *= 0.25
     @velocity_y *= 0.25
-    @eyes.update
-    @mouth.update
+    update_face
     if @x < -$scr_edge; @x = $max_x; end  # wrap beyond screen edge
     if @y < -$scr_edge; @y = $max_y; end
     if @x > $max_x; @x = -$scr_edge; end
@@ -412,6 +419,11 @@ class Player2 < Chingu::GameObject
     after(3000) {@mist = false}
   end
 
+  def update_face
+    @eyes.update
+    @mouth.update
+  end
+
   def update
     if @stun == true
       @speed = 0
@@ -423,8 +435,7 @@ class Player2 < Chingu::GameObject
     @creeping = false
     @velocity_x *= 0.25
     @velocity_y *= 0.25
-    @eyes.update
-    @mouth.update
+    update_face
     if @x < -$scr_edge; @x = $max_x; end  # wrap beyond screen edge
     if @y < -$scr_edge; @y = $max_y; end
     if @x > $max_x; @x = -$scr_edge; end

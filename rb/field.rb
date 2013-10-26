@@ -198,15 +198,19 @@ class Field < Chingu::GameState
   def move_referee
     if @referee.y > @puck.y && rand(7) == 1
       @referee.go_up
+      @referee.update_face
     end
     if @referee.y < @puck.y && rand(7) == 1
       @referee.go_down
+      @referee.update_face
     end
     if @referee.x > @puck.x && rand(7) == 1
       @referee.go_left
+      @referee.update_face
     end
     if @referee.x < @puck.x && rand(7) == 1
       @referee.go_right
+      @referee.update_face
     end
   end
 
@@ -545,6 +549,9 @@ class Field < Chingu::GameState
           end
           particle.die!
           screen_shake1
+          @referee.update_face
+          @player1.update_face
+          @player2.update_face
           @bounce = @bounce_delay
         end
         if particle.x > $window.width
@@ -558,9 +565,11 @@ class Field < Chingu::GameState
             $winner = "left player"
             push_game_state(GameOver)
           end
-
           particle.die!
           screen_shake2
+          @referee.update_face
+          @player1.update_face
+          @player2.update_face
           @bounce = @bounce_delay
         end
         if particle.y < 0
