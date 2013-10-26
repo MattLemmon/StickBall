@@ -323,8 +323,8 @@ class Player1 < Chingu::GameObject
     @velocity_y += @speed
   end
   def cast_spell
-
     if $spell1 != "none"
+      $spell_cast.play(0.9)
       puts "cast #{$spell1}"
       3.times { Spell1.create(:x=>@x, :y=>@y ) }
       $spell1 = "none"
@@ -341,12 +341,15 @@ class Player1 < Chingu::GameObject
 #    if $spell2 == "stun"
       Zapper.create(:x=>@x,:y=>@y)
       @stun = true
+      $stunned.play(0.3)
+      after(100) {$zapped.play(0.3)}
       after(2000) {@stun = false}
 #    end
   end
   def mist
 #    Zapper.create(:x=>@x,:y=>@y)
     @mist = true
+    $misted.play(0.7)
     after(3000) {@mist = false}
   end
 
@@ -419,6 +422,7 @@ class Player2 < Chingu::GameObject
   end
   def cast_spell
     if $spell2 != "none"
+      $spell_cast.play(0.9)
       puts "cast #{$spell2}"
       3.times { Spell2.create(:x=>@x, :y=>@y) }
     $spell2 = "none"
@@ -428,16 +432,15 @@ class Player2 < Chingu::GameObject
     @creeping = true
   end
   def stun
-#    if $spell1 == "stun"
-#      puts "stun"
-      Zapper.create(:x=>@x,:y=>@y)
-      @stun = true
-      after(2000) {@stun = false}
-#    end
+    Zapper.create(:x=>@x,:y=>@y)
+    @stun = true
+    $stunned.play(0.3)
+    after(100) {$zapped.play(0.3)}
+    after(2000) {@stun = false}
   end
   def mist
-#    Zapper.create(:x=>@x,:y=>@y)
     @mist = true
+    $misted.play(0.7)
     after(3000) {@mist = false}
   end
 

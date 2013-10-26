@@ -348,7 +348,7 @@ class Field < Chingu::GameState
       end
     end
 
-    Player1.each_collision(Spell2) do |player, spell|    # HIT PLAYER 1 WITH SPELL2S
+    Player1.each_collision(Spell2) do |player, spell|    # HIT PLAYER 1 WITH SPELL2
       if @spell2_hit == false
         @spell2_hit = true
         if spell.spell_type == "stun"
@@ -364,7 +364,7 @@ class Field < Chingu::GameState
       end
       break   #   Explosion.create(:x => spell.x, :y => spell.y)
     end
-    Player2.each_collision(Spell1) do |player, spell|    # HIT PLAYER 2 WITH SPELL1S
+    Player2.each_collision(Spell1) do |player, spell|    # HIT PLAYER 2 WITH SPELL1
      if @spell1_hit == false
         @spell1_hit = true
         if spell.spell_type == "stun"
