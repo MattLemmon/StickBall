@@ -78,7 +78,11 @@ class GameWindow < Chingu::Window
     $image1 = "boy"
     $image2 = "boy"
     $chime = Sound["media/audio/pickup_chime.ogg"]
+    $chime_right = Sound["media/audio/chime_right.ogg"]
+    $chime_left = Sound["media/audio/chime_left.ogg"]
     $click = Sound["media/audio/keypress.ogg"]
+    $click_right = Sound["media/audio/click_right.ogg"]
+    $click_left = Sound["media/audio/click_left.ogg"]
     $star_grab = Sound["media/audio/star_pickup.ogg"]
     $power_up = Sound["media/audio/power_up.ogg"]
     $bang = Sound["media/audio/bang.ogg"]

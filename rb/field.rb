@@ -125,6 +125,7 @@ class Field < Chingu::GameState
     @parallax.add_layer(:image => "backgrounds/space2.png", :damping => 30)
     @parallax.add_layer(:image => "backgrounds/space3.png", :damping => 20)
 
+#    @test_plax = Plax1.create
 
     after(2400)  { @transition = false }
 #    after(22500) { puts 22500 }

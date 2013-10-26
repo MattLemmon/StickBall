@@ -45,7 +45,7 @@ class CharWheel1 < CharWheel
   end
   def go_left
     if @ready == false
-      $click.play(0.6)
+      $click_right.play(0.7)
       if @p > 0
         @p -= 1
       else
@@ -57,7 +57,7 @@ class CharWheel1 < CharWheel
   end
   def go_right
     if @ready == false
-      $click.play(0.6)
+      $click_right.play(0.7)
       if @p < 6
         @p += 1
       else
@@ -70,7 +70,7 @@ class CharWheel1 < CharWheel
 
   def go_up
     if @ready == false
-      $click.play(0.5)
+      $click_right.play(0.7)
       if @h < 3
         @h += 1
       else
@@ -82,7 +82,7 @@ class CharWheel1 < CharWheel
 
   def go_down
     if @ready == false
-      $click.play(0.5)
+      $click_right.play(0.7)
       if @h > 0
         @h -= 1
       else
@@ -106,7 +106,7 @@ end
 class CharWheel2 < CharWheel
   def go_left
     if @ready == false
-      $click.play(0.6)
+      $click_left.play(0.7)
       if @p > 0
         @p -= 1
       else
@@ -118,7 +118,7 @@ class CharWheel2 < CharWheel
   end
   def go_right
     if @ready == false
-      $click.play(0.6)
+      $click_left.play(0.7)
       if @p < 6
         @p += 1
       else
@@ -130,7 +130,7 @@ class CharWheel2 < CharWheel
   end
   def go_up
     if @ready == false
-      $click.play(0.5)
+      $click_left.play(0.7)
       if @h < 3
         @h += 1
       else
@@ -141,7 +141,7 @@ class CharWheel2 < CharWheel
   end
   def go_down
     if @ready == false
-      $click.play(0.5)
+      $click_left.play(0.7)
       if @h > 0
         @h -= 1
       else

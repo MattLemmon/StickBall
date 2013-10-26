@@ -90,7 +90,7 @@ class Intro < Chingu::GameState
   def ready1
     @ready1 = true
     puts "ready"
-    $chime.play
+    $chime_right.play
     after(800) { if @text1_5 != nil; @text1_5.destroy; end }
     after(1600) { if @text1 != nil; @text1.destroy; end }
   end
@@ -98,7 +98,7 @@ class Intro < Chingu::GameState
   def ready2
     @ready2 = true
     puts "ready"
-    $chime.play
+    $chime_left.play
     after(800) { if @text2_5 != nil; @text2_5.destroy; end }
     after(1600) { if @text2 != nil; @text2.destroy; end }
   end

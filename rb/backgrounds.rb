@@ -1,4 +1,28 @@
 #
+# PLAX 1
+#
+class Plax1 < Chingu::GameObject
+  def setup
+    @image = Image["backgrounds/space1.png"]
+    @x = 0
+  end
+  def draw
+    @image.draw(@x, 0, 10)
+    @image.draw(@x + 480, 0, 10)
+  end
+  def update
+    @x -= 10
+  end
+
+end
+
+
+
+
+
+
+
+#
 # BACKGROUND 3
 #
 class Background3 < Chingu::GameObject
