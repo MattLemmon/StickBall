@@ -1,3 +1,73 @@
+#
+# BACKGROUND 1
+#
+class Background1 < Chingu::GameObject
+  
+  def setup
+    @parallax1 = Image["backgrounds/space1.png"]
+    @parallax2 = Image["backgrounds/space2.png"]
+    @parallax3 = Image["backgrounds/space3.png"]
+    @parallax4 = Image["backgrounds/space1.png"]
+    @parallax5 = Image["backgrounds/space2.png"]
+    @parallax6 = Image["backgrounds/space3.png"]
+
+#    @parallax1.x = 0
+#    @parallax1.y = 0
+#    @parallax2.x = 0
+#    @parallax2.y = 0
+#    @parallax3.x = 0
+#    @parallax3.y = 0
+#    @parallax4.x = 0
+    @parallax4.y = -800
+    @parallax5.y = -800
+    @parallax6.y = -800
+
+
+
+#    @parallax = Chingu::Parallax.create(:x => 0, :y => 0, :rotation_center => :top_left, :zorder => Zorder::Background)
+#    @parallax.add_layer(:image => "backgrounds/space1.png", :damping => 16)
+#    @parallax.add_layer(:image => "backgrounds/space2.png", :damping => 12)
+#    @parallax.add_layer(:image => "backgrounds/space3.png", :damping => 8)
+#    @parallax2 = Chingu::Parallax.create(:x => 0, :y => -800, :rotation_center => :top_left, :zorder => Zorder::Background)
+#    @parallax2.add_layer(:image => "backgrounds/space1.png", :damping => 16)
+#    @parallax2.add_layer(:image => "backgrounds/space2.png", :damping => 12)
+#    @parallax2.add_layer(:image => "backgrounds/space3.png", :damping => 8)
+  end
+
+
+  def left
+    @parallax1.x += 2
+    @parallax2.x += 2
+    @parallax3.x += 2
+    @parallax4.x += 2
+
+  end
+
+  def right
+#    @parallax.x += 2     # This is essentially the same as @parallax.x -= 2
+#    @parallax2.x += 3
+  end  
+  def camera_up
+#    @parallax.camera_y -= 1     # This is essentially the same as @parallax.y += 2
+#    @parallax2.camera_y -= 5
+  end
+  def camera_down
+#    @parallax.camera_y += 1    # This is essentially the same as @parallax.y -= 2
+#    @parallax2.camera_y += 5
+  end
+
+  def update
+    camera_right
+    camera_up
+  end
+end
+
+
+
+
+
+
+
 
   def draw
     $window.post_process @mist do

@@ -40,8 +40,10 @@ class Field < Chingu::GameState
     super
     $stars1 = 0
     $stars2 = 0
-    $speed1 = 8
-    $speed2 = 8
+    $speed1 = 6
+    $speed2 = 6
+    $power_ups1 = 0
+    $power_ups2 = 0
     $creep1 = false
     $creep2 = false
     $chest_bump1 = false
@@ -74,8 +76,8 @@ class Field < Chingu::GameState
     EyesLeft.destroy_all
     EyesRight.destroy_all
 
-    if @score1_text != nil; @score1_text.destroy; end # if it exists, destroy it
-    if @score2_text != nil; @score2_text.destroy; end # if it exists, destroy it
+    if @health1_text != nil; @health1_text.destroy; end # if it exists, destroy it
+    if @health2_text != nil; @health2_text.destroy; end # if it exists, destroy it
 
     FireCube.destroy_all
     Star.destroy_all
@@ -90,12 +92,10 @@ class Field < Chingu::GameState
 
     @player1 = Player1.create(:x => 740, :y => 300, :zorder => Zorder::Main_Character)#(:x => $player_x, :y => $player_y, :angle => $player_angle, :zorder => Zorder::Main_Character)
     @player1.input = {:holding_right_ctrl=>:creep,:holding_left=>:go_left,:holding_right=>:go_right,:holding_up=>:go_up,:holding_down=>:go_down}
-
 #    @eyes1 = EyesLeft.create(:zorder => Zorder::Eyes)
 
     @player2 = Player2.create(:x => 60, :y => 300, :zorder => Zorder::Main_Character)#(:x => $player_x, :y => $player_y, :angle => $player_angle, :zorder => Zorder::Main_Character)
     @player2.input = {:holding_left_ctrl=>:creep,:holding_a=>:go_left,:holding_d=>:go_right,:holding_w=>:go_up,:holding_s=>:go_down}
-
 #    @eyes2 = EyesRight.create(:zorder => Zorder::Eyes)
 
 #    @player3 = Player2.create(:x => 60, :y => 300, :zorder => Zorder::Main_Character)#(:x => $player_x, :y => $player_y, :angle => $player_angle, :zorder => Zorder::Main_Character)
@@ -119,7 +119,12 @@ class Field < Chingu::GameState
     $music2.volume = 0.4
     $music2.play 
 
-    Background1.create
+#    Background1.create
+    @parallax = Chingu::Parallax.create(:x => 0, :y => 0, :rotation_center => :top_left, :zorder => Zorder::Background)
+    @parallax.add_layer(:image => "backgrounds/space1.png", :damping => 40)
+    @parallax.add_layer(:image => "backgrounds/space2.png", :damping => 30)
+    @parallax.add_layer(:image => "backgrounds/space3.png", :damping => 20)
+
 
     after(2400)  { @transition = false }
 #    after(22500) { puts 22500 }
@@ -158,7 +163,7 @@ class Field < Chingu::GameState
   def start_multiball
     @puck2 = FireCube.create(:x => rand($window.width), :y => rand($window.height), :zorder => Zorder::Projectile)
     @puck3 = FireCube.create(:x => rand($window.width), :y => rand($window.height), :zorder => Zorder::Projectile)
-    after(10000) { @puck2.destroy; @puck3.destroy; @multiball = false }
+    after(15000) { @puck2.destroy; @puck3.destroy; @multiball = false }
   end
 
 #  def fire;  FireCube.create(:x => rand($window.width), :y => rand($window.height), :zorder => Zorder::Projectile);  end
@@ -216,7 +221,7 @@ class Field < Chingu::GameState
 
   def player1_power_up
     if $power_ups1 == 1
-      $speed1 = 12
+      $speed1 = 10
     end
     if $power_ups1 == 2
       $creep1 = true
@@ -231,7 +236,7 @@ class Field < Chingu::GameState
 
   def player2_power_up
     if $power_ups2 == 1
-      $speed2 = 12
+      $speed2 = 10
     end
     if $power_ups2 == 2
       $creep2 = true
@@ -605,12 +610,13 @@ class Field < Chingu::GameState
 
 
   def update
-    if @transition == false
-      @puck_flare.x = @puck.x
-      @puck_flare.y = @puck.y
-      @puck_flare.color = @puck.color
-      @lense_flares.update
-    end
+    @parallax.camera_x = @puck.x
+    @parallax.camera_y = @puck.y
+
+    @puck_flare.x = @puck.x
+    @puck_flare.y = @puck.y
+    @puck_flare.color = @puck.color
+    @lense_flares.update
     @mist.time = Gosu.milliseconds/1000.0
     super
 

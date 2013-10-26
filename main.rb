@@ -75,8 +75,6 @@ class GameWindow < Chingu::Window
     $scr_edge = 15
     $cooling_down = 70
     $score = 0
-    $power_ups1 = 0
-    $power_ups2 = 0
     $image1 = "boy"
     $image2 = "boy"
     $chime = Sound["media/audio/pickup_chime.ogg"]

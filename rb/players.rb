@@ -257,12 +257,34 @@ class Referee < Chingu::GameObject
     go_up    if rand(@rand) == 1
     update_face
   end
-
   def draw
     super
     @eyes.draw
   end
 end
+
+=begin
+    if rand(@rand) == 1
+      go_right
+      update_face
+    end
+    if rand(@rand) == 1
+      go_down  
+      update_face
+    end
+    if rand(@rand) == 1
+      go_left  
+      update_face
+    end
+    if rand(@rand) == 1
+      go_up    
+      update_face
+    end
+=end
+#    go_right and update_face if rand(@rand) == 1
+#    go_down  and update_face if rand(@rand) == 1
+#    go_left  and update_face if rand(@rand) == 1
+#    go_up    and update_face if rand(@rand) == 1
 
 
 #

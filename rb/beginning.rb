@@ -196,7 +196,7 @@ class PreIntro < Chingu::GameState
     @fade_count = 0
 
     after(200) {
-      @text1 = Chingu::Text.create("StickBall", :y => 60, :font => "GeosansLight", :size => 45, :color => Colors::White, :zorder => Zorder::GUI)
+      @text1 = Chingu::Text.create("StickBall", :y => 60, :size => 45, :color => Colors::White, :zorder => Zorder::GUI)
       @text1.x = 800/2 - @text1.width/2 # center text
     }
     after(400) {

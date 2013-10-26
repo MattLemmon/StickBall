@@ -18,8 +18,6 @@ class GUI1 < Chingu::GameObject
     @spell_text.x = 600 - @spell_text.width/2
 
     @hearts = $health1 - 1
-#    @hearts = $health1.to_i
-#    puts @hearts
   end
 
   def update
