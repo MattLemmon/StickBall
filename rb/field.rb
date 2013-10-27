@@ -100,17 +100,21 @@ class Field < Chingu::GameState
       @player2.input = {:holding_left_ctrl=>:creep,:holding_a=>:go_left,:holding_d=>:go_right,:holding_w=>:go_up,:holding_s=>:go_down}
     end
 
+    @health1_text = Chingu::Text.create(:text=>"#{$health1}", :y=>16, :size=>34)
+    @health1_text.x = 765 - @health1_text.width/2
+
+    @health2_text = Chingu::Text.create(:text=>"#{$health2}", :y=>16, :size=>34)
+    @health2_text.x = 36 - @health2_text.width/2
+
+
+    @gui1 = GUI1.create
+    @gui2 = GUI2.create
+
     @puck = FireCube.create(:x => rand(550), :y => rand(600), :zorder => Zorder::Projectile)
     @puck_flare = @lense_flares.create @puck.x, @puck.y, Zorder::LenseFlare
     @puck_flare.brightness = 0.25
     @puck_flare.strength = 0.3
     @puck_flare.scale = 1.0
-
-    @health1_text = Chingu::Text.create(:text=>"", :x=>760, :y=>50, :size=>46)
-    @health2_text = Chingu::Text.create(:text=>"", :x=>40, :y=>50, :size=>46)
-
-    @gui1 = GUI1.create
-    @gui2 = GUI2.create
 
 #    1.times { fire }
 
@@ -412,6 +416,7 @@ class Field < Chingu::GameState
         $stars1 = 0              # reset star meter
         $power_ups1 += 1
         player1_power_up       # Power Up!
+        @gui1.power_up
       end
     end
     Player2.each_collision(Star) do |player, star|    # PICKUP STARS
@@ -424,17 +429,22 @@ class Field < Chingu::GameState
         $stars2 = 0              # reset star meter
         $power_ups2 += 1
         player2_power_up       # Power Up!
+        @gui2.power_up
       end
     end
 
    Player1.each_collision(Heart) do |player, heart|    # PICKUP HEARTS
       heart.destroy
       $health1 += 1
+      @health1_text.text = "#{$health1}"
+      @health1_text.x = 765 - @health1_text.width/2
       $power_up.play(0.3)
     end
     Player2.each_collision(Heart) do |player, heart|    # PICKUP HEARTS
       heart.destroy
       $health2 += 1
+      @health2_text.text = "#{$health2}"
+      @health2_text.x = 36 - @health2_text.width/2
       $power_up.play(0.3)
     end
 
@@ -569,6 +579,8 @@ class Field < Chingu::GameState
           $bang2.play(0.4)
           if $health2 > 1
             $health2 -=1
+            @health2_text.text = "#{$health2}"
+            @health2_text.x = 38 - @health2_text.width/2
           else
             $score1 += 1
             $winner = "right player"
@@ -588,6 +600,8 @@ class Field < Chingu::GameState
           $bang1.play(0.5)
           if $health1 > 1
             $health1 -=1
+            @health1_text.text = "#{$health1}"
+            @health1_text.x = 765 - @health1_text.width/2
           else
             $score2 += 1
             $winner = "left player"
@@ -656,8 +670,8 @@ class Field < Chingu::GameState
 
 #    @score1_text.text = "#{$score1}"
 #    @score2_text.text = "#{$score2}"
-    @health1_text.text = $health1.to_s
-    @health2_text.text = $health2.to_s
+#    @health1_text.text = "#{$health1}"
+#    @health2_text.text = "#{$health2}"
 
     $window.caption = "Stick Ball!     Go team go!                                             Objects: #{game_objects.size}, FPS: #{$window.fps}"
 

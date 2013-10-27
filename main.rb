@@ -87,6 +87,8 @@ class GameWindow < Chingu::Window
     $click_left = Sound["media/audio/click_left.ogg"]
     $star_grab = Sound["media/audio/star_pickup.ogg"]
     $power_up = Sound["media/audio/power_up.ogg"]
+    $power_up = Sound["media/audio/power_up.ogg"]
+#    $one_up = Sound["media/audio/1up.ogg"]
     $zapped = Sound["media/audio/magical_zap_by_qubodup.ogg"]
     $stunned = Sound["media/audio/stunned.ogg"]
     $misted = Sound["media/audio/misted.ogg"]
