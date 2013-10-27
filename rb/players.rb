@@ -3,6 +3,42 @@ DEBUG = false  # Set to true to see bounding circles used for collision detectio
 require_relative 'face/mouth'
 require_relative 'face/eyes'
 
+class ModeSelect < Chingu::GameObject
+  def setup
+    @mode = ["Campaign", "Versus"]
+    @m = 0
+    @opponent = ["Computer", "A S D W"]
+    @ready = false
+
+    @text = Chingu::Text.create(@mode[@m], :y => 420, :size => 45, :color => Colors::White, :zorder => Zorder::GUI)
+    @text.x = 400 - @text.width/2 # center text
+    @t2 = Chingu::Text.create(@opponent[@m], :y => 360, :font => "GeosansBold", :size => 45, :color => Colors::White, :zorder => Zorder::GUI)
+    @t2.x = 200 - @t2.width/2 # center text
+#    @t4 = Chingu::Text.create("A S D W", :y => 360, :font => "GeosansBold", :size => 45, :color => Colors::White, :zorder => Zorder::GUI)
+#    @t4.x = 200 - @t4.width/2 # center text
+
+  end
+
+  def mode_select
+    if @ready == false
+      $click.play(0.6)
+      if @m == 0
+        @m = 1
+      else
+        @m = 0
+      end
+      @text.text = @mode[@m]
+      @text.x = 400 - @text.width/2 # center text
+      @t2.text = @opponent[@m]
+      @t2.x = 200 - @t2.width/2 # center text
+      $mode = @mode[@m]
+    end
+  end
+end
+
+
+
+
 
 class CharWheel < Chingu::GameObject
   def setup

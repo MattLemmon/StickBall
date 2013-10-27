@@ -69,18 +69,20 @@ end
 class GameWindow < Chingu::Window
   def initialize
     super(800,600,false)
+    $round = 1
     $intro = true
     $max_x = 815
     $max_y = 615
     $scr_edge = 15
     $cooling_down = 70
     $score = 0
+    $mode = "Campaign"
     $image1 = "boy"
     $image2 = "boy"
-#    $chime = Sound["media/audio/pickup_chime.ogg"]
+    $chime = Sound["media/audio/pickup_chime.ogg"]
     $chime_right = Sound["media/audio/chime_right.ogg"]
     $chime_left = Sound["media/audio/chime_left.ogg"]
-#    $click = Sound["media/audio/keypress.ogg"]
+    $click = Sound["media/audio/keypress.ogg"]
     $click_right = Sound["media/audio/click_right.ogg"]
     $click_left = Sound["media/audio/click_left.ogg"]
     $star_grab = Sound["media/audio/star_pickup.ogg"]

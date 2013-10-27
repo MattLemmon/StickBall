@@ -69,6 +69,8 @@ class Field < Chingu::GameState
     @chant = "Prepare for MultiBall"
     @multiball = false
 
+    @ground_y = ($window.height * 0.95).to_i
+
     game_objects.destroy_all
     Referee.destroy_all
     Player1.destroy_all
@@ -92,21 +94,17 @@ class Field < Chingu::GameState
 
     @player1 = Player1.create(:x => 740, :y => 300, :zorder => Zorder::Main_Character)#(:x => $player_x, :y => $player_y, :angle => $player_angle, :zorder => Zorder::Main_Character)
     @player1.input = {:holding_right_ctrl=>:creep,:holding_left=>:go_left,:holding_right=>:go_right,:holding_up=>:go_up,:holding_down=>:go_down}
-#    @eyes1 = EyesLeft.create(:zorder => Zorder::Eyes)
 
     @player2 = Player2.create(:x => 60, :y => 300, :zorder => Zorder::Main_Character)#(:x => $player_x, :y => $player_y, :angle => $player_angle, :zorder => Zorder::Main_Character)
-    @player2.input = {:holding_left_ctrl=>:creep,:holding_a=>:go_left,:holding_d=>:go_right,:holding_w=>:go_up,:holding_s=>:go_down}
-#    @eyes2 = EyesRight.create(:zorder => Zorder::Eyes)
-
-#    @player3 = Player2.create(:x => 60, :y => 300, :zorder => Zorder::Main_Character)#(:x => $player_x, :y => $player_y, :angle => $player_angle, :zorder => Zorder::Main_Character)
+    if $mode == "Versus"
+      @player2.input = {:holding_left_ctrl=>:creep,:holding_a=>:go_left,:holding_d=>:go_right,:holding_w=>:go_up,:holding_s=>:go_down}
+    end
 
     @puck = FireCube.create(:x => rand(550), :y => rand(600), :zorder => Zorder::Projectile)
     @puck_flare = @lense_flares.create @puck.x, @puck.y, Zorder::LenseFlare
     @puck_flare.brightness = 0.25
     @puck_flare.strength = 0.3
     @puck_flare.scale = 1.0
-
-    @ground_y = ($window.height * 0.95).to_i
 
     @health1_text = Chingu::Text.create(:text=>"", :x=>760, :y=>50, :size=>46)
     @health2_text = Chingu::Text.create(:text=>"", :x=>40, :y=>50, :size=>46)
@@ -119,12 +117,8 @@ class Field < Chingu::GameState
     $music2.volume = 0.4
     $music2.play 
 
+    round_setup
 #    Background1.create
-    @parallax = Chingu::Parallax.create(:x => 0, :y => 0, :rotation_center => :top_left, :zorder => Zorder::Background)
-    @parallax.add_layer(:image => "backgrounds/space1.png", :damping => 40)
-    @parallax.add_layer(:image => "backgrounds/space2.png", :damping => 30)
-    @parallax.add_layer(:image => "backgrounds/space3.png", :damping => 20)
-
 #    @test_plax = Plax1.create
 
     after(2400)  { @transition = false }
@@ -132,6 +126,33 @@ class Field < Chingu::GameState
     after(23000) { $music2.volume = 0.2 }
 #    after(27500) { puts 27500 }
 #    after(30000) { puts 30000 }
+  end
+
+  def round_setup
+    if $round == 1
+      @parallax = Chingu::Parallax.create(:x => 0, :y => 0, :rotation_center => :top_left, :zorder => Zorder::Background)
+      @parallax.add_layer(:image => "backgrounds/space1.png", :damping => 40)
+      @parallax.add_layer(:image => "backgrounds/space2.png", :damping => 30)
+      @parallax.add_layer(:image => "backgrounds/space3.png", :damping => 20)
+    end
+    if $round == 2
+      @parallax = Chingu::Parallax.create(:x => 0, :y => 0, :rotation_center => :top_left, :zorder => Zorder::Background)
+      @parallax.add_layer(:image => "backgrounds/space1.png", :damping => 40)
+      @parallax.add_layer(:image => "backgrounds/space2.png", :damping => 30)
+      @parallax.add_layer(:image => "backgrounds/space3.png", :damping => 20)
+    end
+    if $round == 3
+      @parallax = Chingu::Parallax.create(:x => 0, :y => 0, :rotation_center => :top_left, :zorder => Zorder::Background)
+      @parallax.add_layer(:image => "backgrounds/space1.png", :damping => 40)
+      @parallax.add_layer(:image => "backgrounds/space2.png", :damping => 30)
+      @parallax.add_layer(:image => "backgrounds/space3.png", :damping => 20)
+    end
+  end
+
+  def next_round
+    $round += 1
+    puts $round
+    push_game_state(Field)
   end
 
   def right_attack
@@ -439,7 +460,6 @@ class Field < Chingu::GameState
       $power_up.play(0.3)
     end
 
-
     FireCube.each_collision(Player1) do |puck, player|           # PUCK / PLAYER 1
       if @bump == 0
         puck.die!
@@ -545,11 +565,12 @@ class Field < Chingu::GameState
         if particle.x < 0
           particle.x = 0
           particle.velocity_x = -particle.velocity_x
-          $score1 += 1
+#          $score1 += 1
           $bang2.play(0.4)
           if $health2 > 1
             $health2 -=1
           else
+            $score1 += 1
             $winner = "right player"
             push_game_state(GameOver)
           end
@@ -563,11 +584,12 @@ class Field < Chingu::GameState
         if particle.x > $window.width
           particle.x = $window.width
           particle.velocity_x = -particle.velocity_x
-          $score2 += 1
+#          $score2 += 1
           $bang1.play(0.5)
           if $health1 > 1
             $health1 -=1
           else
+            $score2 += 1
             $winner = "left player"
             push_game_state(GameOver)
           end
@@ -581,11 +603,13 @@ class Field < Chingu::GameState
         if particle.y < 0
           particle.y = 0
           particle.velocity_y = -particle.velocity_y
+          particle.die!
           @bounce = @bounce_delay
         end
         if particle.y > $window.height
           particle.y = $window.height
           particle.velocity_y = -particle.velocity_y
+          particle.die!
           @bounce = @bounce_delay
         end
       end
@@ -650,12 +674,12 @@ class Field < Chingu::GameState
 #    @eyes2.x = @player2.x + 3
 #    @eyes2.y = @player2.y - 12
 
-    if @player3 != nil
-      if @player3.y > @puck.y && rand(5) == 1
-        @player3.go_up
+    if $mode == "Campaign"
+      if @player2.y > @puck.y && rand(5) == 1
+        @player2.go_up
       end
-      if @player3.y < @puck.y && rand(5) == 1
-        @player3.go_down
+      if @player2.y < @puck.y && rand(5) == 1
+        @player2.go_down
       end
     end
 

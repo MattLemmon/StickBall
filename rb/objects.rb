@@ -28,7 +28,7 @@ class FireCube < Chingu::GameObject
     cache_bounding_circle # This does a lot for performance
 
     @color = Color::BLUE
-    @part_speed = 10
+#    @part_speed = 10
     @die_count = 15
 
   end
@@ -41,17 +41,6 @@ class FireCube < Chingu::GameObject
     end
 
     Plasma.create(:x => @x, :y => @y, :color => Color.new(0xFF0042FF))
-
-    # Particles from rocket booster
-    Chingu::Particle.create(:x => @x, :y => @y,
-            :image => "objects/particle.png", 
-            :color => 0xFF0096FF,
-            :mode => :additive,
-            :fade_rate => -45,
-            :angle => @angle,
-            :zorder => Zorder::Particle)
-    Chingu::Particle.each { |particle| particle.y -= @velocity_y; particle.x -= @velocity_x}
-    Chingu::Particle.destroy_if { |object| object.outside_window? || object.color.alpha == 0 }
 
   end
   
@@ -364,6 +353,17 @@ class Zapper < Chingu::GameObject
 end
 
 
+#
+#  TITLE
+#
+class Title < Chingu::GameObject
+  def setup
+    @image = Image["objects/title.png"]
+    @y = 150
+    @zorder = 20
+    @x = 400
+  end
+end
 
 #
 #  SPARKLE
