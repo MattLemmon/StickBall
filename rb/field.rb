@@ -39,6 +39,7 @@ class Field < Chingu::GameState
 
   def setup
     super
+    $health1 = 5
     $stars1 = 0
     $stars2 = 0
     $speed1 = 6
@@ -593,7 +594,7 @@ class Field < Chingu::GameState
             puts "score1 #{$score1}"
             puts "score2 #{$score2}"
 #            next_round
-#            push_game_state(Field)
+#            push_game_state(Field2)
           else
             $score1 += 1
             $winner = "right player"
@@ -623,8 +624,7 @@ class Field < Chingu::GameState
             puts "round #{$round}"
             puts "score1 #{$score1}"
             puts "score2 #{$score2}"
-#            next_round
-#            push_game_state(Field)
+#            push_game_state(Field2)
           else
             $score2 += 1
             $winner = "left player"
@@ -724,6 +724,10 @@ class Field < Chingu::GameState
   end
 end
 
+
+
+class Field2 < Field   
+end
 
 
     #
