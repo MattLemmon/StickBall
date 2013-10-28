@@ -28,9 +28,10 @@ class Field < Chingu::GameState
                    :i => :toggle_up,
                    :k => :toggle_down,
                    :p => Pause,
-                   :return => lambda{current_game_state.setup},
+                   :r => lambda{current_game_state.setup},
                    :right_shift=>:right_attack,
-                   :left_shift=>:left_attack
+                   :left_shift=>:left_attack,
+                   [:enter, :return] => Field
                  }
 
     $window.caption = "Stick Ball! Go team go!"
@@ -100,15 +101,17 @@ class Field < Chingu::GameState
       @player2.input = {:holding_left_ctrl=>:creep,:holding_a=>:go_left,:holding_d=>:go_right,:holding_w=>:go_up,:holding_s=>:go_down}
     end
 
-    @health1_text = Chingu::Text.create(:text=>"#{$health1}", :y=>16, :size=>34)
+    @health1_text = Chingu::Text.create(:text=>"#{$health1}", :y=>16, :size=>32)
     @health1_text.x = 765 - @health1_text.width/2
 
-    @health2_text = Chingu::Text.create(:text=>"#{$health2}", :y=>16, :size=>34)
+    @health2_text = Chingu::Text.create(:text=>"#{$health2}", :y=>16, :size=>32)
     @health2_text.x = 36 - @health2_text.width/2
-
 
     @gui1 = GUI1.create
     @gui2 = GUI2.create
+
+    @round_text = Chingu::Text.create(:text=>"Round #{$round}", :y=>8, :size=>34)
+    @round_text.x = 400 - @round_text.width/2
 
     @puck = FireCube.create(:x => rand(550), :y => rand(600), :zorder => Zorder::Projectile)
     @puck_flare = @lense_flares.create @puck.x, @puck.y, Zorder::LenseFlare
@@ -141,22 +144,16 @@ class Field < Chingu::GameState
     end
     if $round == 2
       @parallax = Chingu::Parallax.create(:x => 0, :y => 0, :rotation_center => :top_left, :zorder => Zorder::Background)
-      @parallax.add_layer(:image => "backgrounds/space1.png", :damping => 40)
-      @parallax.add_layer(:image => "backgrounds/space2.png", :damping => 30)
-      @parallax.add_layer(:image => "backgrounds/space3.png", :damping => 20)
+      @parallax.add_layer(:image => "backgrounds/clouds.png", :damping => 20)
+      @parallax.add_layer(:image => "backgrounds/space2.png", :damping => 15)
+      @parallax.add_layer(:image => "backgrounds/space3.png", :damping => 10)
     end
     if $round == 3
       @parallax = Chingu::Parallax.create(:x => 0, :y => 0, :rotation_center => :top_left, :zorder => Zorder::Background)
-      @parallax.add_layer(:image => "backgrounds/space1.png", :damping => 40)
+      @parallax.add_layer(:image => "backgrounds/fishdish_mockup.png", :damping => 40)
       @parallax.add_layer(:image => "backgrounds/space2.png", :damping => 30)
       @parallax.add_layer(:image => "backgrounds/space3.png", :damping => 20)
     end
-  end
-
-  def next_round
-    $round += 1
-    puts $round
-    push_game_state(Field)
   end
 
   def right_attack
@@ -325,6 +322,12 @@ class Field < Chingu::GameState
       create_mist
     end
   end
+
+
+  def next_round
+    push_game_state(Field)
+  end
+
 
   def collision_check
     @star_flares.each do |star,flare|        # UPDATE STAR FLARES
@@ -581,6 +584,16 @@ class Field < Chingu::GameState
             $health2 -=1
             @health2_text.text = "#{$health2}"
             @health2_text.x = 38 - @health2_text.width/2
+          elsif $round < 3
+            $round += 1
+            $score1 += 1
+            @round_text.text = "Round #{$round}"
+            @round_text.x = 400 - @round_text.width/2
+            puts "round #{$round}"
+            puts "score1 #{$score1}"
+            puts "score2 #{$score2}"
+#            next_round
+#            push_game_state(Field)
           else
             $score1 += 1
             $winner = "right player"
@@ -602,6 +615,16 @@ class Field < Chingu::GameState
             $health1 -=1
             @health1_text.text = "#{$health1}"
             @health1_text.x = 765 - @health1_text.width/2
+          elsif $round < 3
+            $round += 1
+            $score2 += 1
+            @round_text.text = "Round #{$round}"
+            @round_text.x = 400 - @round_text.width/2
+            puts "round #{$round}"
+            puts "score1 #{$score1}"
+            puts "score2 #{$score2}"
+#            next_round
+#            push_game_state(Field)
           else
             $score2 += 1
             $winner = "left player"

@@ -4,6 +4,7 @@ class Mouth
   def initialize parent
     @parent = parent
     @image = Gosu::Image["players/mouth.png"]
+    @mouth_closed = Gosu::Image["players/mouth_closed.png"]
     @x = 0
     @y = 0
     @mood = 0
@@ -36,6 +37,7 @@ class Mouth
   end
   
   def draw
+    @mouth_closed.draw_rot @x, @y, Zorder::Face, 0, 0.5, 0.5, 1
     @image.draw_rot @x, @y, Zorder::Face, 0, 0.5, 0.5, 1, @scale_y
   end
 end
