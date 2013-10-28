@@ -438,36 +438,36 @@ class Field < Chingu::GameState
       $health1 += 1
       @health1_text.text = "#{$health1}"
       @health1_text.x = 765 - @health1_text.width/2
-      $power_up.play(0.3)
+      $star_grab.play(0.3)
     end
     Player2.each_collision(Heart) do |player, heart|    # PICKUP HEARTS
       heart.destroy
       $health2 += 1
       @health2_text.text = "#{$health2}"
       @health2_text.x = 36 - @health2_text.width/2
-      $power_up.play(0.3)
+      $star_grab.play(0.3)
     end
 
    Player1.each_collision(Stun) do |player, stun|    # PICKUP STUNS
       stun.destroy
       $spell1 = "stun"
-      $power_up.play(0.3)
+      $star_grab.play(0.3)
     end
     Player2.each_collision(Stun) do |player, stun|    # PICKUP STUNS
       stun.destroy
       $spell2 = "stun"
-      $power_up.play(0.3)
+      $star_grab.play(0.3)
     end
 
    Player1.each_collision(Mist) do |player, mist|    # PICKUP MISTS
       mist.destroy
       $spell1 = "mist"
-      $power_up.play(0.3)
+      $star_grab.play(0.3)
     end
     Player2.each_collision(Mist) do |player, mist|    # PICKUP MISTS
       mist.destroy
       $spell2 = "mist"
-      $power_up.play(0.3)
+      $star_grab.play(0.3)
     end
 
     FireCube.each_collision(Player1) do |puck, player|           # PUCK / PLAYER 1
