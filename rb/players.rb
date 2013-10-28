@@ -37,7 +37,75 @@ class ModeSelect < Chingu::GameObject
 end
 
 
+class Player1Clone < Chingu::GameObject
+  attr_reader :direction
+  def setup
+    @image = Gosu::Image["players/#{$image1}.png"]
+    @direction = -1
+    @eyes = CloneEyes.new self
+    self.factor_x = -1
+  end
+  def go_left
+    @x -= 4
+  end
+   def go_right
+    @x += 4
+  end
+  def go_up
+    @y -= 4
+  end
+  def go_down
+    @y += 4
+  end
+  def update
+    @eyes.update
+  end
+  def draw
+    super
+    @eyes.draw
+  end
+end
 
+
+class Player2Clone < Chingu::GameObject
+  traits :velocity
+  attr_reader :direction
+  def setup
+    @image = Gosu::Image["players/#{$image2}.png"]
+    @direction = 1
+    @eyes = CloneEyes.new self
+    @speed = $speed2
+  end
+  def go_left
+    @velocity_x -= @speed
+  end
+  def go_right
+    @velocity_x += @speed
+  end
+  def go_up
+    @velocity_y -= @speed
+  end
+  def go_down
+    @velocity_y += @speed
+  end
+  def cast_spell
+  end
+  def creep
+  end
+  def update
+    @eyes.update
+    @velocity_x *= 0.25
+    @velocity_y *= 0.25
+    if @x < -$scr_edge; @x = $max_x; end  # wrap beyond screen edge
+    if @y < -$scr_edge; @y = $max_y; end
+    if @x > $max_x; @x = -$scr_edge; end
+    if @y > $max_y; @y = -$scr_edge; end
+  end
+  def draw
+    super
+    @eyes.draw
+  end
+end
 
 
 class CharWheel < Chingu::GameObject
@@ -310,15 +378,18 @@ class Player1 < Chingu::GameObject
   def initialize(health)
     super
     @image = Gosu::Image["players/#{$image1}.png"]
-    self.factor_x = -1
-    @direction = -1
     cache_bounding_box
   end
   def setup
+    self.factor_x = -1
     @creeping = false
     @stun = false
     @mist = false
     @speed = $speed1
+    @direction = -1
+    @squeeze_y = 1.0
+    @hit_time = Gosu.milliseconds - 3000
+    @wobble_resistance = 0.005
     @eyes = Eyes.new self
     @mouth = Mouth.new self
   end
@@ -330,9 +401,11 @@ class Player1 < Chingu::GameObject
   end
   def go_up
     @velocity_y -= @speed
+    @squeeze_y = walk_wobble_factor
   end
   def go_down
     @velocity_y += @speed
+    @squeeze_y = walk_wobble_factor
   end
   def cast_spell
     if $spell1 != "none"
@@ -373,12 +446,30 @@ class Player1 < Chingu::GameObject
     after(500) {Smog.create(:x=>@x,:y=>@y)}
     after(600) {Smog.create(:x=>@x,:y=>@y)}
   end
+
+  def walk_wobble_factor  #sin curve between 1..0.8 at 5hz
+    1 - (Math.sin(Gosu.milliseconds/(Math::PI*10))+1)/10.0
+  end
+  
+  def hit_wobble_factor
+    time = Gosu.milliseconds - @hit_time
+    1 - (Math.sin(time/25.0)/(time**1.7*@wobble_resistance))
+  end
+  
+  def wobble
+    @hit_time = Gosu.milliseconds - 30
+  end
+
   def update_face
     @eyes.update
     @mouth.update
   end
 
+
   def update
+    self.factor_y = @squeeze_y
+    self.factor_x = hit_wobble_factor * @direction
+    @squeeze_y = 1.0
     if @stun == true
       @speed = 0
     elsif @creeping == true
@@ -405,74 +496,6 @@ class Player1 < Chingu::GameObject
   end
 end
 
-class Player1Clone < Chingu::GameObject
-  attr_reader :direction
-  def setup
-    @image = Gosu::Image["players/#{$image1}.png"]
-    @direction = -1
-    @eyes = CloneEyes.new self
-    self.factor_x = -1
-  end
-  def go_left
-    @x -= 4
-  end
-   def go_right
-    @x += 4
-  end
-  def go_up
-    @y -= 4
-  end
-  def go_down
-    @y += 4
-  end
-  def update
-    @eyes.update
-  end
-  def draw
-    super
-    @eyes.draw
-  end
-end
-
-class Player2Clone < Chingu::GameObject
-  traits :velocity
-  attr_reader :direction
-  def setup
-    @image = Gosu::Image["players/#{$image2}.png"]
-    @direction = 1
-    @eyes = CloneEyes.new self
-    @speed = $speed2
-  end
-  def go_left
-    @velocity_x -= @speed
-  end
-  def go_right
-    @velocity_x += @speed
-  end
-  def go_up
-    @velocity_y -= @speed
-  end
-  def go_down
-    @velocity_y += @speed
-  end
-  def cast_spell
-  end
-  def creep
-  end
-  def update
-    @eyes.update
-    @velocity_x *= 0.25
-    @velocity_y *= 0.25
-    if @x < -$scr_edge; @x = $max_x; end  # wrap beyond screen edge
-    if @y < -$scr_edge; @y = $max_y; end
-    if @x > $max_x; @x = -$scr_edge; end
-    if @y > $max_y; @y = -$scr_edge; end
-  end
-  def draw
-    super
-    @eyes.draw
-  end
-end
 
 #
 #  PLAYER 2 CLASS
@@ -489,13 +512,18 @@ class Player2 < Chingu::GameObject
     cache_bounding_box
   end
   def setup
-    @eyes = Eyes.new self
-    @mouth = Mouth.new self
-    @speed = $speed2
     @creeping = false
     @stun = false
     @mist = false
+    @speed = $speed2
+    @direction = 1
+    @squeeze_y = 1.0
+    @hit_time = Gosu.milliseconds - 3000
+    @wobble_resistance = 0.005
+    @eyes = Eyes.new self
+    @mouth = Mouth.new self
   end
+
   def go_left
     @velocity_x -= @speed
   end
@@ -504,9 +532,11 @@ class Player2 < Chingu::GameObject
   end
   def go_up
     @velocity_y -= @speed
+    @squeeze_y = walk_wobble_factor
   end
   def go_down
     @velocity_y += @speed
+    @squeeze_y = walk_wobble_factor
   end
   def cast_spell
     if $spell2 != "none"
@@ -541,12 +571,27 @@ class Player2 < Chingu::GameObject
     after(500) {Smog.create(:x=>@x,:y=>@y)}
     after(600) {Smog.create(:x=>@x,:y=>@y)}
   end
+
+  def walk_wobble_factor  #sin curve between 1..0.8 at 5hz
+    1 - (Math.sin(Gosu.milliseconds/(Math::PI*10))+1)/10.0
+  end
+  def hit_wobble_factor
+    time = Gosu.milliseconds - @hit_time
+    1 - (Math.sin(time/25.0)/(time**1.7*@wobble_resistance))
+  end
+  def wobble
+    @hit_time = Gosu.milliseconds - 30
+  end
+
   def update_face
     @eyes.update
     @mouth.update
   end
 
   def update
+    self.factor_y = @squeeze_y
+    self.factor_x = hit_wobble_factor * @direction
+    @squeeze_y = 1.0
     if @stun == true
       @speed = 0
     elsif @creeping == true

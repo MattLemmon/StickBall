@@ -494,6 +494,7 @@ class Field < Chingu::GameState
 
     FireCube.each_collision(Player1) do |puck, player|           # PUCK / PLAYER 1
       if @bump == 0
+        player.wobble
         puck.die!
         @bump = @bump_delay
         if $kick1 == false || player.velocity_x == 0 # && player.velocity_y == 0
@@ -535,6 +536,7 @@ class Field < Chingu::GameState
     end
     FireCube.each_collision(Player2) do |puck, player|           # PUCK / PLAYER 2
       if @bump == 0
+        player.wobble
         puck.die!
         if puck.velocity_x > 0
           puck.velocity_x = -10
