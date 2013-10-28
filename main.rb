@@ -5,7 +5,6 @@ require 'ashton'
 include Chingu
 include Gosu
 
-
 require_relative 'rb/field'
 require_relative 'rb/players'
 require_relative 'rb/objects'
@@ -13,7 +12,7 @@ require_relative 'rb/gui'
 require_relative 'rb/beginning'
 require_relative 'rb/ending'
 require_relative 'rb/backgrounds'
-
+require_relative 'rb/round_change'
 
 module Zorder  # define some frequently used Zorders
   GUI = 400

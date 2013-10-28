@@ -594,7 +594,7 @@ class Field < Chingu::GameState
             puts "score1 #{$score1}"
             puts "score2 #{$score2}"
 #            next_round
-#            push_game_state(Field2)
+            push_game_state(RoundChange)
           else
             $score1 += 1
             $winner = "right player"
@@ -624,7 +624,7 @@ class Field < Chingu::GameState
             puts "round #{$round}"
             puts "score1 #{$score1}"
             puts "score2 #{$score2}"
-#            push_game_state(Field2)
+            push_game_state(RoundChange)
           else
             $score2 += 1
             $winner = "left player"
