@@ -45,20 +45,19 @@ class Pause < Chingu::GameState
     super
 #    @title = Chingu::Text.create(:text=>"PAUSED (press 'P' to un-pause)", :y=>300, :size=>30, :color => Color.new(0xFF00FF00), :zorder=>1000 )
 #    @title.x = 400 - @title.width/2
-    self.input = { :p => :un_pause, :r => :reset }
+    self.input = { :p => :un_pause } #, :r => :reset }
   end
   def un_pause
     pop_game_state(:setup => false)    # Return the previous game state, dont call setup()
   end  
-  def reset
-    pop_game_state(:setup => true)
-  end
+#  def reset
+#    pop_game_state(:setup => true)  # Resets previous game state
+#  end
   def draw
     previous_game_state.draw    # Draw prev game state onto screen (in this case our level)
     super                       # Draw game objects in current game state, this includes Chingu::Texts
   end  
 end
-
 
 
 
@@ -74,7 +73,8 @@ class GameWindow < Chingu::Window
     $max_y = 615
     $scr_edge = 15
     $cooling_down = 70
-    $score = 0
+    $score1 = 0
+    $score2 = 0
     $mode = "Campaign"
     $image1 = "boy"
     $image2 = "boy"
@@ -84,10 +84,17 @@ class GameWindow < Chingu::Window
     $click = Sound["media/audio/keypress.ogg"]
     $click_right = Sound["media/audio/click_right.ogg"]
     $click_left = Sound["media/audio/click_left.ogg"]
-    $star_grab = Sound["media/audio/star_pickup.ogg"]
-    $power_up = Sound["media/audio/power_up.ogg"]
-    $power_up = Sound["media/audio/power_up.ogg"]
-#    $one_up = Sound["media/audio/1up.ogg"]
+#    $star_grab = Sound["media/audio/star_pickup.ogg"]
+    $star_grab_right = Sound["media/audio/star_grab_right.ogg"]
+    $star_grab_left = Sound["media/audio/star_grab_left.ogg"]
+    $power_up_left = Sound["media/audio/power_up_left.ogg"]
+    $power_up_right = Sound["media/audio/power_up_right.ogg"]
+    $mist_grab_left = Sound["media/audio/mist_grab_left.ogg"]
+    $mist_grab_right = Sound["media/audio/mist_grab_right.ogg"]
+    $stun_grab_right = Sound["media/audio/stun_grab_right.ogg"]
+    $stun_grab_left = Sound["media/audio/stun_grab_left.ogg"]
+    $one_up_left = Sound["media/audio/1up_left.ogg"]
+    $one_up_right = Sound["media/audio/1up_right.ogg"]
     $zapped = Sound["media/audio/magical_zap_by_qubodup.ogg"]
     $stunned = Sound["media/audio/stunned.ogg"]
     $misted = Sound["media/audio/misted.ogg"]

@@ -38,7 +38,8 @@ class Field < Chingu::GameState
 
   def setup
     super
-    $health1 = 5
+    $health1 = $start_health1
+    $health2 = $start_health2
     $stars1 = 0
     $stars2 = 0
     $speed1 = 6
@@ -53,8 +54,8 @@ class Field < Chingu::GameState
     $kick2 = false
     $spell1 = "none"
     $spell2 = "none"
-    $score1 = 0
-    $score2 = 0
+#    $score1 = 0
+#    $score2 = 0
     $winner = ""
 
     @bump = 0
@@ -413,9 +414,9 @@ class Field < Chingu::GameState
       remove_star star
       $stars1 += 1             # add star in star meter (gui.rb)
       if $stars1 != 5            # not 3 stars yet?
-        $star_grab.play(0.4)     # play normal power-up sound
+        $star_grab_right.play(0.9)     # play normal power-up sound
       else                     # 3 stars?
-        $power_up.play(0.3)      # play mighty power-up sound
+        $power_up_right.play(0.7)      # play mighty power-up sound
         $stars1 = 0              # reset star meter
         $power_ups1 += 1
         player1_power_up       # Power Up!
@@ -426,9 +427,9 @@ class Field < Chingu::GameState
       remove_star star
       $stars2 += 1             # add star in star meter (gui.rb)
       if $stars2 != 5            # not 3 stars yet?
-        $star_grab.play(0.4)     # play normal power-up sound
+        $star_grab_left.play(0.9)     # play normal power-up sound
       else                     # 3 stars?
-        $power_up.play(0.3)      # play mighty power-up sound
+        $power_up_left.play(0.7)      # play mighty power-up sound
         $stars2 = 0              # reset star meter
         $power_ups2 += 1
         player2_power_up       # Power Up!
@@ -441,36 +442,36 @@ class Field < Chingu::GameState
       $health1 += 1
       @health1_text.text = "#{$health1}"
       @health1_text.x = 765 - @health1_text.width/2
-      $star_grab.play(0.3)
+      $one_up_right.play(0.7)
     end
     Player2.each_collision(Heart) do |player, heart|    # PICKUP HEARTS
       heart.destroy
       $health2 += 1
       @health2_text.text = "#{$health2}"
       @health2_text.x = 36 - @health2_text.width/2
-      $star_grab.play(0.3)
+      $one_up_left.play(0.7)
     end
 
    Player1.each_collision(Stun) do |player, stun|    # PICKUP STUNS
       stun.destroy
       $spell1 = "stun"
-      $star_grab.play(0.3)
+      $stun_grab_right.play(0.7)
     end
     Player2.each_collision(Stun) do |player, stun|    # PICKUP STUNS
       stun.destroy
       $spell2 = "stun"
-      $star_grab.play(0.3)
+      $stun_grab_left.play(0.7)
     end
 
    Player1.each_collision(Mist) do |player, mist|    # PICKUP MISTS
       mist.destroy
       $spell1 = "mist"
-      $star_grab.play(0.3)
+      $mist_grab_right.play(0.7)
     end
     Player2.each_collision(Mist) do |player, mist|    # PICKUP MISTS
       mist.destroy
       $spell2 = "mist"
-      $star_grab.play(0.3)
+      $mist_grab_left.play(0.7)
     end
 
     FireCube.each_collision(Player1) do |puck, player|           # PUCK / PLAYER 1

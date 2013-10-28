@@ -23,6 +23,8 @@ class Intro < Chingu::GameState
 
     $health1 = 10
     $health2 = 10
+    $start_health1 = 10
+    $start_health2 = 10
     $window.caption = "StickBall"
 
     @counter = 0  
@@ -44,8 +46,6 @@ class Intro < Chingu::GameState
     Chingu::Text.destroy_all 
     CharWheel1.destroy_all
     CharWheel2.destroy_all
-
-    transition1
 
     after(600) {
       @player1_select = CharWheel1.create(:x => 550, :y => 300, :zorder => Zorder::Main_Character)
@@ -117,19 +117,19 @@ class Intro < Chingu::GameState
     after(1600) { if @text2 != nil; @text2.destroy; end }
   end
 
-  def next
-    if @nxt == true  # if you've already pressed 'shift' once, pressing it again skips ahead
-      @nxt = false
-      $click.play
-      push_game_state(Intro)
-    else
-      @nxt = true    # transition to Intro
-      $click.play
-      after(300) { puts 1 }
-      after(600) { puts 2 }
-      after(1000) { push_game_state(Intro) }
-    end
-  end
+#  def next
+#    if @nxt == true  # if you've already pressed 'shift' once, pressing it again skips ahead
+#      @nxt = false
+#      $click.play
+#      push_game_state(Intro)
+#    else
+#      @nxt = true    # transition to Intro
+#      $click.play
+#      after(300) { puts 1 }
+#      after(600) { puts 2 }
+#      after(1000) { push_game_state(Intro) }
+#    end
+#  end
 
   def cpu_select_character
     after(2200) { if rand(2) == 1; @player2_select.go_right; end }
@@ -182,17 +182,17 @@ class Intro < Chingu::GameState
 
     if @ready1 == true && @ready2 == true
       if @transition == false
-        transition2
+        transition
       end
     end
   end
 
-  def transition1
-    puts "Opponent Selection Needed (CPU or PL2)"
+#  def transition1
+#    puts "Opponent Selection Needed (CPU or PL2)"
 #    transition2
-  end
+#  end
 
-  def transition2
+  def transition
     @transition = true
      after(400) {
       @song_fade = true

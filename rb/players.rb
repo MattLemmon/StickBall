@@ -113,6 +113,7 @@ class CharWheel1 < CharWheel
         @h = 0
       end
       $health1 = @health[@h]
+      $start_health1 = $health1
     end
   end
 
@@ -125,6 +126,7 @@ class CharWheel1 < CharWheel
         @h = 3
       end
       $health1 = @health[@h]
+      $start_health1 = $health1
     end
   end
 
@@ -173,6 +175,7 @@ class CharWheel2 < CharWheel
         @h = 0
       end
       $health2 = @health[@h]
+      $start_health2 = $health2
     end
   end
   def go_down
@@ -184,6 +187,7 @@ class CharWheel2 < CharWheel
         @h = 3
       end
       $health2 = @health[@h]
+      $start_health2 = $health2
     end
   end
   def enlargen
@@ -357,7 +361,7 @@ class Player1 < Chingu::GameObject
   def mist
 #    Zapper.create(:x=>@x,:y=>@y)
     @mist = true
-    $misted.play(0.7)
+    $misted.play
     after(3000) {@mist = false}
   end
 
@@ -468,7 +472,7 @@ class Player2 < Chingu::GameObject
   end
   def mist
     @mist = true
-    $misted.play(0.7)
+    $misted.play
     after(3000) {@mist = false}
   end
 
