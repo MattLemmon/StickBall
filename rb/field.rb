@@ -593,7 +593,7 @@ class Field < Chingu::GameState
             puts "score1 #{$score1}"
             puts "score2 #{$score2}"
 #            next_round
-            push_game_state(RoundChange)
+            push_game_state(FieldChange)
           else
             $score1 += 1
             $winner = "right player"
@@ -623,7 +623,7 @@ class Field < Chingu::GameState
             puts "round #{$round}"
             puts "score1 #{$score1}"
             puts "score2 #{$score2}"
-            push_game_state(RoundChange)
+            push_game_state(FieldChange)
           else
             $score2 += 1
             $winner = "left player"
@@ -683,6 +683,10 @@ class Field < Chingu::GameState
 
     move_referee
     collision_check
+    $pos1_x, $pos1_y = @player1.x, @player1.y
+    $pos2_x, $pos2_y = @player2.x, @player2.y
+
+
     if @bump > 0
       @bump -= 1
     end
@@ -690,25 +694,6 @@ class Field < Chingu::GameState
       @bounce -= 1
     end
 
-#    @score1_text.text = "#{$score1}"
-#    @score2_text.text = "#{$score2}"
-#    @health1_text.text = "#{$health1}"
-#    @health2_text.text = "#{$health2}"
-
-    $window.caption = "Stick Ball!     Go team go!                                             Objects: #{game_objects.size}, FPS: #{$window.fps}"
-
-    if @song_fade == true # fade song if @song_fade is true
-      @fade_count += 1
-      if @fade_count == 30
-        @fade_count = 0
-        $music1.volume -= 0.1
-      end
-    end
-
-#    @eyes1.x = @player1.x - 3
-#    @eyes1.y = @player1.y - 12
-#    @eyes2.x = @player2.x + 3
-#    @eyes2.y = @player2.y - 12
 
     if $mode == "Campaign"
       if @player2.y > @puck.y && rand(5) == 1
@@ -720,13 +705,30 @@ class Field < Chingu::GameState
     end
 
     self.game_objects.destroy_if { |object| object.color.alpha == 0 }
+
+
+    $window.caption = "Stick Ball!     Go team go!                                             Objects: #{game_objects.size}, FPS: #{$window.fps}"
+
+    if @song_fade == true # fade song if @song_fade is true
+      @fade_count += 1
+      if @fade_count == 30
+        @fade_count = 0
+        $music1.volume -= 0.1
+      end
+    end
   end
 end
 
 
+#    @score1_text.text = "#{$score1}"
+#    @score2_text.text = "#{$score2}"
+#    @health1_text.text = "#{$health1}"
+#    @health2_text.text = "#{$health2}"
 
-class Field2 < Field   
-end
+#    @eyes1.x = @player1.x - 3
+#    @eyes1.y = @player1.y - 12
+#    @eyes2.x = @player2.x + 3
+#    @eyes2.y = @player2.y - 12
 
 
     #

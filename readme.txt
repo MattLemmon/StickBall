@@ -3,7 +3,7 @@ _________________________________________________________________
                          S T I C K B A L L      
 
 requires Ruby on all systems
-requires XCode on Mac
+requires Xcode 4+ on Mac
 
  $ bundle install
  $ ruby main.rb
@@ -102,8 +102,10 @@ https://developer.apple.com -> Member Center (requires registration).
 
 In Xcode, be sure to install the Command Line Tools (in Preferences).
 
-To install Ruby on Mac, install RVM (Ruby Version Manager), by
-following the instructions in this excellent tutorial:
+Ruby can be installed using Homebrew.
+
+For a more robust install, use RVM (Ruby Version Manager).
+Follow the instructions in this excellent tutorial:
 
 http://net.tutsplus.com/tutorials/ruby/how-to-install-ruby-on-a-mac/
 
@@ -141,12 +143,12 @@ LINUX:
 
 If you're on Linux, then you will need to install RVM. I will
 provide detailed instructions on this in the future, but for the
-present moment, google "install rvm Linux".
+present moment, you will need to look for it on google.
 
 Once Ruby is installed, you can try it out in Terminal with
 `ruby -v` and `irb` if you want.
 
-On Linxu, you will need to install the dependecies required for
+On Linux, you will need to install the dependecies required for
 your system (Ubutnu, Debian, etc.):
 
 https://github.com/jlnr/gosu/wiki/Getting-Started-on-Linux

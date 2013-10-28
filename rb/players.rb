@@ -393,6 +393,26 @@ class Player1 < Chingu::GameObject
   end
 end
 
+class Player1Clone < Chingu::GameObject
+  attr_reader :direction
+  def setup
+    @image = Gosu::Image["players/#{$image1}.png"]
+    @direction = -1
+    @eyes = CloneEyes.new self
+    self.factor_x = -1
+  end
+  def go_left
+    @x -= 20
+  end
+  def update
+    @eyes.update
+  end
+  def draw
+    super
+    @eyes.draw
+  end
+end
+
 
 #
 #  PLAYER 2 CLASS
