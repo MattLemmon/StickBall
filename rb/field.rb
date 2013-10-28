@@ -58,20 +58,6 @@ class Field < Chingu::GameState
 #    $score2 = 0
     $winner = ""
 
-    if $round == 1
-      $music = Song["media/audio/guitar_song.ogg"]
-      $music.volume = 0.8
-      $music.play(true)
-    elsif $round == 2
-      $music = Song["media/audio/guitar_solo.ogg"]
-      $music.volume = 0.8
-      $music.play(true)
-    else
-      $music = Song["media/audio/guitar_song.ogg"]
-      $music.volume = 0.8
-      $music.play(true)
-    end
-
     @bump = 0
     @bump_delay = 15
     @bounce = 0
@@ -136,6 +122,20 @@ class Field < Chingu::GameState
 
 #    1.times { fire }
 
+    if $round == 1
+      $music = Song["media/audio/guitar_song.ogg"]
+      $music.volume = 0.4
+      $music.play(true)
+    elsif $round == 2
+      $music = Song["media/audio/electricity_by_alexander_blu.ogg"]
+      $music.volume = 0.4
+      $music.play(true)
+    else
+      $music = Song["media/audio/guitar_solo.ogg"]
+      $music.volume = 0.4
+      $music.play(true)
+    end
+
     $music.volume = 0.4
     $music.play 
 
@@ -145,7 +145,9 @@ class Field < Chingu::GameState
 
     after(2400)  { @transition = false }
 #    after(22500) { puts 22500 }
-    after(22400) { $music.volume = 0.2 }
+    if $round == 1
+      after(22400) { $music.volume = 0.2 }
+    end
 #    after(27500) { puts 27500 }
 #    after(30000) { puts 30000 }
   end
@@ -471,12 +473,12 @@ class Field < Chingu::GameState
    Player1.each_collision(Stun) do |player, stun|    # PICKUP STUNS
       stun.destroy
       $spell1 = "stun"
-      $stun_grab_right.play(0.7)
+      $stun_grab_right.play(0.9)
     end
     Player2.each_collision(Stun) do |player, stun|    # PICKUP STUNS
       stun.destroy
       $spell2 = "stun"
-      $stun_grab_left.play(0.7)
+      $stun_grab_left.play(0.9)
     end
 
    Player1.each_collision(Mist) do |player, mist|    # PICKUP MISTS
@@ -596,7 +598,7 @@ class Field < Chingu::GameState
           particle.x = 0
           particle.velocity_x = -particle.velocity_x
 #          $score1 += 1
-          $bang2.play(0.4)
+          $bang2.play(0.3)
           if $health2 > 1
             $health2 -=1
             @health2_text.text = "#{$health2}"
@@ -627,7 +629,7 @@ class Field < Chingu::GameState
           particle.x = $window.width
           particle.velocity_x = -particle.velocity_x
 #          $score2 += 1
-          $bang1.play(0.5)
+          $bang1.play(0.4)
           if $health1 > 1
             $health1 -=1
             @health1_text.text = "#{$health1}"
