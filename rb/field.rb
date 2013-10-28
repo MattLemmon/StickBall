@@ -328,10 +328,12 @@ class Field < Chingu::GameState
       create_heart
 #      create_stun
 #      @drop_vel_y *= -1
-#      create_mist
+      create_mist
     end
     if $rare_drop == "stun"
       create_stun
+      @drop_vel_y *= -1
+      create_mist
     end
     if $rare_drop == "mist"
       create_mist

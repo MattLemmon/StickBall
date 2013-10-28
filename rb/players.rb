@@ -359,12 +359,20 @@ class Player1 < Chingu::GameObject
 #    end
   end
   def mist
-#    Zapper.create(:x=>@x,:y=>@y)
-    @mist = true
+    after(300) {@mist = true}
+    smog_cover
     $misted.play
     after(3000) {@mist = false}
   end
-
+  def smog_cover
+    Smog.create(:x=>@x,:y=>@y)
+    after(100) {Smog.create(:x=>@x,:y=>@y)}
+    after(200) {Smog.create(:x=>@x,:y=>@y)}
+    after(300) {Smog.create(:x=>@x,:y=>@y)}
+    after(400) {Smog.create(:x=>@x,:y=>@y)}
+    after(500) {Smog.create(:x=>@x,:y=>@y)}
+    after(600) {Smog.create(:x=>@x,:y=>@y)}
+  end
   def update_face
     @eyes.update
     @mouth.update
@@ -519,11 +527,20 @@ class Player2 < Chingu::GameObject
     after(2000) {@stun = false}
   end
   def mist
-    @mist = true
+    after(300) {@mist = true}
+    smog_cover
     $misted.play
     after(3000) {@mist = false}
   end
-
+  def smog_cover
+    Smog.create(:x=>@x,:y=>@y)
+    after(100) {Smog.create(:x=>@x,:y=>@y)}
+    after(200) {Smog.create(:x=>@x,:y=>@y)}
+    after(300) {Smog.create(:x=>@x,:y=>@y)}
+    after(400) {Smog.create(:x=>@x,:y=>@y)}
+    after(500) {Smog.create(:x=>@x,:y=>@y)}
+    after(600) {Smog.create(:x=>@x,:y=>@y)}
+  end
   def update_face
     @eyes.update
     @mouth.update

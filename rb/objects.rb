@@ -79,50 +79,6 @@ end
 
 
 #
-#   BULLET
-#     technically speaking, it's a laser, but it's still called "Bullet"
-class Bullet < Chingu::GameObject
-  trait :bounding_circle, :debug => DEBUG
-  has_traits :timer, :velocity, :collision_detection
-
-  def initialize(options)
-    super(options.merge(:image => Gosu::Image["objects/laser.png"]))
-    @speed = 7
-    self.velocity_x = Gosu::offset_x(@angle, @speed)
-    self.velocity_y = Gosu::offset_y(@angle, @speed)
-    @max_x, @max_y, @scr_edge = $max_x, $max_y, $scr_edge
-  end
-
-  def update
-    @y += self.velocity_y
-    @x += self.velocity_x
-    if @x < -@scr_edge; @x = @max_x; end  # wrap beyond screen edge
-    if @y < -@scr_edge; @y = @max_y; end
-    if @x > @max_x; @x = -@scr_edge; end
-    if @y > @max_y; @y = -@scr_edge; end
-    after(550) {self.destroy}  # goes through screen edges, but only to a certain distance
-  end
-end
-
-
-
-
-#
-#   EXPLOSION
-# 
-class Explosion < Chingu::GameObject
-  trait :timer
-  def setup
-    @animation = Chingu::Animation.new(:file => "objects/explosion.png", :delay => 5)
-  end
-  def update
-    @image = @animation.next
-    after(100) {self.destroy}
-  end
-end
-
-
-#
 #   STAR
 #                                used for power_ups
 class Star < Chingu::GameObject
@@ -333,8 +289,6 @@ class Spell2 < Chingu::GameObject
 end
 
 
-
-
 #
 #  ZAPPER
 #                 lightning bolt .bmp thanks to WanderingWeezard
@@ -349,6 +303,21 @@ class Zapper < Chingu::GameObject
   def update
     @image = @animation.next  # move animation forward
     after(2000) {self.destroy}
+  end
+end
+
+#
+#  SMOG
+#                 lightning bolt .bmp thanks to WanderingWeezard
+class Smog < Chingu::GameObject
+  trait :timer
+  def setup
+    @image = Image["objects/smog.png"]
+    self.zorder = 500
+    self.factor = 2.0 + rand(10.0) / 10
+  end
+  def update
+    after(200) {self.destroy}
   end
 end
 
@@ -441,6 +410,50 @@ class Meteor < Chingu::GameObject
   end
 end
 
+
+
+#
+#   BULLET
+#     technically speaking, it's a laser, but it's still called "Bullet"
+class Bullet < Chingu::GameObject
+  trait :bounding_circle, :debug => DEBUG
+  has_traits :timer, :velocity, :collision_detection
+
+  def initialize(options)
+    super(options.merge(:image => Gosu::Image["objects/laser.png"]))
+    @speed = 7
+    self.velocity_x = Gosu::offset_x(@angle, @speed)
+    self.velocity_y = Gosu::offset_y(@angle, @speed)
+    @max_x, @max_y, @scr_edge = $max_x, $max_y, $scr_edge
+  end
+
+  def update
+    @y += self.velocity_y
+    @x += self.velocity_x
+    if @x < -@scr_edge; @x = @max_x; end  # wrap beyond screen edge
+    if @y < -@scr_edge; @y = @max_y; end
+    if @x > @max_x; @x = -@scr_edge; end
+    if @y > @max_y; @y = -@scr_edge; end
+    after(550) {self.destroy}  # goes through screen edges, but only to a certain distance
+  end
+end
+
+
+
+
+#
+#   EXPLOSION
+# 
+class Explosion < Chingu::GameObject
+  trait :timer
+  def setup
+    @animation = Chingu::Animation.new(:file => "objects/explosion.png", :delay => 5)
+  end
+  def update
+    @image = @animation.next
+    after(100) {self.destroy}
+  end
+end
 
 
 
