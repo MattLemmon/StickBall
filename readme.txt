@@ -46,7 +46,7 @@ Zip" link at the right side of the screen toward the bottom.
 _________________________________________________________________
 
                   DETAILED INSTALL (If you don't have Ruby)
-                                   (more info at libgosu.org)
+
 WINDOWS:
 
 If you are on Windows, download the Ruby-Installer(version 1.9.3),
@@ -167,10 +167,10 @@ $ ruby main.rb
 
 Enjoy!
 
-
-
 _________________________________________________________________
 
+
+                See more about Gosu at libgosu.org
 
 _________________________________________________________________
 
