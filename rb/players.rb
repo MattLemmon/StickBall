@@ -389,7 +389,7 @@ class Player1 < Chingu::GameObject
     @direction = -1
     @squeeze_y = 1.0
     @hit_time = Gosu.milliseconds - 3000
-    @wobble_resistance = 0.005
+    @wobble_resistance = 0.008
     @eyes = Eyes.new self
     @mouth = Mouth.new self
   end
@@ -401,12 +401,23 @@ class Player1 < Chingu::GameObject
   end
   def go_up
     @velocity_y -= @speed
-    @squeeze_y = walk_wobble_factor
+#    @squeeze_y = walk_wobble_factor
   end
   def go_down
     @velocity_y += @speed
-    @squeeze_y = walk_wobble_factor
+#    @squeeze_y = walk_wobble_factor
   end
+#  def walk_wobble_factor  #sin curve between 1..0.8 at 5hz
+#    1 - (Math.sin(Gosu.milliseconds/(Math::PI*10))+1)/10.0
+#  end
+  def hit_wobble_factor
+    time = Gosu.milliseconds - @hit_time
+    1 - (Math.sin(time/25.0)/(time**1.7*@wobble_resistance))
+  end
+  def wobble
+    @hit_time = Gosu.milliseconds - 30
+  end
+
   def cast_spell
     if $spell1 != "none"
       $spell_cast.play(0.9)
@@ -445,19 +456,6 @@ class Player1 < Chingu::GameObject
     after(400) {Smog.create(:x=>@x,:y=>@y)}
     after(500) {Smog.create(:x=>@x,:y=>@y)}
     after(600) {Smog.create(:x=>@x,:y=>@y)}
-  end
-
-  def walk_wobble_factor  #sin curve between 1..0.8 at 5hz
-    1 - (Math.sin(Gosu.milliseconds/(Math::PI*10))+1)/10.0
-  end
-  
-  def hit_wobble_factor
-    time = Gosu.milliseconds - @hit_time
-    1 - (Math.sin(time/25.0)/(time**1.7*@wobble_resistance))
-  end
-  
-  def wobble
-    @hit_time = Gosu.milliseconds - 30
   end
 
   def update_face
@@ -519,11 +517,20 @@ class Player2 < Chingu::GameObject
     @direction = 1
     @squeeze_y = 1.0
     @hit_time = Gosu.milliseconds - 3000
-    @wobble_resistance = 0.005
+    @wobble_resistance = 0.008
     @eyes = Eyes.new self
     @mouth = Mouth.new self
   end
-
+  def walk_wobble_factor  #sin curve between 1..0.8 at 5hz
+    1 - (Math.sin(Gosu.milliseconds/(Math::PI*10))+1)/10.0
+  end
+  def hit_wobble_factor
+    time = Gosu.milliseconds - @hit_time
+    1 - (Math.sin(time/25.0)/(time**1.7*@wobble_resistance))
+  end
+  def wobble
+    @hit_time = Gosu.milliseconds - 30
+  end
   def go_left
     @velocity_x -= @speed
   end
@@ -532,11 +539,11 @@ class Player2 < Chingu::GameObject
   end
   def go_up
     @velocity_y -= @speed
-    @squeeze_y = walk_wobble_factor
+#    @squeeze_y = walk_wobble_factor
   end
   def go_down
     @velocity_y += @speed
-    @squeeze_y = walk_wobble_factor
+#    @squeeze_y = walk_wobble_factor
   end
   def cast_spell
     if $spell2 != "none"
@@ -570,17 +577,6 @@ class Player2 < Chingu::GameObject
     after(400) {Smog.create(:x=>@x,:y=>@y)}
     after(500) {Smog.create(:x=>@x,:y=>@y)}
     after(600) {Smog.create(:x=>@x,:y=>@y)}
-  end
-
-  def walk_wobble_factor  #sin curve between 1..0.8 at 5hz
-    1 - (Math.sin(Gosu.milliseconds/(Math::PI*10))+1)/10.0
-  end
-  def hit_wobble_factor
-    time = Gosu.milliseconds - @hit_time
-    1 - (Math.sin(time/25.0)/(time**1.7*@wobble_resistance))
-  end
-  def wobble
-    @hit_time = Gosu.milliseconds - 30
   end
 
   def update_face
