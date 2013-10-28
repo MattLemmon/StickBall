@@ -1,3 +1,127 @@
+
+
+
+
+#
+#  PLAYER 2 CLONE
+#
+class Player2Clone < Chingu::GameObject
+  traits :velocity
+  attr_reader :direction
+  def setup
+    @image = Gosu::Image["players/#{$image2}.png"]
+    @direction = 1
+    @eyes = CloneEyes.new self
+    @speed = $speed2
+  end
+  def go_left
+    @velocity_x -= @speed
+  end
+  def go_right
+    @velocity_x += @speed
+  end
+  def go_up
+    @velocity_y -= @speed
+  end
+  def go_down
+    @velocity_y += @speed
+  end
+  def cast_spell
+  end
+  def creep
+  end
+  def update
+    @eyes.update
+    @velocity_x *= 0.25
+    @velocity_y *= 0.25
+    if @x < -$scr_edge; @x = $max_x; end  # wrap beyond screen edge
+    if @y < -$scr_edge; @y = $max_y; end
+    if @x > $max_x; @x = -$scr_edge; end
+    if @y > $max_y; @y = -$scr_edge; end
+  end
+  def draw
+#    super
+    @eyes.draw
+  end
+end
+
+
+
+
+#
+# FIELD CHANGE GAMESTATE
+#
+class FieldChange < Chingu::GameState    
+  trait :timer
+
+  def setup
+    self.input = { :p=>Pause, :space=>:fire, :right_shift=>:next, :left_shift=>:next, [:enter, :return] => Field }
+    $window.caption = "Field Transition - Preare for Round #{$round}"
+    @player1 = Player1Clone.create(:x=> $pos1_x, :y=> $pos1_y)
+    @player1.input = {:holding_left=>:go_left,:holding_right=>:go_right,:holding_up=>:go_up,:holding_down=>:go_down}
+    @player2 = Player2Clone.create(:x=> $pos2_x, :y=> $pos2_y)
+    @player2.input = {:holding_left_ctrl=>:creep,:holding_a=>:go_left,:holding_d=>:go_right,:holding_w=>:go_up,:holding_s=>:go_down}
+
+    @song_fade = false
+    @fade_count = 0
+    @chant = "Loading Round #{$round}"
+
+    chant
+    after (1200) { @player1.go_left }
+  end
+
+  def next
+    push_game_state(Field)
+  end
+
+  def fire
+    puts current_game_state
+  end
+
+  def chant
+    @chant_text = Chingu::Text.create("#{@chant}", :y => 520, :size => 30, :color => Colors::White, :zorder => Zorder::GUI)
+    @chant_text.x = 400 - @chant_text.width/2
+    after(800) { @chant_text.text = "" }
+    after(1200) { @chant_text.text = "#{@chant}" }
+    after(2000) { @chant_text.text = "" }
+    after(2400) { @chant_text.text = "#{@chant}" }
+    after(3200) { push_game_state(Field) }
+
+    after(2000) { @song_fade = true }
+  end
+
+  def update
+
+    $pos1_x, $pos1_y = @player1.x, @player1.y
+    $pos2_x, $pos2_y = @player2.x, @player2.y
+
+    if @song_fade == true # fade song if @song_fade is true
+      @fade_count += 1
+      if @fade_count == 20
+        @fade_count = 0
+        $music.volume -= 0.1
+      end
+    end
+  end
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 DEBUG = false  # Set to true to see bounding circles used for collision detection
 
 require_relative 'face/mouth'
@@ -405,36 +529,7 @@ class Player1Clone < Chingu::GameObject
     @eyes = CloneEyes.new self
     self.factor_x = -1
   end
-  def go_left
-    @x -= 4
-  end
-   def go_right
-    @x += 4
-  end
-  def go_up
-    @y -= 4
-  end
-  def go_down
-    @y += 4
-  end
-  def update
-    @eyes.update
-  end
-  def draw
-    super
-    @eyes.draw
-  end
-end
 
-class Player2Clone < Chingu::GameObject
-  traits :velocity
-  attr_reader :direction
-  def setup
-    @image = Gosu::Image["players/#{$image2}.png"]
-    @direction = 1
-    @eyes = CloneEyes.new self
-    @speed = $speed2
-  end
   def go_left
     @velocity_x -= @speed
   end
@@ -448,23 +543,84 @@ class Player2Clone < Chingu::GameObject
     @velocity_y += @speed
   end
   def cast_spell
+    if $spell1 != "none"
+      $spell_cast.play(0.9)
+      puts "cast #{$spell1}"
+      3.times { Spell1.create(:x=>@x, :y=>@y ) }
+      $spell1 = "none"
+    end
+#    if $spell1 == "mist"
+#      @player2.mist
+#    end
   end
   def creep
+    @creeping = true
   end
-  def update
+  def stun
+#    puts $spell2
+#    if $spell2 == "stun"
+      Zapper.create(:x=>@x,:y=>@y)
+      @stun = true
+      $stunned.play(0.3)
+      after(100) {$zapped.play(0.3)}
+      after(2000) {@stun = false}
+#    end
+  end
+  def mist
+#    Zapper.create(:x=>@x,:y=>@y)
+    @mist = true
+    $misted.play
+    after(3000) {@mist = false}
+  end
+
+  def update_face
     @eyes.update
+    @mouth.update
+  end
+
+  def update
+    if @stun == true
+      @speed = 0
+    elsif @creeping == true
+      @speed = 5
+    else
+      @speed = $speed1
+    end
+    @creeping = false
     @velocity_x *= 0.25
     @velocity_y *= 0.25
+    update_face
     if @x < -$scr_edge; @x = $max_x; end  # wrap beyond screen edge
     if @y < -$scr_edge; @y = $max_y; end
     if @x > $max_x; @x = -$scr_edge; end
     if @y > $max_y; @y = -$scr_edge; end
+  end
+
+  def draw
+    if @mist == false
+      super
+      @eyes.draw
+      @mouth.draw
+    end
+  end
+end
+
+
+
+
+
+  def go_left
+    @x -= 20
+  end
+  def update
+    @eyes.update
   end
   def draw
     super
     @eyes.draw
   end
 end
+
 
 #
 #  PLAYER 2 CLASS

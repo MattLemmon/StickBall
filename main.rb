@@ -69,6 +69,8 @@ class GameWindow < Chingu::Window
     super(800,600,false)
     $round = 1
     $intro = true
+    $pos1_x, $pos1_y = 740, 300
+    $pos2_x, $pos2_y = 60, 300
     $max_x = 815
     $max_y = 615
     $scr_edge = 15
@@ -103,8 +105,8 @@ class GameWindow < Chingu::Window
     $bang1 = Sound["media/audio/bang1.ogg"]
     $bang2 = Sound["media/audio/bang2.ogg"]
     $guitar_riff = Sound["media/audio/guitar_riff_short.ogg"]
-    $guitar_solo = Song["media/audio/guitar_solo.ogg"]
-    $guitar_song = Song["media/audio/guitar_song.ogg"]
+#    $guitar_solo = Song["media/audio/guitar_solo.ogg"]
+#    $guitar_song = Song["media/audio/guitar_song.ogg"]
     self.caption = "Stick Ball"
     @cursor = true # comment out to hide cursor
     self.input = { :esc => :exit,
