@@ -58,6 +58,20 @@ class Field < Chingu::GameState
 #    $score2 = 0
     $winner = ""
 
+    if $round == 1
+      $music = Song["media/audio/guitar_song.ogg"]
+      $music.volume = 0.8
+      $music.play(true)
+    elsif $round == 2
+      $music = Song["media/audio/guitar_solo.ogg"]
+      $music.volume = 0.8
+      $music.play(true)
+    else
+      $music = Song["media/audio/guitar_song.ogg"]
+      $music.volume = 0.8
+      $music.play(true)
+    end
+
     @bump = 0
     @bump_delay = 15
     @bounce = 0
@@ -122,8 +136,8 @@ class Field < Chingu::GameState
 
 #    1.times { fire }
 
-    $music2.volume = 0.4
-    $music2.play 
+    $music.volume = 0.4
+    $music.play 
 
     round_setup
 #    Background1.create
@@ -131,7 +145,7 @@ class Field < Chingu::GameState
 
     after(2400)  { @transition = false }
 #    after(22500) { puts 22500 }
-    after(23000) { $music2.volume = 0.2 }
+    after(22400) { $music.volume = 0.2 }
 #    after(27500) { puts 27500 }
 #    after(30000) { puts 30000 }
   end
@@ -714,7 +728,7 @@ class Field < Chingu::GameState
       @fade_count += 1
       if @fade_count == 30
         @fade_count = 0
-        $music1.volume -= 0.1
+        $music.volume -= 0.1
       end
     end
   end

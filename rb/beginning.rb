@@ -176,7 +176,7 @@ class Intro < Chingu::GameState
       @fade_count += 1
       if @fade_count == 7
         @fade_count = 0
-        $music1.volume -= 0.1
+        $music.volume -= 0.1
       end
     end
 
@@ -209,7 +209,7 @@ class Intro < Chingu::GameState
     after(4400) { @text3.text = "" }
     after(4800) { @text3.text = "#{@chant}" }
     after(5500) {
-      $music1.stop
+#      $music1.stop
 #          @song_fade = false
 #          $music2.volume = 0.9
 #          $music2.play
@@ -248,6 +248,13 @@ class PreIntro < Chingu::GameState
     @bounce_delay = 6
     @ground_y = ($window.height * 0.95).to_i
 
+    if $intro == false
+      $music = Song["media/audio/guitar_solo.ogg"]
+      $music.volume = 0.8
+      $music.play(true)
+    else
+      $intro = false
+    end
 
     @title = Title.create
 #    @title.y = 60

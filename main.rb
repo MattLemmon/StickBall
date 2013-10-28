@@ -103,8 +103,8 @@ class GameWindow < Chingu::Window
     $bang1 = Sound["media/audio/bang1.ogg"]
     $bang2 = Sound["media/audio/bang2.ogg"]
     $guitar_riff = Sound["media/audio/guitar_riff_short.ogg"]
-    $music1 = Song["media/audio/guitar_solo.ogg"]
-    $music2 = Song["media/audio/guitar_song.ogg"]
+    $guitar_solo = Song["media/audio/guitar_solo.ogg"]
+    $guitar_song = Song["media/audio/guitar_song.ogg"]
     self.caption = "Stick Ball"
     @cursor = true # comment out to hide cursor
     self.input = { :esc => :exit,

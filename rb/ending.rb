@@ -5,7 +5,7 @@
 class GameOver < Chingu::GameState
   def initialize
     super
-    self.input = { :esc => :exit, [:enter, :return] => Intro, :p => Pause, :r => lambda{current_game_state.setup}, [:q, :l] => :pop }
+    self.input = { :esc => :exit, [:enter, :return] => PreIntro, :p => Pause, :r => lambda{current_game_state.setup}, [:q, :l] => :pop }
   end
 
   def setup
@@ -46,7 +46,7 @@ class Ending1 < Chingu::GameState
   end
 
   def transition
-    after(3000) { push_game_state(Chingu::GameStates::FadeTo.new(Intro.new, :speed => 10)) }
+    after(3000) { push_game_state(Chingu::GameStates::FadeTo.new(PreIntro.new, :speed => 10)) }
   end
 
   def pop

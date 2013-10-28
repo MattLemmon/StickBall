@@ -44,9 +44,9 @@ class FieldChange < Chingu::GameState
   def setup
     self.input = { :p=>Pause, :space=>:fire, :right_shift=>:next, :left_shift=>:next, [:enter, :return] => Field }
     $window.caption = "Field Transition - Preare for Round #{$round}"
-
     @player1 = Player1Clone.create(:x=> $pos1_x, :y=> $pos1_y)
-
+    @song_fade = false
+    @fade_count = 0
     @chant = "Loading Round #{$round}"
 
     chant
@@ -69,5 +69,17 @@ class FieldChange < Chingu::GameState
     after(2000) { @chant_text.text = "" }
     after(2400) { @chant_text.text = "#{@chant}" }
     after(3200) { push_game_state(Field) }
+
+    after(2000) { @song_fade = true }
+  end
+
+  def update
+    if @song_fade == true # fade song if @song_fade is true
+      @fade_count += 1
+      if @fade_count == 20
+        @fade_count = 0
+        $music.volume -= 0.1
+      end
+    end
   end
 end
