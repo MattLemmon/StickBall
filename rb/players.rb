@@ -43,8 +43,8 @@ end
 class CharWheel < Chingu::GameObject
   def setup
     @speed = 3
-    @picture = ["boy", "monk", "tanooki", "cult_leader",
-                 "villager", "knight", "sorceror" ]
+    @picture = ["boy", "monk", "tanooki", "shaman",
+                 "villager", "knight", "ninja", "sorceror" ]
     @p = 0
     @health = [5, 10, 15, 20]
     @h = 1
@@ -71,8 +71,8 @@ class CharWheel1 < CharWheel
   def setup
     self.factor_x = -1
     @speed = 3
-    @picture = ["boy", "monk", "tanooki", "cult_leader",
-                "villager", "knight", "sorceror" ]
+    @picture = ["boy", "monk", "tanooki", "shaman",
+                "villager", "knight", "ninja", "sorceror" ]
     @p = 0
     @health = [5, 10, 15, 20]
     @h = 1
@@ -85,7 +85,7 @@ class CharWheel1 < CharWheel
       if @p > 0
         @p -= 1
       else
-        @p = 6
+        @p = 7
       end
       @image = Gosu::Image["players/#{@picture[@p]}.png"]
       $image1 = "#{@picture[@p]}"
@@ -94,7 +94,7 @@ class CharWheel1 < CharWheel
   def go_right
     if @ready == false
       $click_right.play(0.7)
-      if @p < 6
+      if @p < 7
         @p += 1
       else
         @p = 0
@@ -146,7 +146,7 @@ class CharWheel2 < CharWheel
       if @p > 0
         @p -= 1
       else
-        @p = 6
+        @p = 7
       end
       @image = Gosu::Image["players/#{@picture[@p]}.png"]
       $image2 = "#{@picture[@p]}"
@@ -155,7 +155,7 @@ class CharWheel2 < CharWheel
   def go_right
     if @ready == false
       $click_left.play(0.7)
-      if @p < 6
+      if @p < 7
         @p += 1
       else
         @p = 0
@@ -192,34 +192,6 @@ class CharWheel2 < CharWheel
     end
   end
 end
-
-=begin
-#
-#  EYES
-#
-class Eyes
-  def initialize parent
-    @parent = parent
-    @image = Gosu::Image["players/eye_sockets.png"]
-    @eye_ball = Gosu::Image["players/eye_ball.png"]
-    @x = 0
-    @y = 0
-  end
-  
-  def update
-    @x = @parent.x + 3 * @parent.direction
-    @y = @parent.y - 6
-    puck = @parent.game_state.puck
-    @eye_angle = Gosu.angle @x, @y, puck.x, puck.y
-  end
-  
-  def draw
-    @image.draw_rot @x, @y, Zorder::Eyes, 0, 0.5, 1.0
-    @eye_ball.draw_rot @x-7+Gosu.offset_x(@eye_angle, 3), @y-2+Gosu.offset_y(@eye_angle, 2), Zorder::Eyes, 0, 0.5, 1.0
-    @eye_ball.draw_rot @x+7+Gosu.offset_x(@eye_angle, 3), @y-2+Gosu.offset_y(@eye_angle, 2), Zorder::Eyes, 0, 0.5, 1.0
-  end
-end
-=end
 
 #
 #  REFEREE
@@ -561,3 +533,31 @@ class Knight < Chingu::GameObject
 end
 
 
+
+=begin
+#
+#  EYES
+#
+class Eyes
+  def initialize parent
+    @parent = parent
+    @image = Gosu::Image["players/eye_sockets.png"]
+    @eye_ball = Gosu::Image["players/eye_ball.png"]
+    @x = 0
+    @y = 0
+  end
+  
+  def update
+    @x = @parent.x + 3 * @parent.direction
+    @y = @parent.y - 6
+    puck = @parent.game_state.puck
+    @eye_angle = Gosu.angle @x, @y, puck.x, puck.y
+  end
+  
+  def draw
+    @image.draw_rot @x, @y, Zorder::Eyes, 0, 0.5, 1.0
+    @eye_ball.draw_rot @x-7+Gosu.offset_x(@eye_angle, 3), @y-2+Gosu.offset_y(@eye_angle, 2), Zorder::Eyes, 0, 0.5, 1.0
+    @eye_ball.draw_rot @x+7+Gosu.offset_x(@eye_angle, 3), @y-2+Gosu.offset_y(@eye_angle, 2), Zorder::Eyes, 0, 0.5, 1.0
+  end
+end
+=end

@@ -22,13 +22,12 @@ class Field < Chingu::GameState
     @transition = true
 
     self.input = { :p => Pause,
+                   :r => lambda{current_game_state.setup},
                    :space => :fire,
                    :j => :toggle_left,
                    :l => :toggle_right,
                    :i => :toggle_up,
                    :k => :toggle_down,
-                   :p => Pause,
-                   :r => lambda{current_game_state.setup},
                    :right_shift=>:right_attack,
                    :left_shift=>:left_attack,
                    [:enter, :return] => Field
