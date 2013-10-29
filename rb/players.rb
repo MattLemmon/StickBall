@@ -392,6 +392,7 @@ class Player1 < Chingu::GameObject
     @wobble_resistance = 0.008
     @eyes = Eyes.new self
     @mouth = Mouth.new self
+    @last_x, @last_y = @x, @y
   end
   def go_left
     @velocity_x -= @speed
@@ -479,10 +480,42 @@ class Player1 < Chingu::GameObject
     @velocity_x *= 0.25
     @velocity_y *= 0.25
     update_face
+
+    # Particles
+#    @part_angle = Gosu.angle @x, @y, @x-10 , @y+10
+    if @velocity_x < 0.1 && @velocity_x > -0.1 && @velocity_y < 0.1 && @velocity_y > -0.1
+      @part_vel_x = -6 + rand(13)
+      @part_vel_y = -6 + rand(13)
+    else
+      @part_vel_x = -@velocity_x * 1.5
+      @part_vel_y = -@velocity_y * 1.5
+
+#      @part_vel_y = -self.velocity_y*2
+    end
+
+    Particulate.create(:x => @x, :y => @y,
+            :image => "objects/particle_2.png", 
+            :color => 0xFF963800,#0xFF00036F,
+            :mode => :additive,
+            :fade_rate => -15,
+#            :angle => @angle,
+            :factor => 2.0,
+            :velocity_x => @part_vel_x,
+            :velocity_y => @part_vel_y,
+            :zorder => Zorder::Main_Character_Particles)
+
+
+#    Particulate.each { |particle| particle.velocity_x = -self.velocity_x*2; particle.velocity_y = @part_vel_y }
+
+#    Chingu::Particle.each { |particle| particle.y -= Gosu::offset_y(@angle, @part_speed); particle.x -= Gosu::offset_x(@angle, @part_speed)}
+    Particulate.destroy_if { |object| object.color.alpha == 0 }
+
     if @x < -$scr_edge; @x = $max_x; end  # wrap beyond screen edge
     if @y < -$scr_edge; @y = $max_y; end
     if @x > $max_x; @x = -$scr_edge; end
     if @y > $max_y; @y = -$scr_edge; end
+    @last_x, @last_y = @x, @y
+
   end
 
   def draw
@@ -520,6 +553,7 @@ class Player2 < Chingu::GameObject
     @wobble_resistance = 0.008
     @eyes = Eyes.new self
     @mouth = Mouth.new self
+    @last_x, @last_y = @x, @y
   end
   def walk_wobble_factor  #sin curve between 1..0.8 at 5hz
     1 - (Math.sin(Gosu.milliseconds/(Math::PI*10))+1)/10.0
@@ -603,6 +637,7 @@ class Player2 < Chingu::GameObject
     if @y < -$scr_edge; @y = $max_y; end
     if @x > $max_x; @x = -$scr_edge; end
     if @y > $max_y; @y = -$scr_edge; end
+    @last_x, @last_y = @x, @y
   end
 
   def draw

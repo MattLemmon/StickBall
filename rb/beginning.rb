@@ -36,7 +36,7 @@ class Intro < Chingu::GameState
     @chant = "Prepare for Battle"
 
     if $mode == "Versus"
-      self.input = { [:enter, :return] => Field, :p => Pause,
+      self.input = { [:enter, :return] => FieldChange, :p => Pause,
                     :right_shift => :ready1,
                     :left_shift => :ready2 }
     else
@@ -174,7 +174,7 @@ class Intro < Chingu::GameState
 
     if @song_fade == true # fade song if @song_fade is true
       @fade_count += 1
-      if @fade_count == 7
+      if @fade_count == 8
         @fade_count = 0
         $music.volume -= 0.1
       end
@@ -208,19 +208,12 @@ class Intro < Chingu::GameState
     after(4000) { @text3.text = "#{@chant}" }
     after(4400) { @text3.text = "" }
     after(4800) { @text3.text = "#{@chant}" }
-    after(5500) {
-#      $music1.stop
-#          @song_fade = false
-#          $music2.volume = 0.9
-#          $music2.play
-#          $music1.volume = 0.9
-#          $music1.play
-#          push_game_state(Chingu::GameStates::FadeTo.new(Field.new, :speed => 8)) }
-      push_game_state(Field)
+    after(5200) { @text3.text = "" }
+    after(6500) {
+      push_game_state(FieldChange)
     }
   end
 end
-
 
 
 

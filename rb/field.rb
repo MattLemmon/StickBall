@@ -40,6 +40,8 @@ class Field < Chingu::GameState
     super
     $health1 = $start_health1
     $health2 = $start_health2
+
+    ####################################################
     $stars1 = 0
     $stars2 = 0
     $speed1 = 6
@@ -54,6 +56,8 @@ class Field < Chingu::GameState
     $kick2 = false
     $spell1 = "none"
     $spell2 = "none"
+    ####################################################
+
 #    $score1 = 0
 #    $score2 = 0
     $winner = ""
@@ -121,7 +125,7 @@ class Field < Chingu::GameState
     @puck_flare.scale = 1.0
 
 #    1.times { fire }
-
+=begin
     if $round == 1
       $music = Song["media/audio/guitar_song.ogg"]
       $music.volume = 0.4
@@ -135,9 +139,9 @@ class Field < Chingu::GameState
       $music.volume = 0.4
       $music.play(true)
     end
-
-    $music.volume = 0.4
-    $music.play 
+=end
+#    $music.volume = 0.4
+#    $music.play 
 
     round_setup
 #    Background1.create
@@ -145,27 +149,37 @@ class Field < Chingu::GameState
 
     after(2400)  { @transition = false }
 #    after(22500) { puts 22500 }
-    if $round == 1
-      after(22400) { $music.volume = 0.2 }
-    end
+#    if $round == 1
+#      after(22400) { $music.volume = 0.2 }
+#    end
 #    after(27500) { puts 27500 }
 #    after(30000) { puts 30000 }
   end
 
   def round_setup
     if $round == 1
+      $music = Song["media/audio/guitar_song.ogg"]
+      $music.volume = 0.4
+      $music.play(true)
       @parallax = Chingu::Parallax.create(:x => 0, :y => 0, :rotation_center => :top_left, :zorder => Zorder::Background)
       @parallax.add_layer(:image => "backgrounds/space1.png", :damping => 40)
       @parallax.add_layer(:image => "backgrounds/space2.png", :damping => 30)
       @parallax.add_layer(:image => "backgrounds/space3.png", :damping => 20)
+      after(22400) { $music.volume = 0.2 }
     end
     if $round == 2
+      $music = Song["media/audio/electricity_by_alexander_blu.ogg"]
+      $music.volume = 0.6
+      $music.play(true)
       @parallax = Chingu::Parallax.create(:x => 0, :y => 0, :rotation_center => :top_left, :zorder => Zorder::Background)
       @parallax.add_layer(:image => "backgrounds/clouds.png", :damping => 20)
       @parallax.add_layer(:image => "backgrounds/space2.png", :damping => 15)
       @parallax.add_layer(:image => "backgrounds/space3.png", :damping => 10)
     end
     if $round == 3
+      $music = Song["media/audio/guitar_solo.ogg"]
+      $music.volume = 0.4
+      $music.play(true)
       @parallax = Chingu::Parallax.create(:x => 0, :y => 0, :rotation_center => :top_left, :zorder => Zorder::Background)
       @parallax.add_layer(:image => "backgrounds/fishdish_mockup.png", :damping => 40)
       @parallax.add_layer(:image => "backgrounds/space2.png", :damping => 30)

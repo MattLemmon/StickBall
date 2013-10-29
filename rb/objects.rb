@@ -75,7 +75,12 @@ class Plasma < Chingu::GameObject
   end
 end
 
-
+#
+#   PARTICULATE
+#
+class Particulate < Chingu::Particle
+  traits :velocity
+end
 
 
 #

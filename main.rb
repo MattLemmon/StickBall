@@ -13,6 +13,8 @@ require_relative 'rb/beginning'
 require_relative 'rb/ending'
 require_relative 'rb/backgrounds'
 require_relative 'rb/round_change'
+require_relative 'rb/crowd'
+
 
 module Zorder  # define some frequently used Zorders
   GUI = 400
@@ -75,6 +77,8 @@ class GameWindow < Chingu::Window
     $max_y = 615
     $scr_edge = 15
     $cooling_down = 70
+    $speed1 = 6
+    $speed2 = 6
     $score1 = 0
     $score2 = 0
     $mode = "Campaign"
@@ -105,6 +109,10 @@ class GameWindow < Chingu::Window
     $bang1 = Sound["media/audio/bang1.ogg"]
     $bang2 = Sound["media/audio/bang2.ogg"]
     $guitar_riff = Sound["media/audio/guitar_riff_short.ogg"]
+    $hold_music1 = Sound["media/audio/hold_music1.ogg"]
+    $hold_music2 = Sound["media/audio/hold_music2.ogg"]
+    $hold_music3 = Sound["media/audio/hold_music3.ogg"]
+    $hold_music4 = Sound["media/audio/hold_music4.ogg"]
 #    $guitar_solo = Song["media/audio/guitar_solo.ogg"]
 #    $guitar_song = Song["media/audio/guitar_song.ogg"]
     self.caption = "Stick Ball"
@@ -121,6 +129,7 @@ class GameWindow < Chingu::Window
 
   def setup
     push_game_state(Beginning)
+#    push_game_state(CrowdScene)
   end
 
   def log
