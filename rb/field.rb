@@ -115,11 +115,11 @@ class Field < Chingu::GameState
     @health2_text = Chingu::Text.create(:text=>"#{$health2}", :y=>16, :size=>32)
     @health2_text.x = 36 - @health2_text.width/2
 
-    @score1_text = Chingu::Text.create(:text=>"#{$score1}", :y=>560, :size=>32)
-    @score1_text.x = 765 - @score1_text.width/2
+    @score1_text = Chingu::Text.create(:text=>"#{$score1}", :y=>18, :size=>32)
+    @score1_text.x = 500 - @score1_text.width/2
 
-    @score2_text = Chingu::Text.create(:text=>"#{$score2}", :y=>560, :size=>32)
-    @score2_text.x = 36 - @score2_text.width/2
+    @score2_text = Chingu::Text.create(:text=>"#{$score2}", :y=>18, :size=>32)
+    @score2_text.x = 300 - @score2_text.width/2
 
     @gui1 = GUI1.create
     @gui2 = GUI2.create
@@ -127,7 +127,8 @@ class Field < Chingu::GameState
     @round_text = Chingu::Text.create(:text=>"Round #{$round}", :y=>8, :size=>34)
     @round_text.x = 400 - @round_text.width/2
 
-    @puck = FireCube.create(:x => rand(550), :y => rand(600), :zorder => Zorder::Projectile)
+    @puck = FireCube.create(:zorder => Zorder::Projectile)
+#    @puck = FireCube.create(:x => rand(550), :y => rand(600), :zorder => Zorder::Projectile)
     @puck_flare = @lense_flares.create @puck.x, @puck.y, Zorder::LenseFlare
     @puck_flare.brightness = 0.25
     @puck_flare.strength = 0.3
@@ -249,7 +250,7 @@ class Field < Chingu::GameState
       after(2400) { @chant_text.text = "#{@chant}" }
       after(2800) { @chant_text.text = "" }
       after(3200) {
-        @puck2 = FireCube.create(:x => rand($window.width), :y => rand($window.height), :zorder => Zorder::Projectile)
+        @puck2 = FireCube.create(:zorder => Zorder::Projectile)
 #        @puck3 = FireCube.create(:x => rand($window.width), :y => rand($window.height), :zorder => Zorder::Projectile)
       }
       after(14000) { 

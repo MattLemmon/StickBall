@@ -1,19 +1,24 @@
-DEBUG = true  # Set to true to see bounding circles used for collision detection
+DEBUG = false  # Set to true to see bounding circles used for collision detection
 
 require_relative 'face/mouth'
 require_relative 'face/eyes'
 
 class ModeSelect < Chingu::GameObject
   def setup
-    @mode = ["Campaign", "Versus"]
+    @mode = ["Versus", "Campaign"]
     @m = 0
-    @opponent = ["Computer", "A S D W"]
+    @opponent = ["A S D W", "Computer"]
+    @left_shift_text = ["Left Shift", ""]
     @ready = false
 
     @text = Chingu::Text.create(@mode[@m], :y => 420, :size => 45, :color => Colors::White, :zorder => Zorder::GUI)
     @text.x = 400 - @text.width/2 # center text
     @t2 = Chingu::Text.create(@opponent[@m], :y => 360, :font => "GeosansBold", :size => 45, :color => Colors::White, :zorder => Zorder::GUI)
     @t2.x = 200 - @t2.width/2 # center text
+
+    @text4 = Chingu::Text.create("Left Shift", :y => 500, :font => "GeosansLight", :size => 45, :zorder => Zorder::GUI)
+    @text4.x = 200 - @text4.width/2 # center text
+
 #    @t4 = Chingu::Text.create("A S D W", :y => 360, :font => "GeosansBold", :size => 45, :color => Colors::White, :zorder => Zorder::GUI)
 #    @t4.x = 200 - @t4.width/2 # center text
 
@@ -31,6 +36,8 @@ class ModeSelect < Chingu::GameObject
       @text.x = 400 - @text.width/2 # center text
       @t2.text = @opponent[@m]
       @t2.x = 200 - @t2.width/2 # center text
+      @text4.text = @left_shift_text[@m]
+      @text4.x = 200 - @text4.width/2 # center text
       $mode = @mode[@m]
     end
   end
@@ -592,7 +599,7 @@ class Player2 < Chingu::GameObject
     @stun = true
     $stunned.play(0.3)
     after(100) {$zapped.play(0.3)}
-    after(2000) {@stun = false}
+    after(3000) {@stun = false}
   end
   def mist
     after(300) {@mist = true}

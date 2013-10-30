@@ -1,4 +1,3 @@
-#DEBUG = true  # Set to true to see bounding circles used for collision detection
 #
 #
 #  S T I C K  B A L L  O B J E C T S
@@ -7,7 +6,7 @@
 
 
 #
-# FireCube Class
+# FireCube   (the puck / ball)
 #
 class FireCube < Chingu::GameObject
   traits :velocity, :collision_detection
@@ -17,36 +16,26 @@ class FireCube < Chingu::GameObject
   def initialize(options)
     super
     @mode = :additive
-    
+    @x = 150 + rand(500)
+    @y = 100 + rand(400)
     @image = Image["objects/circle.png"]
-    
-    # initialize with a rightwards velocity with some damping to look more realistic
-    self.velocity_x = 10
-    if rand(2) == 1; self.velocity_x = -10; end
-    self.velocity_y = 4
+    self.velocity_x = 10; if rand(2) == 1; self.velocity_x = -10; end
+    self.velocity_y = 4; if rand(2) == 1; self.velocity_y = -4; end
     self.factor = 2.5
-    cache_bounding_circle # This does a lot for performance
-
     @color = Color::BLUE
-#    @part_speed = 10
     @die_count = 15
-
+    cache_bounding_circle # This does a lot for performance
   end
-  
   def update
     @color = Color::BLUE
     if @die_count < 15
       @die_count += 1
       @color = Color::RED
     end
-
     Plasma.create(:x => @x, :y => @y, :color => Color.new(0xFF0042FF))
-
   end
-  
   def die!
     @die_count = 0
-#    @color = Color::RED
   end
 end
 
@@ -57,19 +46,11 @@ end
 class Plasma < Chingu::GameObject
   traits :velocity
   attr_accessor :fade_rate
-  
-    def setup
+  def setup
     @image = Image["objects/particle.png"]
     @mode = :additive
-    # initialize with a rightwards velocity with some damping to look more realistic
- #   @velocity_x = options[:velocity_x] || 10
- #   @acceleration_x = -0.1
-    
-    # Simulate gravity
-#    @acceleration_y = 0.4
     @fade_rate = 6
   end
-
   def update
     self.alpha -= @fade_rate  if defined?(@fade_rate)
   end
@@ -82,7 +63,6 @@ class Particulate < Chingu::Particle
   traits :velocity
 end
 
-
 #
 #   STAR
 #                                used for power_ups
@@ -90,7 +70,6 @@ class Star < Chingu::GameObject
   trait :bounding_circle, :debug => DEBUG
   traits :velocity, :collision_detection
   attr_accessor :color
-
   def setup
     @animation = Chingu::Animation.new(:file => "objects/living.png", :size => 64)
     @image = @animation.next
@@ -99,11 +78,8 @@ class Star < Chingu::GameObject
     self.factor = 0.65
     cache_bounding_circle     # A cached bounding circle will not adapt to changes in size, but it will follow objects X / Y
   end
-  
-  def update
-    # Move the animation forward by fetching the next frame and putting it into @image
-    # @image is drawn by default by GameObject#draw
-    @image = @animation.next
+  def update                    # Move the animation forward by fetching the next frame and putting it into @image
+    @image = @animation.next    # @image is drawn by default by GameObject#draw
     self.velocity_x *= 0.95
     self.velocity_y *= 0.95
     if @x < -$scr_edge; @x = $max_x; end  # wrap beyond screen edge
@@ -113,15 +89,12 @@ class Star < Chingu::GameObject
   end
 end
 
-
-
 #
 #   HEART
 #
 class Heart < Chingu::GameObject
   trait :bounding_circle, :debug => DEBUG
   traits :velocity, :collision_detection
-
   def setup
     @image = Image["gui/heart.png"]
     cache_bounding_circle
@@ -131,7 +104,6 @@ class Heart < Chingu::GameObject
     @factorizer = 0.05
     self.factor = 1.4
   end
-
   def update
     @counter += @count
     if @counter == @count_tot
@@ -142,7 +114,6 @@ class Heart < Chingu::GameObject
       @factorizer *= -1
       @count = 1
     end
-
     self.factor -= @factorizer
     self.velocity_x *= 0.91
     self.velocity_y *= 0.91
