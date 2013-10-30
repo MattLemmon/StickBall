@@ -1,4 +1,44 @@
 
+
+
+
+
+class CrowdScene2 < Chingu::GameState
+  def setup
+    @bg = Crowd.create
+    self.input = {
+      :esc => :exit,
+      :enter => :next,
+      # [:right_shift, :left_shift] => OpeningCredits,
+      :p => Pause,
+      # :r => lambda{current_game_state.setup}
+      :e => proc { @bg.input_e },
+      :r => proc { @bg.input_r },
+      :t => proc { @bg.input_t },
+      :y => proc { @bg.input_y },
+      :d => proc { @bg.input_d },
+      :f => proc { @bg.input_f },
+      :g => proc { @bg.input_g },
+      :h => proc { @bg.input_h },
+      :u => proc { @bg.input_u },
+      :j => proc { @bg.input_j },
+      :i => proc { @bg.input_i },
+      :k => proc { @bg.input_k },
+      :up   => proc { @bg.input_up },
+      :down => proc { @bg.input_down },
+      :left => proc { @bg.input_left },
+      :right=> proc { @bg.input_right },
+    }
+  end
+
+  def next
+    push_game_state(CrowdScene2.new)
+  end
+end
+
+
+
+
 class CrowdScene < Chingu::GameState
   trait :timer
   def setup
@@ -27,6 +67,8 @@ class CrowdScene < Chingu::GameState
     }
   end
 end
+
+
 
 
 class BackgroundCrowd < Chingu::GameObject
@@ -60,7 +102,7 @@ class BackgroundCrowd < Chingu::GameObject
     # @speed_x = 0
     # @speed_y = 8
 
-    #30.times{ create_characters }
+    30.times{ create_characters }
   end
 
   def update
@@ -145,13 +187,13 @@ class Characters < Chingu::GameObject
     # end
 
     # ## PUB 1
-     @top          = 385
-     @bottom       = 529
-     #@bottom       = 500
-     @top_left     = 510
-     @top_right    = 655
-     @bottom_left  = 105
-     @bottom_right = 825
+    # @top          = 385
+    # @bottom       = 529
+    # #@bottom       = 500
+    # @top_left     = 510
+    # @top_right    = 655
+    # @bottom_left  = 105
+    # @bottom_right = 825
 
     # ## CARPET-ISH
     # @top          = 280
@@ -162,12 +204,12 @@ class Characters < Chingu::GameObject
     # @bottom_right = 660
 
     # ## CARPET
-    # @top          = 300
-    # @bottom       = 600
-    # @top_left     = 475
-    # @top_right    = 560
-    # @bottom_left  = -75
-    # @bottom_right = 710
+     @top          = 300
+     @bottom       = 600
+     @top_left     = 475
+     @top_right    = 560
+     @bottom_left  = -75
+     @bottom_right = 710
 
     # ## FULL BAR
     # @top          = 280
@@ -186,22 +228,69 @@ class Characters < Chingu::GameObject
 #    @top_right    = 540
 #    @bottom_left  = -410
 #    @bottom_right = 810
-    @top_gain     = 15
-    @bottom_gain  = 40
+#    @top_gain     = 15
+#    @bottom_gain  = 40
+
+#    @top          = 310
+#    @bottom       = 570
+#    @top_left     = 370
+#    @top_right    = 405
+#    @bottom_left  = -410
+#    @bottom_right = 905
+#    @top_gain     = 45
+#    @bottom_gain  = 50
+
+#    @top          = 280
+#    @bottom       = 545
+#    @top_left     = 370
+#    @top_right    = 470
+#    @bottom_left  = -385
+#    @bottom_right = 940
+#    @top_gain     = 50
+#    @bottom_gain  = 60
+
+    ## USED IN BG    
+#    @top          = 280
+#    @bottom       = 475
+#    @top_left     = 380
+#    @top_right    = 465
+#    @bottom_left  = -50
+#    @bottom_right = 745
+#    @top_gain     = 55
+#    @bottom_gain  = 50
+
+
+    @top          = 475
+    @bottom       = 485
+    @top_left     = 475
+    @top_right    = 560
+    @bottom_left  = -365
+    @bottom_right = 780
+    @top_gain     = 55
+    @bottom_gain  = 50
+    
+
+
+
 
     #@yy           = rand() ** 4.0
     @yy           = rand() ** 2.0
     @xx           = rand()
 
     @offset_x = 0
-    @offset_y = 0
+    @offset_y = 30
+
+    self.factor = @yy * 0.2 + 1.05
+    self.zorder = (@yy + 10) * 300
+
+#    self.factor = @yy * 0.3 + 0.9
+#    self.zorder = @yy * 300
 
     # self.y = rand() ** 4.0 * 130 + 350
     #self.factor = (@y-300)/300.0  # character size is affected by y position
     #self.factor = 0.7
-    self.factor = @yy * 0.7 + 0.4
+
     #self.zorder = self.factor.abs * 400
-    self.zorder = @yy * 300
     #col = ((self.factor) * 2.0) ** 2.0 * 255
     # self.x = rand(self.factor * 800) + (1.0 - self.factor) * 500
   end
@@ -299,7 +388,7 @@ end
 class Char1 < Characters  # inherits from Characters class
   def setup
     @motion = 1
-    @image = Gosu::Image["crowd/char1.png"]
+    @image = Gosu::Image["backgrounds/crowd/char1.png"]
   end
 end
 
@@ -320,21 +409,21 @@ end
 class Char4 < Characters
   def setup
     @motion = 1
-    @image = Gosu::Image["crowd/char4.png"]
+    @image = Gosu::Image["backgrounds/crowd/char4.png"]
   end
 end
 
 class Char5 < Characters
   def setup
     @motion = 1
-    @image = Gosu::Image["crowd/char5.png"]
+    @image = Gosu::Image["backgrounds/crowd/char5.png"]
   end
 end
 
 class Char6 < Characters
   def setup
     @motion = 1
-    @image = Gosu::Image["crowd/char6.png"]
+    @image = Gosu::Image["backgrounds/crowd/char6.png"]
   end
 end
 
@@ -348,7 +437,7 @@ end
 class Char8 < Characters
   def setup
     @motion = 1
-    @image = Gosu::Image["crowd/char8.png"]
+    @image = Gosu::Image["backgrounds/crowd/char8.png"]
   end
 end
 
@@ -362,21 +451,21 @@ end
 class Char10 < Characters
   def setup
     @motion = 1
-    @image = Gosu::Image["crowd/char10.png"]
+    @image = Gosu::Image["backgrounds/crowd/char10.png"]
   end
 end
 
 class Char11 < Characters
   def setup
     @motion = 1
-    @image = Gosu::Image["crowd/char11.png"]
+    @image = Gosu::Image["backgrounds/crowd/char11.png"]
   end
 end
 
 class Char12 < Characters
   def setup
     @motion = 1
-    @image = Gosu::Image["crowd/char12.png"]
+    @image = Gosu::Image["backgrounds/crowd/char12.png"]
   end
 end
 
@@ -397,7 +486,7 @@ end
 class Char15 < Characters
   def setup
     @motion = 1
-    @image = Gosu::Image["crowd/char15.png"]
+    @image = Gosu::Image["backgrounds/crowd/char15.png"]
   end
 end
 

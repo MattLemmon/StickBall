@@ -14,6 +14,197 @@ class Beginning < Chingu::GameState
 end
 
 
+
+
+#
+#  PRE-INTRO GAMESTATE
+#
+class PreIntro < Chingu::GameState
+  trait :timer
+  def initialize
+    super
+    LenseFlares.load_images $window, './media/lense_flares'
+    @lense_flares = LenseFlares.new $window.width/2.0, $window.height/2.0
+    self.input = { [:left_shift, :right_shift] => :next, :p => Pause, :r => lambda{current_game_state.setup} }
+  end
+
+  def setup
+    ####################################################
+    $pos1_x, $pos1_y = 740, 300
+    $pos2_x, $pos2_y = 60, 300
+    $image1 = "boy"
+    $image2 = "boy"
+    $stars1 = 0
+    $stars2 = 0
+    $speed1 = 6
+    $speed2 = 6
+    $power_ups1 = 0
+    $power_ups2 = 0
+    $creep1 = false
+    $creep2 = false
+    $chest_bump1 = false
+    $chest_bump2 = false
+    $kick1 = false
+    $kick2 = false
+    $spell1 = "none"
+    $spell2 = "none"
+    ####################################################
+    Chingu::Text.destroy_all 
+    $window.caption = "StickBall"
+    @counter = 0  
+    @count = 1    
+    @nxt = false
+    @song_fade = false
+    @fade_count = 0
+    @bounce = 0
+    @bounce_delay = 6
+    @ground_y = ($window.height * 0.95).to_i
+
+    if $intro == false
+      $music = Song["media/audio/guitar_solo.ogg"]
+      $music.volume = 0.8
+      $music.play(true)
+    else
+      $intro = false
+    end
+
+    @title = Title.create
+#    @title.y = 60
+#    @title.zorder = Zorder::GUI
+#    @title.x = 800/2 - @title.width/2 # center text
+
+#    @t2 = Chingu::Text.create("StickBall", :y => 100, :font => "GeosansBold", :size => 65, :color => Colors::White, :zorder => Zorder::GUI)
+#    @t2.x = 800/2 - @t2.width/2 # center text
+
+    after(300) {
+    @t1 = Chingu::Text.create("Right Player", :y => 260, :font => "GeosansBold", :size => 65, :color => Colors::White, :zorder => Zorder::GUI)
+    @t1.x = 600 - @t1.width/2 # center text
+    @t2 = Chingu::Text.create("Left Player", :y => 260, :font => "GeosansBold", :size => 65, :color => Colors::White, :zorder => Zorder::GUI)
+    @t2.x = 200 - @t2.width/2 # center text
+
+
+
+#      @text1 = Chingu::Text.create("StickBall", :y => 60, :font => "GeosansBold", :size => 65, :color => Colors::White, :zorder => Zorder::GUI)
+#      @text1.x = 800/2 - @text1.width/2 # center text
+    }
+    after(600) {
+      @t3 = Chingu::Text.create("Arrows", :y => 360, :font => "GeosansBold", :size => 45, :color => Colors::White, :zorder => Zorder::GUI)
+      @t3.x = 600 - @t3.width/2 # center text
+#      @t4 = Chingu::Text.create("A S D W", :y => 360, :font => "GeosansBold", :size => 45, :color => Colors::White, :zorder => Zorder::GUI)
+#      @t4.x = 200 - @t4.width/2 # center text
+
+    }
+    after(900) {
+      @mode_select = ModeSelect.create
+      @mode_select.input = { [:right, :left, :up, :down, :a, :d, :w, :s] => :mode_select }
+    }
+    after(1200) {
+      @text4 = Chingu::Text.create("Left Shift", :y => 500, :font => "GeosansLight", :size => 45, :zorder => Zorder::GUI)
+      @text4.x = 200 - @text4.width/2 # center text
+      @text5 = Chingu::Text.create("Right Shift", :y => 500, :font => "GeosansLight", :size => 45, :zorder => Zorder::GUI)
+      @text5.x = 600 - @text5.width/2 # center text
+    }
+
+    after(1500) {
+      1.times { new_puck }
+#      @puck = FireCube.create(:x => rand(550), :y => rand(600), :zorder => Zorder::Projectile)
+#      @puck_flare = @lense_flares.create @puck.x, @puck.y, Zorder::LenseFlare
+#      @puck_flare.brightness = 0.25
+#      @puck_flare.strength = 0.3
+#      @puck_flare.scale = 1.0
+    }
+  end
+
+  def new_puck
+    @puck = FireCube.create(:x => rand(550), :y => rand(600), :zorder => Zorder::Projectile)
+    @puck_flare = @lense_flares.create @puck.x, @puck.y, Zorder::LenseFlare
+    @puck_flare.brightness = 0.25
+    @puck_flare.strength = 0.3
+    @puck_flare.scale = 1.0
+  end
+
+
+
+  def next
+    if @nxt == true  # if you've already pressed 'shift' once, pressing it again skips ahead
+      @nxt = false
+      $click.play(0.7)
+      push_game_state(Intro)
+    else
+      @nxt = true    # transition to Intro
+      $chime.play(0.7)
+      after(300) { puts 1 }
+      after(600) { puts 2 }
+      after(1000) { push_game_state(Intro) }
+    end
+  end
+
+
+  def update
+    @counter += @count
+    if @bounce > 0
+      @bounce -= 1
+    end
+    if @puck != nil
+      @puck_flare.x = @puck.x
+      @puck_flare.y = @puck.y
+      @puck_flare.color = @puck.color
+      @lense_flares.update
+    end
+    super
+    FireCube.each do |particle|   # WALL-BOUNCING 
+      if @bounce == 0
+        if particle.x < 0
+          particle.x = 0
+          particle.velocity_x = -particle.velocity_x
+          particle.die!
+          @bounce = @bounce_delay
+        end
+        if particle.x > $window.width
+          particle.x = $window.width
+          particle.velocity_x = -particle.velocity_x
+          particle.die!
+          @bounce = @bounce_delay
+        end
+        if particle.y < 0
+          particle.y = 0
+          particle.velocity_y = -particle.velocity_y
+          particle.die!
+          @bounce = @bounce_delay
+        end
+        if particle.y > $window.height
+          particle.y = $window.height
+          particle.velocity_y = -particle.velocity_y
+          particle.die!
+          @bounce = @bounce_delay
+        end
+      end
+    end
+
+    self.game_objects.destroy_if { |object| object.color.alpha == 0 }
+
+    if @song_fade == true # fade song if @song_fade is true
+      @fade_count += 1
+      if @fade_count == 20
+        @fade_count = 0
+        $music.volume -= 0.1
+      end
+    end
+  end
+
+  def draw
+    @lense_flares.draw
+    fill_gradient(:from => Color.new(255,0,0,0), :to => Color.new(255,60,60,80), :rect => [0,0,$window.width,@ground_y])
+    fill_gradient(:from => Color.new(255,100,100,100), :to => Color.new(255,50,50,50), :rect => [0,@ground_y,$window.width,$window.height-@ground_y])
+    super
+  end
+end
+
+
+
+
+
+
 #
 #  INTRO GAMESTATE
 #
@@ -212,172 +403,6 @@ class Intro < Chingu::GameState
     after(6500) {
       push_game_state(FieldChange)
     }
-  end
-end
-
-
-
-#
-#  PRE-INTRO GAMESTATE
-#
-class PreIntro < Chingu::GameState
-  trait :timer
-  def initialize
-    super
-    LenseFlares.load_images $window, './media/lense_flares'
-    @lense_flares = LenseFlares.new $window.width/2.0, $window.height/2.0
-    self.input = { [:left_shift, :right_shift] => :next, :p => Pause, :r => lambda{current_game_state.setup} }
-  end
-
-  def setup
-    Chingu::Text.destroy_all 
-    $window.caption = "StickBall!"
-    @counter = 0  
-    @count = 1    
-    @nxt = false
-    @song_fade = false
-    @fade_count = 0
-    @bounce = 0
-    @bounce_delay = 6
-    @ground_y = ($window.height * 0.95).to_i
-
-    if $intro == false
-      $music = Song["media/audio/guitar_solo.ogg"]
-      $music.volume = 0.8
-      $music.play(true)
-    else
-      $intro = false
-    end
-
-    @title = Title.create
-#    @title.y = 60
-#    @title.zorder = Zorder::GUI
-#    @title.x = 800/2 - @title.width/2 # center text
-
-#    @t2 = Chingu::Text.create("StickBall", :y => 100, :font => "GeosansBold", :size => 65, :color => Colors::White, :zorder => Zorder::GUI)
-#    @t2.x = 800/2 - @t2.width/2 # center text
-
-    after(300) {
-    @t1 = Chingu::Text.create("Right Player", :y => 260, :font => "GeosansBold", :size => 65, :color => Colors::White, :zorder => Zorder::GUI)
-    @t1.x = 600 - @t1.width/2 # center text
-    @t2 = Chingu::Text.create("Left Player", :y => 260, :font => "GeosansBold", :size => 65, :color => Colors::White, :zorder => Zorder::GUI)
-    @t2.x = 200 - @t2.width/2 # center text
-
-
-
-#      @text1 = Chingu::Text.create("StickBall", :y => 60, :font => "GeosansBold", :size => 65, :color => Colors::White, :zorder => Zorder::GUI)
-#      @text1.x = 800/2 - @text1.width/2 # center text
-    }
-    after(600) {
-      @t3 = Chingu::Text.create("Arrows", :y => 360, :font => "GeosansBold", :size => 45, :color => Colors::White, :zorder => Zorder::GUI)
-      @t3.x = 600 - @t3.width/2 # center text
-#      @t4 = Chingu::Text.create("A S D W", :y => 360, :font => "GeosansBold", :size => 45, :color => Colors::White, :zorder => Zorder::GUI)
-#      @t4.x = 200 - @t4.width/2 # center text
-
-    }
-    after(900) {
-      @mode_select = ModeSelect.create
-      @mode_select.input = { [:right, :left, :up, :down, :a, :d, :w, :s] => :mode_select }
-    }
-    after(1200) {
-      @text4 = Chingu::Text.create("Left Shift", :y => 500, :font => "GeosansLight", :size => 45, :zorder => Zorder::GUI)
-      @text4.x = 200 - @text4.width/2 # center text
-      @text5 = Chingu::Text.create("Right Shift", :y => 500, :font => "GeosansLight", :size => 45, :zorder => Zorder::GUI)
-      @text5.x = 600 - @text5.width/2 # center text
-    }
-
-    after(1500) {
-      1.times { new_puck }
-#      @puck = FireCube.create(:x => rand(550), :y => rand(600), :zorder => Zorder::Projectile)
-#      @puck_flare = @lense_flares.create @puck.x, @puck.y, Zorder::LenseFlare
-#      @puck_flare.brightness = 0.25
-#      @puck_flare.strength = 0.3
-#      @puck_flare.scale = 1.0
-    }
-  end
-
-  def new_puck
-    @puck = FireCube.create(:x => rand(550), :y => rand(600), :zorder => Zorder::Projectile)
-    @puck_flare = @lense_flares.create @puck.x, @puck.y, Zorder::LenseFlare
-    @puck_flare.brightness = 0.25
-    @puck_flare.strength = 0.3
-    @puck_flare.scale = 1.0
-  end
-
-
-
-  def next
-    if @nxt == true  # if you've already pressed 'shift' once, pressing it again skips ahead
-      @nxt = false
-      $click.play(0.7)
-      push_game_state(Intro)
-    else
-      @nxt = true    # transition to Intro
-      $chime.play(0.7)
-      after(300) { puts 1 }
-      after(600) { puts 2 }
-      after(1000) { push_game_state(Intro) }
-    end
-  end
-
-
-  def update
-    @counter += @count
-    if @bounce > 0
-      @bounce -= 1
-    end
-    if @puck != nil
-      @puck_flare.x = @puck.x
-      @puck_flare.y = @puck.y
-      @puck_flare.color = @puck.color
-      @lense_flares.update
-    end
-    super
-    FireCube.each do |particle|   # WALL-BOUNCING 
-      if @bounce == 0
-        if particle.x < 0
-          particle.x = 0
-          particle.velocity_x = -particle.velocity_x
-          particle.die!
-          @bounce = @bounce_delay
-        end
-        if particle.x > $window.width
-          particle.x = $window.width
-          particle.velocity_x = -particle.velocity_x
-          particle.die!
-          @bounce = @bounce_delay
-        end
-        if particle.y < 0
-          particle.y = 0
-          particle.velocity_y = -particle.velocity_y
-          particle.die!
-          @bounce = @bounce_delay
-        end
-        if particle.y > $window.height
-          particle.y = $window.height
-          particle.velocity_y = -particle.velocity_y
-          particle.die!
-          @bounce = @bounce_delay
-        end
-      end
-    end
-
-    self.game_objects.destroy_if { |object| object.color.alpha == 0 }
-
-    if @song_fade == true # fade song if @song_fade is true
-      @fade_count += 1
-      if @fade_count == 20
-        @fade_count = 0
-        $music.volume -= 0.1
-      end
-    end
-  end
-
-  def draw
-    @lense_flares.draw
-    fill_gradient(:from => Color.new(255,0,0,0), :to => Color.new(255,60,60,80), :rect => [0,0,$window.width,@ground_y])
-    fill_gradient(:from => Color.new(255,100,100,100), :to => Color.new(255,50,50,50), :rect => [0,@ground_y,$window.width,$window.height-@ground_y])
-    super
   end
 end
 

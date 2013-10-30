@@ -20,10 +20,10 @@ module Zorder  # define some frequently used Zorders
   GUI = 400
   GUI_Bkgrd = 399
   Text = 300
-  Main_Character = 200
-  Face = 201
-  Eyes = 201
-  Main_Character_Particles = 199
+  Main_Character = 150
+  Face = 151
+  Eyes = 151
+  Main_Character_Particles = 149
   Object = 50
   Projectile = 220
   LenseFlare = 221
@@ -120,16 +120,16 @@ class GameWindow < Chingu::Window
     self.input = { :esc => :exit,
 #                   :enter => :next,
 #                   :return => :next,
-                 [:q, :l] => :pop,
+                 :q => :pop,
                  :z => :log,
-                 :r => lambda{current_game_state.setup}
+#                 :r => lambda{current_game_state.setup}
                }
     retrofy
   end
 
   def setup
     push_game_state(Beginning)
-#    push_game_state(CrowdScene)
+#    push_game_state(CrowdScene2)
   end
 
   def log

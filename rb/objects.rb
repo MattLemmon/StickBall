@@ -1,4 +1,4 @@
-#DEBUG = false  # Set to true to see bounding circles used for collision detection
+#DEBUG = true  # Set to true to see bounding circles used for collision detection
 #
 #
 #  S T I C K  B A L L  O B J E C T S
@@ -307,7 +307,7 @@ class Zapper < Chingu::GameObject
   end
   def update
     @image = @animation.next  # move animation forward
-    after(2000) {self.destroy}
+    after(3000) {self.destroy}
   end
 end
 

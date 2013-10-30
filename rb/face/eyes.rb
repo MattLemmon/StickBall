@@ -59,7 +59,7 @@ class CloneEyes
   def update
     @x = @parent.x + 3 * @parent.direction
     @y = @parent.y - 7
-    @eye_angle = Gosu.angle @x, @y, @x-10 , @y+10
+    @eye_angle = Gosu.angle @x, @y, @x+10*@parent.direction , @y+10
 
 #    puck = @parent.game_state.puck
 #    @eye_angle = Gosu.angle @x, @y, puck.x, puck.y

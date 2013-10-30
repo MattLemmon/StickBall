@@ -38,10 +38,12 @@ class Field < Chingu::GameState
 
   def setup
     super
+#    Sound.each do |sound|
+#      sound.stop
+#    end
     $health1 = $start_health1
     $health2 = $start_health2
-
-    ####################################################
+=begin    ####################################################
     $stars1 = 0
     $stars2 = 0
     $speed1 = 6
@@ -56,11 +58,12 @@ class Field < Chingu::GameState
     $kick2 = false
     $spell1 = "none"
     $spell2 = "none"
-    ####################################################
-
+=end    ####################################################
 #    $score1 = 0
 #    $score2 = 0
     $winner = ""
+
+    @seconds = 30
 
     @bump = 0
     @bump_delay = 15
@@ -112,6 +115,12 @@ class Field < Chingu::GameState
     @health2_text = Chingu::Text.create(:text=>"#{$health2}", :y=>16, :size=>32)
     @health2_text.x = 36 - @health2_text.width/2
 
+    @score1_text = Chingu::Text.create(:text=>"#{$score1}", :y=>560, :size=>32)
+    @score1_text.x = 765 - @score1_text.width/2
+
+    @score2_text = Chingu::Text.create(:text=>"#{$score2}", :y=>560, :size=>32)
+    @score2_text.x = 36 - @score2_text.width/2
+
     @gui1 = GUI1.create
     @gui2 = GUI2.create
 
@@ -123,6 +132,20 @@ class Field < Chingu::GameState
     @puck_flare.brightness = 0.25
     @puck_flare.strength = 0.3
     @puck_flare.scale = 1.0
+
+    @timer_pos_x = 400
+    @timer_pos_y = 36
+
+    @timer_text = Chingu::Text.create("Multiball in :#{@seconds}", :y => @timer_pos_y, :font => "GeosansLight", :size => 26, :color => Colors::White, :zorder => Zorder::GUI)
+    @timer_text.x = @timer_pos_x - @timer_text.width/2
+
+    $music.volume = 0.0
+
+    round_setup
+
+    after(1000) { tock }
+
+    after(2400) { @transition = false }
 
 #    1.times { fire }
 =begin
@@ -142,48 +165,45 @@ class Field < Chingu::GameState
 =end
 #    $music.volume = 0.4
 #    $music.play 
-
-    round_setup
-#    Background1.create
-#    @test_plax = Plax1.create
-
-    after(2400)  { @transition = false }
-#    after(22500) { puts 22500 }
-#    if $round == 1
-#      after(22400) { $music.volume = 0.2 }
-#    end
-#    after(27500) { puts 27500 }
-#    after(30000) { puts 30000 }
   end
 
   def round_setup
     if $round == 1
-      $music = Song["media/audio/guitar_song.ogg"]
-      $music.volume = 0.4
-      $music.play(true)
-      @parallax = Chingu::Parallax.create(:x => 0, :y => 0, :rotation_center => :top_left, :zorder => Zorder::Background)
-      @parallax.add_layer(:image => "backgrounds/space1.png", :damping => 40)
-      @parallax.add_layer(:image => "backgrounds/space2.png", :damping => 30)
-      @parallax.add_layer(:image => "backgrounds/space3.png", :damping => 20)
-      after(22400) { $music.volume = 0.2 }
+      Background6.create
+      after(500) {
+        $music = Song["media/audio/electricity_by_alexander_blu.ogg"]
+        $music.volume = 0.7
+        $music.play(true)
+      }
+#      @parallax = Chingu::Parallax.create(:x => 0, :y => 0, :rotation_center => :top_left, :zorder => Zorder::Background)
+#      @parallax.add_layer(:image => "backgrounds/space1.png", :damping => 40)
+#      @parallax.add_layer(:image => "backgrounds/space2.png", :damping => 30)
+#      @parallax.add_layer(:image => "backgrounds/space3.png", :damping => 20)
     end
     if $round == 2
-      $music = Song["media/audio/electricity_by_alexander_blu.ogg"]
-      $music.volume = 0.6
-      $music.play(true)
-      @parallax = Chingu::Parallax.create(:x => 0, :y => 0, :rotation_center => :top_left, :zorder => Zorder::Background)
-      @parallax.add_layer(:image => "backgrounds/clouds.png", :damping => 20)
-      @parallax.add_layer(:image => "backgrounds/space2.png", :damping => 15)
-      @parallax.add_layer(:image => "backgrounds/space3.png", :damping => 10)
+      Background2.create
+      after(500) {
+        $music = Song["media/audio/guitar_solo.ogg"]
+        $music.volume = 0.5
+        $music.play(true)
+      }
+#      @parallax = Chingu::Parallax.create(:x => 0, :y => 0, :rotation_center => :top_left, :zorder => Zorder::Background)
+#      @parallax.add_layer(:image => "backgrounds/clouds.png", :damping => 20)
+#      @parallax.add_layer(:image => "backgrounds/space2.png", :damping => 15)
+#      @parallax.add_layer(:image => "backgrounds/space3.png", :damping => 10)
     end
     if $round == 3
-      $music = Song["media/audio/guitar_solo.ogg"]
-      $music.volume = 0.4
-      $music.play(true)
-      @parallax = Chingu::Parallax.create(:x => 0, :y => 0, :rotation_center => :top_left, :zorder => Zorder::Background)
-      @parallax.add_layer(:image => "backgrounds/fishdish_mockup.png", :damping => 40)
-      @parallax.add_layer(:image => "backgrounds/space2.png", :damping => 30)
-      @parallax.add_layer(:image => "backgrounds/space3.png", :damping => 20)
+      Crowd.create
+      after(500) {
+        $music = Song["media/audio/guitar_song.ogg"]
+        $music.volume = 0.5
+        $music.play(true)
+      }
+      after(22900) { $music.volume = 0.2 }
+#      @parallax = Chingu::Parallax.create(:x => 0, :y => 0, :rotation_center => :top_left, :zorder => Zorder::Background)
+#      @parallax.add_layer(:image => "backgrounds/fishdish_mockup.png", :damping => 40)
+#      @parallax.add_layer(:image => "backgrounds/space2.png", :damping => 30)
+#      @parallax.add_layer(:image => "backgrounds/space3.png", :damping => 20)
     end
   end
 
@@ -199,9 +219,24 @@ class Field < Chingu::GameState
 #    if $spell2 == "mist"; @player1.mist; end
   end
 
-  def fire;  chant;  end
+  def fire;  start_multiball;  end
 
-  def chant
+
+  def tock
+    if @seconds != 0
+      after(1000) { @seconds -= 1
+        @timer_text.text = "Multiball in :#{@seconds}"
+#        @timer_text.x = @timer_pos_x - @timer_text.width/2
+        tock
+      }
+    else
+      @timer_text.text = ""
+      start_multiball
+    end
+  end
+
+
+  def start_multiball
     if @multiball == false
       @multiball = true
       @chant_text = Chingu::Text.create("#{@chant}", :y => 520, :size => 50, :color => Colors::White, :zorder => Zorder::GUI)
@@ -210,14 +245,21 @@ class Field < Chingu::GameState
       after(800) { @chant_text.text = "#{@chant}" }
       after(1200) { @chant_text.text = "" }
       after(1600) { @chant_text.text = "#{@chant}" }
-      after(2000) { @chant_text.text = ""; start_multiball }
+      after(2000) { @chant_text.text = "" }
+      after(2400) { @chant_text.text = "#{@chant}" }
+      after(2800) { @chant_text.text = "" }
+      after(3200) {
+        @puck2 = FireCube.create(:x => rand($window.width), :y => rand($window.height), :zorder => Zorder::Projectile)
+#        @puck3 = FireCube.create(:x => rand($window.width), :y => rand($window.height), :zorder => Zorder::Projectile)
+      }
+      after(14000) { 
+        @puck2.destroy
+#        @puck3.destroy
+        @multiball = false
+        @seconds = 31
+        tock
+      }
     end
-  end
-
-  def start_multiball
-    @puck2 = FireCube.create(:x => rand($window.width), :y => rand($window.height), :zorder => Zorder::Projectile)
-    @puck3 = FireCube.create(:x => rand($window.width), :y => rand($window.height), :zorder => Zorder::Projectile)
-    after(15000) { @puck2.destroy; @puck3.destroy; @multiball = false }
   end
 
 #  def fire;  FireCube.create(:x => rand($window.width), :y => rand($window.height), :zorder => Zorder::Projectile);  end
@@ -356,11 +398,9 @@ class Field < Chingu::GameState
     end
   end
 
-
-  def next_round
-    push_game_state(Field)
-  end
-
+#  def next_round
+#    push_game_state(Field)
+#  end
 
   def collision_check
     @star_flares.each do |star,flare|        # UPDATE STAR FLARES
@@ -613,27 +653,28 @@ class Field < Chingu::GameState
         if particle.x < 0
           particle.x = 0
           particle.velocity_x = -particle.velocity_x
-#          $score1 += 1
           $bang2.play(0.3)
+
           if $health2 > 1
             $health2 -=1
             @health2_text.text = "#{$health2}"
             @health2_text.x = 38 - @health2_text.width/2
-          elsif $round < 3
+
+          elsif $score1 == 0
             $round += 1
             $score1 += 1
-            @round_text.text = "Round #{$round}"
-            @round_text.x = 400 - @round_text.width/2
-            puts "round #{$round}"
-            puts "score1 #{$score1}"
-            puts "score2 #{$score2}"
-#            next_round
+#            @round_text.text = "Round #{$round}"
+#            @round_text.x = 400 - @round_text.width/2
             push_game_state(FieldChange)
           else
-            $score1 += 1
-            $winner = "right player"
+            $winner = "right player"     # PLAYER 1 WINS
+            $score1 = 0
+            $score2 = 0
+            $round = 1
             push_game_state(GameOver)
           end
+
+
           particle.die!
           screen_shake1
           @referee.update_face
@@ -646,6 +687,26 @@ class Field < Chingu::GameState
           particle.velocity_x = -particle.velocity_x
 #          $score2 += 1
           $bang1.play(0.4)
+
+          if $health1 > 1
+            $health1 -=1
+            @health1_text.text = "#{$health1}"
+            @health1_text.x = 765 - @health1_text.width/2
+
+          elsif $score2 == 0
+            $round += 1
+            $score2 += 1
+            push_game_state(FieldChange)
+          else
+            $score2 += 1
+            $winner = "left player"     # PLAYER 2 WINS
+            $score1 = 0
+            $score2 = 0
+            $round = 1
+            push_game_state(GameOver)
+          end
+
+=begin
           if $health1 > 1
             $health1 -=1
             @health1_text.text = "#{$health1}"
@@ -662,8 +723,11 @@ class Field < Chingu::GameState
           else
             $score2 += 1
             $winner = "left player"
+            $round = 1
             push_game_state(GameOver)
           end
+=end
+
           particle.die!
           screen_shake2
           @referee.update_face
@@ -706,8 +770,8 @@ class Field < Chingu::GameState
 
 
   def update
-    @parallax.camera_x = @puck.x
-    @parallax.camera_y = @puck.y
+#    @parallax.camera_x = @puck.x
+#    @parallax.camera_y = @puck.y
 
     @puck_flare.x = @puck.x
     @puck_flare.y = @puck.y

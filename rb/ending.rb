@@ -1,4 +1,13 @@
 
+#    after(22500) { puts 22500 }
+#    if $round == 1
+#      after(22400) { $music.volume = 0.2 }
+#    end
+#    after(27500) { puts 27500 }
+#    after(30000) { puts 30000 }
+
+
+
 #
 #   GAMEOVER GAMESTATE
 #     simple GameOver gamestate

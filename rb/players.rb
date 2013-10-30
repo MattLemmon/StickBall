@@ -1,4 +1,4 @@
-DEBUG = false  # Set to true to see bounding circles used for collision detection
+DEBUG = true  # Set to true to see bounding circles used for collision detection
 
 require_relative 'face/mouth'
 require_relative 'face/eyes'
@@ -46,19 +46,23 @@ class Player1Clone < Chingu::GameObject
     self.factor_x = -1
   end
   def go_left
-    @x -= 4
+    @x -= 2
   end
    def go_right
-    @x += 4
+    @x += 2
   end
   def go_up
-    @y -= 4
+    @y -= 2
   end
   def go_down
-    @y += 4
+    @y += 2
   end
   def update
     @eyes.update
+    if @x < -$scr_edge; @x = $max_x; end  # wrap beyond screen edge
+    if @y < -$scr_edge; @y = $max_y; end
+    if @x > $max_x; @x = -$scr_edge; end
+    if @y > $max_y; @y = -$scr_edge; end
   end
   def draw
     super
@@ -68,34 +72,26 @@ end
 
 
 class Player2Clone < Chingu::GameObject
-  traits :velocity
   attr_reader :direction
   def setup
     @image = Gosu::Image["players/#{$image2}.png"]
     @direction = 1
     @eyes = CloneEyes.new self
-    @speed = $speed2
   end
   def go_left
-    @velocity_x -= @speed
+    @x -= 2
   end
-  def go_right
-    @velocity_x += @speed
+   def go_right
+    @x += 2
   end
   def go_up
-    @velocity_y -= @speed
+    @y -= 2
   end
   def go_down
-    @velocity_y += @speed
-  end
-  def cast_spell
-  end
-  def creep
+    @y += 2
   end
   def update
     @eyes.update
-    @velocity_x *= 0.25
-    @velocity_y *= 0.25
     if @x < -$scr_edge; @x = $max_x; end  # wrap beyond screen edge
     if @y < -$scr_edge; @y = $max_y; end
     if @x > $max_x; @x = -$scr_edge; end
@@ -440,7 +436,7 @@ class Player1 < Chingu::GameObject
       @stun = true
       $stunned.play(0.3)
       after(100) {$zapped.play(0.3)}
-      after(2000) {@stun = false}
+      after(3000) {@stun = false}
 #    end
   end
   def mist

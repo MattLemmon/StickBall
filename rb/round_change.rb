@@ -42,35 +42,51 @@ class FieldChange < Chingu::GameState
   trait :timer
 
   def setup
-    self.input = { :p=>Pause, :space=>:fire, :right_shift=>:next, :left_shift=>:next, [:enter, :return] => Field }
+    self.input = { :p=>Pause, :space=>:fire, :right_shift=>Field, :left_shift=>Field } #, [:enter, :return] => Field }
     $window.caption = "Field Transition - Preare for Round #{$round}"
 
     @player1 = Player1Clone.create(:x=> $pos1_x, :y=> $pos1_y)
     @player1.input = {:holding_left=>:go_left,:holding_right=>:go_right,:holding_up=>:go_up,:holding_down=>:go_down}
     @player2 = Player2Clone.create(:x=> $pos2_x, :y=> $pos2_y)
-    @player2.input = {:holding_left_ctrl=>:creep,:holding_a=>:go_left,:holding_d=>:go_right,:holding_w=>:go_up,:holding_s=>:go_down}
+    @player2.input = {:holding_a=>:go_left,:holding_d=>:go_right,:holding_w=>:go_up,:holding_s=>:go_down}
 
     @chant = "Loading Round #{$round}"
 
     $music.volume = 0.0
     loading
-    after (1200) { chant }
+    after (800) { chant }
 #    after (1200) { @player1.go_left }
   end
 
   def loading
     if $round == 1
-      after(400) {$hold_music1.play(0.5)}
       $speed1 = 6
       $speed2 = 6
       $score1 = 0
       $score2 = 0
+      after(1000) {
+        $music = Song["media/audio/hold_music1.ogg"]
+        $music.volume = 0.5
+        $music.play(false)
+      }
+#      after(400) {$hold_music1.play(0.5)}
+#      after(1000) {$hold_music1.stop}
     end
     if $round == 2
-      after(400) {$hold_music3.play(0.5)}
+      after(1000) {
+        $music = Song["media/audio/hold_music3.ogg"]
+        $music.volume = 0.5
+        $music.play(false)
+      }
+#      after(400) {$hold_music3.play(0.5)}
     end
     if $round == 3
-      after(400) {$hold_music4.play(0.5)}
+      after(1000) {
+        $music = Song["media/audio/hold_music4.ogg"]
+        $music.volume = 0.5
+        $music.play(false)
+      }
+#      after(400) {$hold_music4.play(0.5)}
     end
   end
 
@@ -96,7 +112,9 @@ class FieldChange < Chingu::GameState
     after(4600) { @chant_text.text = "#{@chant}" }
     after(4000) { @chant_text.text = "" }
     after(4600) { @chant_text.text = "#{@chant}" }
-    after(5400) { push_game_state(Field) }
+    after(5200) { @chant_text.text = "" }
+    after(5800) { @chant_text.text = "#{@chant}" }
+    after(6600) { push_game_state(Field) }
   end
 
   def update
