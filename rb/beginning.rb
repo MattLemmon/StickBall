@@ -30,11 +30,14 @@ class PreIntro < Chingu::GameState
 
   def setup
     ####################################################
+    $score1 = 0
+    $score2 = 0
     $mode = "Versus"
-    $pos1_x, $pos1_y = 740, 300
-    $pos2_x, $pos2_y = 60, 300
     $image1 = "boy"
     $image2 = "boy"
+    $round = 1
+    $pos1_x, $pos1_y = 740, 300
+    $pos2_x, $pos2_y = 60, 300
     $stars1 = 0
     $stars2 = 0
     $speed1 = 6

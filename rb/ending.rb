@@ -26,7 +26,7 @@ class GameOver < Chingu::GameState
 #    @t2.x = 400 - @t2.width/2
     @t3 = Chingu::Text.create(:text=>"Press enter", :y=>380, :size=>28)
     @t3.x = 400 - @t3.width/2
-    $window.caption = "Game Over"
+    $window.caption = "StickBall - Game Over"
   end
 
   def pop

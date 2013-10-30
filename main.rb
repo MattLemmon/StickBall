@@ -76,11 +76,11 @@ class GameWindow < Chingu::Window
     $max_x = 815
     $max_y = 615
     $scr_edge = 15
-    $cooling_down = 70
-    $speed1 = 6
-    $speed2 = 6
-    $score1 = 0
-    $score2 = 0
+#    $cooling_down = 70
+#    $speed1 = 6
+#    $speed2 = 6
+#    $score1 = 0
+#    $score2 = 0
     $mode = "Campaign"
     $image1 = "boy"
     $image2 = "boy"

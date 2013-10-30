@@ -1,4 +1,28 @@
 
+=begin
+          if $health1 > 1
+            $health1 -=1
+            @health1_text.text = "#{$health1}"
+            @health1_text.x = 765 - @health1_text.width/2
+          elsif $round < 3
+            $round += 1
+            $score2 += 1
+            @round_text.text = "Round #{$round}"
+            @round_text.x = 400 - @round_text.width/2
+            puts "round #{$round}"
+            puts "score1 #{$score1}"
+            puts "score2 #{$score2}"
+            push_game_state(FieldChange)
+          else
+            $score2 += 1
+            $winner = "left player"
+            $round = 1
+            push_game_state(GameOver)
+          end
+=end
+
+
+
   # Characters Class
   def setup
     #...
@@ -99,19 +123,6 @@
         end
       end
     end
-
-
-
-
-
-
-
-
-MSG TO Weezard:
-
-Hey thanks a lot! We're getting pretty close to the deadline. I don't know exactly what language I would say everything is in - Chingu I guess would be the closest answer. I'm not sure what runs under the hood of Gosu, but I think it pulls together functionality from C++ and other frameworks, and then just makes it accessible in Ruby for people like me who don't know anything about C++. We're possibly going to include a gl shader (using the ashton gem), but that may get left out in the final draft.
-
-Ya, I'm feeling pretty good about it, although there are still a ton of loose ends to tie up. Pretty decent for less than two weeks start to finish. A lot of the professional touches that make it look crisp and polished come from the other team members. I have little to no understanding of how the lense flares work but they look fantastic!
 
 
 

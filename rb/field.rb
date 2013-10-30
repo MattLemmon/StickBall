@@ -66,7 +66,7 @@ class Field < Chingu::GameState
     @seconds = 30
 
     @bump = 0
-    @bump_delay = 15
+    @bump_delay = 10
     @bounce = 0
     @bounce_delay = 6
     @spell1_hit = false
@@ -651,31 +651,29 @@ class Field < Chingu::GameState
 
     FireCube.each do |particle|             # SCORING AND WALL-BOUNCING  SCORING  SCORING
       if @bounce == 0
-        if particle.x < 0
+
+        if particle.x < 0                              # LEFT WALL
           particle.x = 0
           particle.velocity_x = -particle.velocity_x
           $bang2.play(0.3)
-
-          if $health2 > 1
-            $health2 -=1
-            @health2_text.text = "#{$health2}"
-            @health2_text.x = 38 - @health2_text.width/2
-
-          elsif $score1 == 0
+          $health2 -=1
+          @health2_text.text = "#{$health2}"
+          @health2_text.x = 38 - @health2_text.width/2
+          if $health2 == 0
             $round += 1
             $score1 += 1
-#            @round_text.text = "Round #{$round}"
-#            @round_text.x = 400 - @round_text.width/2
-            push_game_state(FieldChange)
-          else
-            $winner = "right player"     # PLAYER 1 WINS
-            $score1 = 0
-            $score2 = 0
-            $round = 1
-            push_game_state(GameOver)
+            @score1_text.text = "#{$score1}"
+            @score1_text.x = 500 - @score1_text.width/2
+            @puck.destroy
+            @multiball = true
+            if $score1 == 1
+              after(2800){push_game_state(FieldChange)}
+            else
+              $winner = "right player"     # PLAYER 1 WINS
+              after(2800){push_game_state(GameOver)}
+#              push_game_state(GameOver)
+            end
           end
-
-
           particle.die!
           screen_shake1
           @referee.update_face
@@ -683,51 +681,29 @@ class Field < Chingu::GameState
           @player2.update_face
           @bounce = @bounce_delay
         end
-        if particle.x > $window.width
+
+        if particle.x > $window.width                   # RIGHT WALL 
           particle.x = $window.width
           particle.velocity_x = -particle.velocity_x
-#          $score2 += 1
           $bang1.play(0.4)
-
-          if $health1 > 1
-            $health1 -=1
-            @health1_text.text = "#{$health1}"
-            @health1_text.x = 765 - @health1_text.width/2
-
-          elsif $score2 == 0
+          $health1 -=1
+          @health1_text.text = "#{$health1}"
+          @health1_text.x = 765 - @health1_text.width/2
+          if $health1 == 0
             $round += 1
             $score2 += 1
-            push_game_state(FieldChange)
-          else
-            $score2 += 1
-            $winner = "left player"     # PLAYER 2 WINS
-            $score1 = 0
-            $score2 = 0
-            $round = 1
-            push_game_state(GameOver)
+            @score2_text.text = "#{$score2}"
+            @score2_text.x = 300 - @score2_text.width/2
+            @puck.destroy
+            @multiball = true
+            if $score2 == 1
+              after(2800){push_game_state(FieldChange)}
+            else
+              $winner = "left player"     # PLAYER 2 WINS
+              after(2800){push_game_state(GameOver)}
+#              push_game_state(GameOver)
+            end
           end
-
-=begin
-          if $health1 > 1
-            $health1 -=1
-            @health1_text.text = "#{$health1}"
-            @health1_text.x = 765 - @health1_text.width/2
-          elsif $round < 3
-            $round += 1
-            $score2 += 1
-            @round_text.text = "Round #{$round}"
-            @round_text.x = 400 - @round_text.width/2
-            puts "round #{$round}"
-            puts "score1 #{$score1}"
-            puts "score2 #{$score2}"
-            push_game_state(FieldChange)
-          else
-            $score2 += 1
-            $winner = "left player"
-            $round = 1
-            push_game_state(GameOver)
-          end
-=end
 
           particle.die!
           screen_shake2

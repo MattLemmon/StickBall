@@ -43,7 +43,7 @@ class FieldChange < Chingu::GameState
 
   def setup
     self.input = { :p=>Pause, :space=>:fire, :right_shift=>Field, :left_shift=>Field } #, [:enter, :return] => Field }
-    $window.caption = "Field Transition - Preare for Round #{$round}"
+    $window.caption = "StickBall - Preare for Round #{$round}"
 
     @player1 = Player1Clone.create(:x=> $pos1_x, :y=> $pos1_y)
     @player1.input = {:holding_left=>:go_left,:holding_right=>:go_right,:holding_up=>:go_up,:holding_down=>:go_down}
