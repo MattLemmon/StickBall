@@ -21,20 +21,18 @@ class Field < Chingu::GameState
     @drop_vel_y = 0
 
     self.input = { :p => Pause,
-                   #:r => lambda{current_game_state.setup},
 #                   :space => :fire,
                    :j => :decrease_volume,
                    :l => :increase_volume,
                    :i => :increase_volume,
                    :k => :decrease_volume,
-                   [:enter, :return] => Field,
                    :holding_right_ctrl=>:chest_bump1,
                    :holding_left_ctrl=>:chest_bump2,
                    :right_shift=>:right_attack,
                    :left_shift=>:left_attack
                  }
 
-    $window.caption = "Stick Ball! Go team go!"
+    $window.caption = "Stick Ball - Round #{$round}"
   end
 
   def setup
@@ -74,9 +72,8 @@ class Field < Chingu::GameState
 
     FireCube.destroy_all
     Star.destroy_all
-#    LenseFlares.destroy_all
-
-#    if @player != nil; @player.destroy; end 
+    #LenseFlares.destroy_all
+    #if @player != nil; @player.destroy; end 
 
     @referee = Referee.create(:x => 400, :y => 300, :zorder => Zorder::Main_Character)
 
@@ -115,9 +112,6 @@ class Field < Chingu::GameState
     @puck_flare.brightness = 0.25
     @puck_flare.strength = 0.3
     @puck_flare.scale = 1.0
-
-#    @timer_pos_x = 400
-#    @timer_pos_y = 36
 
     @timer_text = Chingu::Text.create("Multiball in :#{@seconds}", :y => 36, :font => "GeosansLight", :size => 26, :color => Colors::White, :zorder => Zorder::GUI)
     @timer_text.x = 400 - @timer_text.width/2
@@ -162,7 +156,7 @@ class Field < Chingu::GameState
       #Background6.create
       after(500) {
         $music = Song["media/audio/8_bit_remix.ogg"]
-        $music.volume = 0.8
+        $music.volume = 0.7
         $music.play(true)
       }
     end
@@ -360,27 +354,22 @@ class Field < Chingu::GameState
 
   def rare_drop
     @r = rand(3)
-    $rare_drop = @rare_drops[@r]
-#    puts $rare_drop
-    if $rare_drop == "heart"
+    @rare_drop = @rare_drops[@r]
+    #puts @rare_drop
+    if @rare_drop == "heart"
       create_heart
-#      create_stun
-#      @drop_vel_y *= -1
-      create_mist
     end
-    if $rare_drop == "stun"
+    if @rare_drop == "stun"
       create_stun
-      @drop_vel_y *= -1
+    end
+    if @rare_drop == "mist"
       create_mist
     end
-    if $rare_drop == "mist"
-      create_mist
+    if rand(3) == 1
+      @drop_vel_y *= -1
+      add_star :x => @referee.x, :y => @referee.y, :velocity_x => @drop_vel_x, :velocity_y => @drop_vel_y
     end
   end
-
-#  def next_round
-#    push_game_state(Field)
-#  end
 
   def collision_check
     @star_flares.each do |star,flare|        # UPDATE STAR FLARES
@@ -531,17 +520,16 @@ class Field < Chingu::GameState
         @bump = @bump_delay
         player.wobble
         puck.die!
-
         if @bumping1 == true && $chest_bump1 == true
-          puts "Bump"                                # Chest Bump
+          #puts "Bump"                                # Chest Bump
           if puck.velocity_x > 0
             puck.velocity_x *= 0.05
             puck.velocity_y *= 0.5
           end
         else
           if $kick1 == true
-            puts "Kick"
-            puck.velocity_x = player.velocity_x * 6    # Kick
+            #puts "Kick"                               # Kick
+            puck.velocity_x = player.velocity_x * 6
             puck.velocity_y *= 3
             if puck.velocity_x > 0
               puck.velocity_x *= -1
@@ -584,14 +572,14 @@ class Field < Chingu::GameState
         puck.die!
 
         if @bumping2 == true && $chest_bump2 == true
-          puts "Bump"
+          #puts "Bump"
           if puck.velocity_x < 0
             puck.velocity_x *= 0.05
             puck.velocity_y *= 0.5
           end
         else
           if $kick2 == true
-            puts "Kick"
+            #puts "Kick"
             puck.velocity_x = player.velocity_x * 6  # Kick
             puck.velocity_y *= 3
             if puck.velocity_x < 0
@@ -607,8 +595,7 @@ class Field < Chingu::GameState
               puck.velocity_x = 10
             end
           end            
-
-          if player.y - puck.y < -46
+          if player.y - puck.y < -46         # vel_y
             puck.velocity_y = 11
           elsif player.y - puck.y < -38
             puck.velocity_y = 5
@@ -634,12 +621,13 @@ class Field < Chingu::GameState
         referee.wobble
         puck.die!
         @bump = @bump_delay
-        add_star :x => referee.x, :y => referee.y, :velocity_x => -puck.velocity_x/3*2, :velocity_y => puck.velocity_y/3*2
-        add_star :x => referee.x, :y => referee.y, :velocity_x => -puck.velocity_x/3*2, :velocity_y => -puck.velocity_y/3*2
-        if 1 == 1
+        if rand(3) == 1
           @drop_vel_x = -puck.velocity_x/3*2
           @drop_vel_y = puck.velocity_y/3*2
           rare_drop
+        else
+          add_star :x => referee.x, :y => referee.y, :velocity_x => -puck.velocity_x/3*2, :velocity_y => puck.velocity_y/3*2
+          #add_star :x => referee.x, :y => referee.y, :velocity_x => -puck.velocity_x/3*2, :velocity_y => -puck.velocity_y/3*2
         end
         if puck.velocity_x > 0
           puck.velocity_x = -10
@@ -675,12 +663,11 @@ class Field < Chingu::GameState
             if @puck2 != nil; @puck2.destroy; end
             if @puck3 != nil; @puck3.destroy; end
             if $score1 == 1
-              after(2800){push_game_state(FieldChange)}
+              after(3800){push_game_state(FieldChange)}
             else
               $winner = "Right Player"     # PLAYER 1 WINS
               @song_fade = true
-              after(3800){push_game_state(GameOver)}
-#              push_game_state(GameOver)
+              after(5000){push_game_state(GameOver)}
             end
           end
           particle.die!
@@ -713,8 +700,7 @@ class Field < Chingu::GameState
             else
               $winner = "Left Player"     # PLAYER 2 WINS
               @song_fade = true
-              after(2800){push_game_state(GameOver)}
-#              push_game_state(GameOver)
+              after(5000){push_game_state(GameOver)}
             end
           end
 
@@ -827,7 +813,7 @@ class Field < Chingu::GameState
 
     self.game_objects.destroy_if { |object| object.color.alpha == 0 }
 
-    $window.caption = "Stick Ball - Round #{$round}" # - Objects: #{game_objects.size}, FPS: #{$window.fps}"
+#    $window.caption = "Stick Ball - Round #{$round}" # - Objects: #{game_objects.size}, FPS: #{$window.fps}"
 
     if @song_fade == true # fade song if @song_fade is true
       @fade_count += 1

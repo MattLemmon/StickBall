@@ -365,57 +365,6 @@ class Highlight2 < Chingu::GameObject
 end
 
 
-#
-#   METEOR
-#     Meteor class is used in Introduction gamestate
-class Meteor < Chingu::GameObject
-  trait :bounding_circle, :debug => DEBUG
-  traits :velocity, :collision_detection
-
-  def initialize(options)
-    super(options.merge(:image => Gosu::Image["objects/meteor.png"]))
-    @angular_velocity = 5
-    @random = rand(2)+1
-    if(@random == 1)
-      @angular_velocity = -@angular_velocity
-    end
-  end
-
-  def update
-    @angle += @angular_velocity
-  end
-end
-
-
-
-#
-#   BULLET
-#     technically speaking, it's a laser, but it's still called "Bullet"
-class Bullet < Chingu::GameObject
-  trait :bounding_circle, :debug => DEBUG
-  has_traits :timer, :velocity, :collision_detection
-
-  def initialize(options)
-    super(options.merge(:image => Gosu::Image["objects/laser.png"]))
-    @speed = 7
-    self.velocity_x = Gosu::offset_x(@angle, @speed)
-    self.velocity_y = Gosu::offset_y(@angle, @speed)
-    @max_x, @max_y, @scr_edge = $max_x, $max_y, $scr_edge
-  end
-
-  def update
-    @y += self.velocity_y
-    @x += self.velocity_x
-    if @x < -@scr_edge; @x = @max_x; end  # wrap beyond screen edge
-    if @y < -@scr_edge; @y = @max_y; end
-    if @x > @max_x; @x = -@scr_edge; end
-    if @y > @max_y; @y = -@scr_edge; end
-    after(550) {self.destroy}  # goes through screen edges, but only to a certain distance
-  end
-end
-
-
-
 
 #
 #   EXPLOSION

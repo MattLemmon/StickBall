@@ -1,15 +1,11 @@
 
 
 
-
-
 class CrowdScene2 < Chingu::GameState
   def setup
     @bg = Crowd.create
     self.input = {
       :esc => :exit,
-      :enter => :next,
-      # [:right_shift, :left_shift] => OpeningCredits,
       :p => Pause,
       # :r => lambda{current_game_state.setup}
       :e => proc { @bg.input_e },
@@ -30,12 +26,7 @@ class CrowdScene2 < Chingu::GameState
       :right=> proc { @bg.input_right },
     }
   end
-
-  def next
-    push_game_state(CrowdScene2.new)
-  end
 end
-
 
 
 
@@ -45,9 +36,7 @@ class CrowdScene < Chingu::GameState
     @bg = BackgroundCrowd.create
     self.input = {
       :esc => :exit,
-      # [:right_shift, :left_shift] => OpeningCredits,
       :p => Pause,
-      # :r => lambda{current_game_state.setup}
       :e => proc { @bg.input_e },
       :r => proc { @bg.input_r },
       :t => proc { @bg.input_t },

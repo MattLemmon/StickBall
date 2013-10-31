@@ -475,7 +475,7 @@ class Player1 < Chingu::GameObject
   def cast_spell
     if $spell1 != "none"
       $spell_cast1.play
-      puts "cast #{$spell1}"
+      #puts "cast #{$spell1}"
       3.times { Spell1.create(:x=>@x, :y=>@y ) }
       $spell1 = "none"
     end
@@ -487,14 +487,11 @@ class Player1 < Chingu::GameObject
     @creeping = true
   end
   def stun
-#    puts $spell2
-#    if $spell2 == "stun"
-      Zapper.create(:x=>@x,:y=>@y)
-      @stun = true
-      $stunned.play(0.3)
-      after(100) {$zapped.play(0.3)}
-      after(3000) {@stun = false}
-#    end
+    Zapper.create(:x=>@x,:y=>@y)
+    @stun = true
+    $stunned.play(0.3)
+    after(100) {$zapped.play(0.3)}
+    after(3000) {@stun = false}
   end
   def mist
     after(300) {@mist = true}
@@ -516,7 +513,6 @@ class Player1 < Chingu::GameObject
     @eyes.update
     @mouth.update
   end
-
 
   def update
     self.factor_y = @squeeze_y
@@ -637,9 +633,9 @@ class Player2 < Chingu::GameObject
   def cast_spell
     if $spell2 != "none"
       $spell_cast2.play
-      puts "cast #{$spell2}"
+      #puts "cast #{$spell2}"
       3.times { Spell2.create(:x=>@x, :y=>@y) }
-    $spell2 = "none"
+      $spell2 = "none"
     end
   end
   def creep

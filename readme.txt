@@ -54,7 +54,11 @@ shift button:
 
 
 Extra Controls:  I J K L => music volume controls during rounds
-                 From the Pause menu you can return to the Main Menu
+
+                 P => from the Pause menu you can return to the Main Menu
+
+                 Z => press Z at any time for a gamestate status log
+                      (print message to console)
 _________________________________________________________________
 
                     QUICK INSTALL (Requires Ruby)

@@ -136,26 +136,6 @@ class GUI2 < Chingu::GameObject
     end
   end
 
-=begin  def power_up
-    if $power_ups2 == 1
-      @power_ups_text.text = "Speed"
-      @power_ups_text.x = 110 - @power_ups_text.width/2
-    elsif $power_ups2 == 2
-      @power_ups_text.text = "Creep"
-      @power_ups_text.x = 110 - @power_ups_text.width/2
-    else
-      @power_ups_text.text = "Bump"
-      @power_ups_text.x = 110 - @power_ups_text.width/2
-    end
-  end
-=end
-
-#  def update
-#		 super
-#    @power_ups_text.text = "Power Ups: #{$power_ups2}"
-#    @spell_text.text = "Spell: #{$spell2}"
-#	 end
-
   def draw
     @heart_meter.draw(@x + 10, @y + 4, 10)
     @score_box.draw(@x+273, @y+4, 10)
@@ -177,3 +157,23 @@ class GUI2 < Chingu::GameObject
 	end
 end
 
+
+=begin  def power_up
+    if $power_ups2 == 1
+      @power_ups_text.text = "Speed"
+      @power_ups_text.x = 110 - @power_ups_text.width/2
+    elsif $power_ups2 == 2
+      @power_ups_text.text = "Creep"
+      @power_ups_text.x = 110 - @power_ups_text.width/2
+    else
+      @power_ups_text.text = "Bump"
+      @power_ups_text.x = 110 - @power_ups_text.width/2
+    end
+  end
+=end
+
+#  def update
+#    super
+#    @power_ups_text.text = "Power Ups: #{$power_ups2}"
+#    @spell_text.text = "Spell: #{$spell2}"
+#  end
