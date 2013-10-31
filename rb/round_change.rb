@@ -48,7 +48,9 @@ class FieldChange < Chingu::GameState
     @player1 = Player1Clone.create(:x=> $pos1_x, :y=> $pos1_y)
     @player1.input = {:holding_left=>:go_left,:holding_right=>:go_right,:holding_up=>:go_up,:holding_down=>:go_down}
     @player2 = Player2Clone.create(:x=> $pos2_x, :y=> $pos2_y)
-    @player2.input = {:holding_a=>:go_left,:holding_d=>:go_right,:holding_w=>:go_up,:holding_s=>:go_down}
+    if $mode == "Versus"
+      @player2.input = {:holding_a=>:go_left,:holding_d=>:go_right,:holding_w=>:go_up,:holding_s=>:go_down}
+    end
 
     @chant = "Loading Round #{$round}"
 
@@ -66,7 +68,7 @@ class FieldChange < Chingu::GameState
       $score2 = 0
       after(1000) {
         $music = Song["media/audio/hold_music1.ogg"]
-        $music.volume = 0.5
+        $music.volume = 0.4
         $music.play(false)
       }
 #      after(400) {$hold_music1.play(0.5)}
@@ -75,7 +77,7 @@ class FieldChange < Chingu::GameState
     if $round == 2
       after(1000) {
         $music = Song["media/audio/hold_music3.ogg"]
-        $music.volume = 0.5
+        $music.volume = 0.4
         $music.play(false)
       }
 #      after(400) {$hold_music3.play(0.5)}
@@ -83,7 +85,7 @@ class FieldChange < Chingu::GameState
     if $round == 3
       after(1000) {
         $music = Song["media/audio/hold_music4.ogg"]
-        $music.volume = 0.5
+        $music.volume = 0.4
         $music.play(false)
       }
 #      after(400) {$hold_music4.play(0.5)}

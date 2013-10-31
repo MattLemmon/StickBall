@@ -16,7 +16,7 @@ class FireCube < Chingu::GameObject
   def initialize(options)
     super
     @mode = :additive
-    @x = 150 + rand(500)
+    @x = 250 + rand(300)
     @y = 100 + rand(400)
     @image = Image["objects/circle.png"]
     self.velocity_x = 10; if rand(2) == 1; self.velocity_x = -10; end

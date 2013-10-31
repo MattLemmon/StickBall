@@ -102,16 +102,16 @@ class Player1Clone < Chingu::GameObject
     self.factor_x = -1
   end
   def go_left
-    @x -= 2
+    @x -= 1
   end
    def go_right
-    @x += 2
+    @x += 1
   end
   def go_up
-    @y -= 2
+    @y -= 1
   end
   def go_down
-    @y += 2
+    @y += 1
   end
   def update
     @eyes.update
@@ -135,16 +135,16 @@ class Player2Clone < Chingu::GameObject
     @eyes = CloneEyes.new self
   end
   def go_left
-    @x -= 2
+    @x -= 1
   end
    def go_right
-    @x += 2
+    @x += 1
   end
   def go_up
-    @y -= 2
+    @y -= 1
   end
   def go_down
-    @y += 2
+    @y += 1
   end
   def update
     @eyes.update

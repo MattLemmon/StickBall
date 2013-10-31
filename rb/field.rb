@@ -22,24 +22,20 @@ class Field < Chingu::GameState
 
     self.input = { :p => Pause,
                    #:r => lambda{current_game_state.setup},
-                   :space => :fire,
-                   :j => :toggle_left,
-                   :l => :toggle_right,
-                   :i => :toggle_up,
-                   :k => :toggle_down,
-                   :right_shift=>:right_attack,
-                   :left_shift=>:left_attack,
+#                   :space => :fire,
+#                   :j => :toggle_left,
+#                   :l => :toggle_right,
+#                   :i => :toggle_up,
+#                   :k => :toggle_down,
                    :/ => :testify,
                    [:enter, :return] => Field,
-                   :holding_right_ctrl=>:kick_ball1,
-                   :holding_left_ctrl=>:kick_ball2
+                   :holding_right_shift=>:chest_bump1,
+                   :holding_left_shift=>:chest_bump2,
+                   :right_ctrl=>:right_attack,
+                   :left_ctrl=>:left_attack
                  }
 
     $window.caption = "Stick Ball! Go team go!"
-  end
-
-  def testify
-    puts "test"
   end
 
   def setup
@@ -51,8 +47,8 @@ class Field < Chingu::GameState
 
     @seconds = 30
 
-    @kicking1 = false
-    @kicking2 = false
+    @bumping1 = false
+    @bumping2 = false
 
     @bump = 0
     @bump_delay = 12
@@ -93,6 +89,17 @@ class Field < Chingu::GameState
     @player2 = Player2.create(:x => $pos2_x, :y => $pos2_y, :zorder => Zorder::Main_Character)#(:x => $player_x, :y => $player_y, :angle => $player_angle, :zorder => Zorder::Main_Character)
     if $mode == "Versus"
       @player2.input = {:holding_a=>:go_left,:holding_d=>:go_right,:holding_w=>:go_up,:holding_s=>:go_down} #:holding_left_ctrl=>:creep,
+    end
+    if $mode == "Campaign"
+      @player2.x = 32
+#      if $difficulty == "Hard"
+#        @player2.factor = 1.8
+#        @player2.cache_bounding_box
+#      end
+#      if $difficulty == "Insane"
+#        @player2.factor = 2.8
+#        @player2.cache_bounding_box
+#      end
     end
 
     @health1_text = Chingu::Text.create(:text=>"#{$health1}", :y=>16, :size=>32)
@@ -140,6 +147,13 @@ class Field < Chingu::GameState
 
   end
 
+
+  def testify
+    puts "test"
+  end
+
+
+
   def campaign_setup
     if $difficulty == "Hard"
       $speed2 = 10
@@ -155,7 +169,7 @@ class Field < Chingu::GameState
       Background6.create
       after(500) {
         $music = Song["media/audio/8_bit_remix.ogg"]
-        $music.volume = 0.6
+        $music.volume = 0.8
         $music.play(true)
       }
 #      @parallax = Chingu::Parallax.create(:x => 0, :y => 0, :rotation_center => :top_left, :zorder => Zorder::Background)
@@ -202,15 +216,15 @@ class Field < Chingu::GameState
 #    if $spell2 == "mist"; @player1.mist; end
   end
 
-  def kick_ball1
+  def chest_bump1
 #    if $power_ups1 > 2
-      @kicking1 = true
+      @bumping1 = true
 #    end
   end
 
-  def kick_ball2
+  def chest_bump2
 #    if $power_ups2 > 2
-      @kicking2 = true
+      @bumping2 = true
 #    end
   end
 
@@ -304,11 +318,11 @@ class Field < Chingu::GameState
       @referee.go_down
       @referee.update_face
     end
-    if @referee.x > @puck.x && rand(7) == 1
+    if @referee.x > @puck.x && @referee.x > 300 && rand(20) == 1
       @referee.go_left
       @referee.update_face
     end
-    if @referee.x < @puck.x && rand(7) == 1
+    if @referee.x < @puck.x && @referee.x < 500 && rand(20) == 1
       @referee.go_right
       @referee.update_face
     end
@@ -546,54 +560,49 @@ class Field < Chingu::GameState
         puck.die!
 
 
-        if @kicking1 == true #&& $kick1 == true
-          puts "Kick!"
-          puck.velocity_x = player.velocity_x * 10
+        if @bumping1 == true && $chest_bump1 == true
+          puts "Bump"
+#          if $chest_bump1 == true                # Chest Bump
           if puck.velocity_x > 0
-            puck.velocity_x *= -1
-          end
-          if puck.velocity_x > -0.25
-            puck.velocity_x = -15
+            puck.velocity_x *= 0.05
+            puck.velocity_y *= 0.5
           end
         else
-          if puck.velocity_x < 0       # vel_x 
-            puck.velocity_x = 10
+          if $kick1 == true
+            puts "Kick"
+            puck.velocity_x = player.velocity_x * 10  # Kick
+            if puck.velocity_x > 0
+              puck.velocity_x *= -1
+            end
+            if puck.velocity_x > -0.25
+              puck.velocity_x = -15
+            end
           else
-            puck.velocity_x = -10
-          end
-        end
-
-        if player.y - puck.y < -46      # vel_y
-          puck.velocity_y = 11
-        elsif player.y - puck.y < -38
-          puck.velocity_y = 5
-
-        elsif player.y - puck.y < -20
-          puck.velocity_y = 3
-
-        elsif player.y - puck.y < 20
-          if puck.velocity_y >= 2.0 || puck.velocity_y <= 2.0
-            puck.velocity_y = -puck.velocity_y*0.4
-            if $chest_bump1 == true                # Chest Bump Ability
-              if puck.velocity_x < 0
-                puck.velocity_x *= -0.05
-              end
+            if puck.velocity_x < 0                    # Normal
+              puck.velocity_x = 10          # vel_x 
+            else
+              puck.velocity_x = -10
             end
           end
-        elsif player.y - puck.y < 38
-          puck.velocity_y = -3
-        elsif player.y - puck.y < 46
-          puck.velocity_y = -5
-        else
-          puck.velocity_y = -11
+          if player.y - puck.y < -46        # vel_y
+            puck.velocity_y = 11
+          elsif player.y - puck.y < -38
+            puck.velocity_y = 5
+          elsif player.y - puck.y < -20
+            puck.velocity_y = 3
+          elsif player.y - puck.y < 20
+            if puck.velocity_y >= 2.0 || puck.velocity_y <= 2.0
+              puck.velocity_y = -puck.velocity_y*0.4
+            end
+          elsif player.y - puck.y < 38
+            puck.velocity_y = -3
+          elsif player.y - puck.y < 46
+            puck.velocity_y = -5
+          else
+            puck.velocity_y = -11
+          end
         end
       end
-#        puck.velocity_x = player.velocity_x * 5
-#        puck.velocity_y = player.velocity_y * 5
-#        if puck.velocity_x > 0
-#          puck.velocity_x *= -1
-#        end
-#      end
     end
 
     FireCube.each_collision(Player2) do |puck, player|           # PUCK / PLAYER 2
@@ -601,7 +610,7 @@ class Field < Chingu::GameState
         @bump = @bump_delay
         player.wobble
         puck.die!
-        if @kicking2 == true
+        if @bumping2 == true
           puts "Kick!"
         end
 
@@ -776,8 +785,8 @@ class Field < Chingu::GameState
     collision_check
     $pos1_x, $pos1_y = @player1.x, @player1.y
     $pos2_x, $pos2_y = @player2.x, @player2.y
-    @kicking1 = false
-    @kicking2 = false
+    @bumping1 = false
+    @bumping2 = false
 
     if @bump > 0
       @bump -= 1
@@ -797,11 +806,29 @@ class Field < Chingu::GameState
         end
       end
       if $difficulty == "Normal" || $difficulty == "Hard" || $difficulty == "Insane"
-        if @player2.y > @puck.y && rand(3) == 1 && @player2.x < @puck.x
+        if @player2.y > @puck.y && rand(3) == 1
           @player2.go_up
         end
-        if @player2.y < @puck.y && rand(3) == 1 && @player2.x < @puck.x
+        if @player2.y < @puck.y && rand(3) == 1
           @player2.go_down
+        end
+        if rand(500) == 1
+          if rand(2) == 1
+            $spell2 = "stun"
+          else
+            $spell2 = "mist"
+          end
+          @player2.cast_spell
+        end
+      end
+      if $difficulty == "Insane"
+        if rand(200) == 1
+          if rand(2) == 1
+            $spell2 = "stun"
+          else
+            $spell2 = "mist"
+          end
+          @player2.cast_spell
         end
       end
     end

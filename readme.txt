@@ -33,18 +33,19 @@ Left Ctrl                                             Right Ctrl
 
 Shift is used to cast spells, after they are picked up.
 
-Ctrl is used to kick the ball, after the kick Power-Up has been obtained.
+Ctrl is used to slow the ball, after the Bump Power-Up has been obtained.
 
 The three main Power-Ups are:
 
   -  Speed         faster player movement
-  -  Chest Bump    slows ball when it hits player's chest
+  -  Chest Bump    slows ball when holding Ctrl
   -  Kick          hold ctrl to kick the ball faster
 
 The two additional Power-Ups are spells which can be cast:
 
   -  Stun          stuns opponent for a few seconds
   -  Mist          makes opponent disappear for a few seconds
+
 
 _________________________________________________________________
 
