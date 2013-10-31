@@ -1,5 +1,61 @@
 
 
+    FireCube.each_collision(Player1) do |puck, player|           # PUCK / PLAYER 1
+      if @bump == 0
+        @bump = @bump_delay
+        player.wobble
+        puck.die!
+
+        if @bumping1 == true && $chest_bump1 == true
+          puts "Bump"
+          if puck.velocity_x > 0
+            puck.velocity_x *= 0.05
+            puck.velocity_y *= 0.5
+          end
+        else
+          if $kick1 == true
+            puts "Kick"
+            puck.velocity_x = player.velocity_x * 10  # Kick
+            if puck.velocity_x > 0
+              puck.velocity_x *= -1
+            end
+            if puck.velocity_x > -0.25
+              puck.velocity_x = -15
+            end
+          else
+            if puck.velocity_x < 0                    # Normal
+              puck.velocity_x = 10          # vel_x 
+            else
+              puck.velocity_x = -10
+            end
+          end
+          if player.y - puck.y < -46        # vel_y
+            puck.velocity_y = 11
+          elsif player.y - puck.y < -38
+            puck.velocity_y = 5
+          elsif player.y - puck.y < -20
+            puck.velocity_y = 3
+          elsif player.y - puck.y < 20
+            if puck.velocity_y >= 2.0 || puck.velocity_y <= 2.0
+              puck.velocity_y = -puck.velocity_y*0.4
+            end
+          elsif player.y - puck.y < 38
+            puck.velocity_y = -3
+          elsif player.y - puck.y < 46
+            puck.velocity_y = -5
+          else
+            puck.velocity_y = -11
+          end
+        end
+      end
+    end
+
+
+
+
+
+
+
 
 
 #

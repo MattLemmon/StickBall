@@ -27,12 +27,11 @@ class Field < Chingu::GameState
 #                   :l => :toggle_right,
 #                   :i => :toggle_up,
 #                   :k => :toggle_down,
-                   :/ => :testify,
                    [:enter, :return] => Field,
-                   :holding_right_shift=>:chest_bump1,
-                   :holding_left_shift=>:chest_bump2,
-                   :right_ctrl=>:right_attack,
-                   :left_ctrl=>:left_attack
+                   :holding_right_ctrl=>:chest_bump1,
+                   :holding_left_ctrl=>:chest_bump2,
+                   :right_shift=>:right_attack,
+                   :left_shift=>:left_attack
                  }
 
     $window.caption = "Stick Ball! Go team go!"
@@ -42,8 +41,6 @@ class Field < Chingu::GameState
     super
     $health1 = $start_health1
     $health2 = $start_health2
-
-    $winner = ""
 
     @seconds = 30
 
@@ -92,14 +89,7 @@ class Field < Chingu::GameState
     end
     if $mode == "Campaign"
       @player2.x = 32
-#      if $difficulty == "Hard"
-#        @player2.factor = 1.8
-#        @player2.cache_bounding_box
-#      end
-#      if $difficulty == "Insane"
-#        @player2.factor = 2.8
-#        @player2.cache_bounding_box
-#      end
+      campaign_setup
     end
 
     @health1_text = Chingu::Text.create(:text=>"#{$health1}", :y=>16, :size=>32)
@@ -134,9 +124,6 @@ class Field < Chingu::GameState
 
     $music.volume = 0.0
 
-    if $mode == "Campaign"
-      campaign_setup
-    end
     round_setup
 
     after(1000) { tock }
@@ -144,25 +131,28 @@ class Field < Chingu::GameState
     after(2400) { @transition = false }
 
 #    1.times { fire }
-
   end
-
-
-  def testify
-    puts "test"
-  end
-
-
 
   def campaign_setup
-    if $difficulty == "Hard"
+    if $difficulty == "Easy"
+      $speed2 = 8
+      $health2 = 10
+    end
+    if $difficulty == "Normal"
       $speed2 = 10
+      $health2 = 15
+    end
+    if $difficulty == "Hard"
+      $speed2 = 14
+      $kick2 = true
+      $health2 = 30
     end
     if $difficulty == "Insane"
-      $speed2 = 16
+      $speed2 = 18
+      $kick2 = true
+      $health2 = 40
     end
   end
-
 
   def round_setup
     if $round == 1
@@ -559,10 +549,8 @@ class Field < Chingu::GameState
         player.wobble
         puck.die!
 
-
         if @bumping1 == true && $chest_bump1 == true
-          puts "Bump"
-#          if $chest_bump1 == true                # Chest Bump
+          puts "Bump"                                # Chest Bump
           if puck.velocity_x > 0
             puck.velocity_x *= 0.05
             puck.velocity_y *= 0.5
@@ -570,12 +558,13 @@ class Field < Chingu::GameState
         else
           if $kick1 == true
             puts "Kick"
-            puck.velocity_x = player.velocity_x * 10  # Kick
+            puck.velocity_x = player.velocity_x * 6    # Kick
+            puck.velocity_y *= 3
             if puck.velocity_x > 0
               puck.velocity_x *= -1
             end
-            if puck.velocity_x > -0.25
-              puck.velocity_x = -15
+            if puck.velocity_x > -5
+              puck.velocity_x = -13
             end
           else
             if puck.velocity_x < 0                    # Normal
@@ -610,36 +599,49 @@ class Field < Chingu::GameState
         @bump = @bump_delay
         player.wobble
         puck.die!
-        if @bumping2 == true
-          puts "Kick!"
-        end
 
-        if puck.velocity_x > 0
-          puck.velocity_x = -10
-        else
-          puck.velocity_x = 10
-        end
-        if player.y - puck.y < -48
-          puck.velocity_y = 11
-        elsif player.y - puck.y < -40
-          puck.velocity_y = 5
-        elsif player.y - puck.y < -25
-          puck.velocity_y = 3
-        elsif player.y - puck.y < 25
-          if puck.velocity_y >= 2.0 || puck.velocity_y <= 2.0
-            puck.velocity_y = -puck.velocity_y*0.2
-            if $chest_bump2 == true
-              if puck.velocity_x > 0
-                puck.velocity_x *= -0.05
-              end
-            end
+        if @bumping2 == true && $chest_bump2 == true
+          puts "Bump"
+          if puck.velocity_x < 0
+            puck.velocity_x *= 0.05
+            puck.velocity_y *= 0.5
           end
-        elsif player.y - puck.y < 40
-          puck.velocity_y = -3
-        elsif player.y - puck.y < 48
-          puck.velocity_y = -5
         else
-          puck.velocity_y = -11
+          if $kick2 == true
+            puts "Kick"
+            puck.velocity_x = player.velocity_x * 6  # Kick
+            puck.velocity_y *= 3
+            if puck.velocity_x < 0
+              puck.velocity_x *= -1
+            end
+            if puck.velocity_x < 5
+              puck.velocity_x = 13
+            end
+          else
+            if puck.velocity_x > 0                    # Normal
+              puck.velocity_x = -10          # vel_x 
+            else
+              puck.velocity_x = 10
+            end
+          end            
+
+          if player.y - puck.y < -46
+            puck.velocity_y = 11
+          elsif player.y - puck.y < -38
+            puck.velocity_y = 5
+          elsif player.y - puck.y < -20
+            puck.velocity_y = 3
+          elsif player.y - puck.y < 20
+            if puck.velocity_y >= 2.0 || puck.velocity_y <= 2.0
+              puck.velocity_y = -puck.velocity_y*0.4
+            end
+          elsif player.y - puck.y < 38
+            puck.velocity_y = -3
+          elsif player.y - puck.y < 46
+            puck.velocity_y = -5
+          else
+            puck.velocity_y = -11
+          end
         end
       end
     end
@@ -691,8 +693,9 @@ class Field < Chingu::GameState
             if $score1 == 1
               after(2800){push_game_state(FieldChange)}
             else
-              $winner = "right player"     # PLAYER 1 WINS
-              after(2800){push_game_state(GameOver)}
+              $winner = "Right Player"     # PLAYER 1 WINS
+              @song_fade = true
+              after(3800){push_game_state(GameOver)}
 #              push_game_state(GameOver)
             end
           end
@@ -721,9 +724,10 @@ class Field < Chingu::GameState
             if @puck2 != nil; @puck2.destroy; end
             if @puck3 != nil; @puck3.destroy; end
             if $score2 == 1
-              after(2800){push_game_state(FieldChange)}
+              after(3800){push_game_state(FieldChange)}
             else
-              $winner = "left player"     # PLAYER 2 WINS
+              $winner = "Left Player"     # PLAYER 2 WINS
+              @song_fade = true
               after(2800){push_game_state(GameOver)}
 #              push_game_state(GameOver)
             end
@@ -798,10 +802,10 @@ class Field < Chingu::GameState
 
     if $mode == "Campaign"
       if $difficulty == "Easy"
-        if @player2.y > @puck.y && rand(5) == 1
+        if @player2.y > @puck.y && rand(6) == 1
           @player2.go_up
         end
-        if @player2.y < @puck.y && rand(5) == 1
+        if @player2.y < @puck.y && rand(6) == 1
           @player2.go_down
         end
       end
@@ -812,6 +816,8 @@ class Field < Chingu::GameState
         if @player2.y < @puck.y && rand(3) == 1
           @player2.go_down
         end
+      end
+      if $difficulty == "Normal"
         if rand(500) == 1
           if rand(2) == 1
             $spell2 = "stun"
@@ -821,8 +827,18 @@ class Field < Chingu::GameState
           @player2.cast_spell
         end
       end
+      if $difficulty == "Hard"
+        if rand(300) == 1
+          if rand(2) == 1
+            $spell2 = "stun"
+          else
+            $spell2 = "mist"
+          end
+          @player2.cast_spell
+        end
+      end
       if $difficulty == "Insane"
-        if rand(200) == 1
+        if rand(160) == 1
           if rand(2) == 1
             $spell2 = "stun"
           else
@@ -835,12 +851,11 @@ class Field < Chingu::GameState
 
     self.game_objects.destroy_if { |object| object.color.alpha == 0 }
 
-
     $window.caption = "Stick Ball - Objects: #{game_objects.size}, FPS: #{$window.fps}"
 
     if @song_fade == true # fade song if @song_fade is true
       @fade_count += 1
-      if @fade_count == 30
+      if @fade_count == 20
         @fade_count = 0
         $music.volume -= 0.1
       end

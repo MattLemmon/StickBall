@@ -8,12 +8,10 @@ class Beginning < Chingu::GameState
     self.input = { :esc => :exit,  [:right_shift, :left_shift] => OpeningCredits } #, :p => Pause, :r => lambda{current_game_state.setup} }
     $music = Song["audio/guitar_solo.ogg"]
     $music.volume = 0.6
-    after(5) { $music.play(true) }
-    after(5) { push_game_state(PreIntro) }#Chingu::GameStates::FadeTo.new(PreIntro.new, :speed => 20)) }
+    after(2) { $music.play(true) }
+    after(4) { push_game_state(PreIntro) }#Chingu::GameStates::FadeTo.new(PreIntro.new, :speed => 20)) }
   end
 end
-
-
 
 
 #
@@ -217,11 +215,15 @@ class Intro < Chingu::GameState
     @chant = "Prepare for Battle"
 
     if $mode == "Versus"
+      @health2_text1 = "Health"
+      @health2_text2 = $health2.to_s
       self.input = { [:enter, :return] => FieldChange, :p => Pause,
                     :right_shift => :ready1,
                     :left_shift => :ready2 }
     else
       self.input = { :right_shift => :ready1 , :p => Pause } #, :r => lambda{current_game_state.setup} }
+      @health2_text1 = ""
+      @health2_text2 = ""
     end
 
     Chingu::Text.destroy_all 
@@ -254,9 +256,9 @@ class Intro < Chingu::GameState
       @text3_5.x = 714 - @text3_5.width/2 # center text
     }
     after(1500) {
-      @text4 = Chingu::Text.create("Health", :y => 300, :size => 32, :color => Colors::White, :zorder => Zorder::GUI)
+      @text4 = Chingu::Text.create("#{@health2_text1}", :y => 300, :size => 32, :color => Colors::White, :zorder => Zorder::GUI)
       @text4.x = 107 - @text4.width/2 # center text
-      @text4_5 = Chingu::Text.create( $health2.to_s, :y => 270, :size => 40, :color => Colors::White, :zorder => Zorder::GUI)
+      @text4_5 = Chingu::Text.create("#{@health2_text2}", :y => 270, :size => 40, :color => Colors::White, :zorder => Zorder::GUI)
       @text4_5.x = 107 - @text4_5.width/2 # center text
     }
     after(1800) {
@@ -308,20 +310,6 @@ class Intro < Chingu::GameState
     end
   end
 
-#  def next
-#    if @nxt == true  # if you've already pressed 'shift' once, pressing it again skips ahead
-#      @nxt = false
-#      $click.play
-#      push_game_state(Intro)
-#    else
-#      @nxt = true    # transition to Intro
-#      $click.play
-#      after(300) { puts 1 }
-#      after(600) { puts 2 }
-#      after(1000) { push_game_state(Intro) }
-#    end
-#  end
-
   def cpu_select_character
     after(1200) { if rand(2) == 1; @player2_select.go_right; end }
     after(1400) { if rand(2) == 1; @player2_select.go_right; end }
@@ -357,11 +345,12 @@ class Intro < Chingu::GameState
       @text3_5.text = $health1.to_s
       @text3_5.x = 714 - @text3_5.width/2 # center text
     end
-    if @text4_5 != nil
-      @text4_5.text = $health2.to_s
-      @text4_5.x = 107 - @text4_5.width/2 # center text
+    if $mode == "Versus"
+      if @text4_5 != nil
+        @text4_5.text = $health2.to_s
+        @text4_5.x = 107 - @text4_5.width/2 # center text
+      end
     end
-
 
     if @song_fade == true # fade song if @song_fade is true
       @fade_count += 1

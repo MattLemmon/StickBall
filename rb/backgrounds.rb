@@ -1,9 +1,5 @@
 
 
-
-
-
-
 class Crowd < Chingu::GameObject
 #  attr_accessor :camera_x, :camera_y
   def setup
@@ -75,19 +71,6 @@ class Crowd < Chingu::GameObject
     @characters << Char15.create
   end
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #
 # BACKGROUND

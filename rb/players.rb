@@ -474,7 +474,7 @@ class Player1 < Chingu::GameObject
 
   def cast_spell
     if $spell1 != "none"
-      $spell_cast.play(0.9)
+      $spell_cast1.play
       puts "cast #{$spell1}"
       3.times { Spell1.create(:x=>@x, :y=>@y ) }
       $spell1 = "none"
@@ -636,7 +636,7 @@ class Player2 < Chingu::GameObject
   end
   def cast_spell
     if $spell2 != "none"
-      $spell_cast.play(0.9)
+      $spell_cast2.play
       puts "cast #{$spell2}"
       3.times { Spell2.create(:x=>@x, :y=>@y) }
     $spell2 = "none"
