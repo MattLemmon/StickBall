@@ -204,12 +204,12 @@ class Characters < Chingu::GameObject
     # @bottom_right = 660
 
     # ## CARPET
-     @top          = 300
-     @bottom       = 600
-     @top_left     = 475
-     @top_right    = 560
-     @bottom_left  = -75
-     @bottom_right = 710
+    # @top          = 300
+    # @bottom       = 600
+    # @top_left     = 475
+    # @top_right    = 560
+    # @bottom_left  = -75
+    # @bottom_right = 710
 
     # ## FULL BAR
     # @top          = 280
@@ -250,24 +250,24 @@ class Characters < Chingu::GameObject
 #    @bottom_gain  = 60
 
     ## USED IN BG    
-#    @top          = 280
-#    @bottom       = 475
-#    @top_left     = 380
-#    @top_right    = 465
-#    @bottom_left  = -50
-#    @bottom_right = 745
+    @top          = 280
+    @bottom       = 475
+    @top_left     = 380
+    @top_right    = 465
+    @bottom_left  = -50
+    @bottom_right = 745
+    @top_gain     = 35
+    @bottom_gain  = 45
+
+
+#    @top          = 475
+#    @bottom       = 485
+#    @top_left     = 475
+#    @top_right    = 560
+#    @bottom_left  = -365
+#    @bottom_right = 780
 #    @top_gain     = 55
 #    @bottom_gain  = 50
-
-
-    @top          = 475
-    @bottom       = 485
-    @top_left     = 475
-    @top_right    = 560
-    @bottom_left  = -365
-    @bottom_right = 780
-    @top_gain     = 55
-    @bottom_gain  = 50
     
 
 
@@ -280,11 +280,11 @@ class Characters < Chingu::GameObject
     @offset_x = 0
     @offset_y = 30
 
-    self.factor = @yy * 0.2 + 1.05
-    self.zorder = (@yy + 10) * 300
+#    self.factor = @yy * 0.2 + 1.05
+#    self.zorder = (@yy + 10) * 300
 
-#    self.factor = @yy * 0.3 + 0.9
-#    self.zorder = @yy * 300
+    self.factor = @yy * 0.3 + 0.9
+    self.zorder = @yy * 300
 
     # self.y = rand() ** 4.0 * 130 + 350
     #self.factor = (@y-300)/300.0  # character size is affected by y position

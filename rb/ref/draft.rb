@@ -1,4 +1,18 @@
 
+#                   :space => :fire,
+#                   :j => :toggle_left,
+#                   :l => :toggle_right,
+#                   :i => :toggle_up,
+#                   :k => :toggle_down,
+
+#  def fire;  start_multiball;  end
+#  def fire;  FireCube.create(:x => rand($window.width), :y => rand($window.height), :zorder => Zorder::Projectile);  end
+  def toggle_left;  end
+  def toggle_right;  end
+  def toggle_up;  end
+  def toggle_down;  end
+
+
 
   def player1_power_up
     if $power_ups1 == 1

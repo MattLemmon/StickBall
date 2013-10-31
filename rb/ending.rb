@@ -40,7 +40,7 @@ class Ending1 < Chingu::GameState
   trait :timer
   def setup
     self.input = { [:left_ctrl, :left_shift, :right_ctrl, :right_shift] => Intro, :esc => :exit, :p => Pause, :r => lambda{current_game_state.setup}, [:q, :l] => :pop }
-    $window.caption = "Victory!"
+    $window.caption = ""
     Player1.destroy_all
     Player2.destroy_all
     Star.destroy_all

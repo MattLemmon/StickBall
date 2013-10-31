@@ -23,10 +23,10 @@ class Field < Chingu::GameState
     self.input = { :p => Pause,
                    #:r => lambda{current_game_state.setup},
 #                   :space => :fire,
-#                   :j => :toggle_left,
-#                   :l => :toggle_right,
-#                   :i => :toggle_up,
-#                   :k => :toggle_down,
+                   :j => :decrease_volume,
+                   :l => :increase_volume,
+                   :i => :increase_volume,
+                   :k => :decrease_volume,
                    [:enter, :return] => Field,
                    :holding_right_ctrl=>:chest_bump1,
                    :holding_left_ctrl=>:chest_bump2,
@@ -156,16 +156,15 @@ class Field < Chingu::GameState
 
   def round_setup
     if $round == 1
-      Background6.create
+#      Background1.create
+       Background2.create
+#      Gang.create
+#      Background6.create
       after(500) {
         $music = Song["media/audio/8_bit_remix.ogg"]
         $music.volume = 0.8
         $music.play(true)
       }
-#      @parallax = Chingu::Parallax.create(:x => 0, :y => 0, :rotation_center => :top_left, :zorder => Zorder::Background)
-#      @parallax.add_layer(:image => "backgrounds/space1.png", :damping => 40)
-#      @parallax.add_layer(:image => "backgrounds/space2.png", :damping => 30)
-#      @parallax.add_layer(:image => "backgrounds/space3.png", :damping => 20)
     end
     if $round == 2
       Background2.create
@@ -174,10 +173,6 @@ class Field < Chingu::GameState
         $music.volume = 0.7
         $music.play(true)
       }
-#      @parallax = Chingu::Parallax.create(:x => 0, :y => 0, :rotation_center => :top_left, :zorder => Zorder::Background)
-#      @parallax.add_layer(:image => "backgrounds/clouds.png", :damping => 20)
-#      @parallax.add_layer(:image => "backgrounds/space2.png", :damping => 15)
-#      @parallax.add_layer(:image => "backgrounds/space3.png", :damping => 10)
     end
     if $round == 3
       Crowd.create
@@ -187,40 +182,32 @@ class Field < Chingu::GameState
         $music.play(true)
       }
       after(22900) { $music.volume = 0.2 }
-#      @parallax = Chingu::Parallax.create(:x => 0, :y => 0, :rotation_center => :top_left, :zorder => Zorder::Background)
-#      @parallax.add_layer(:image => "backgrounds/fishdish_mockup.png", :damping => 40)
-#      @parallax.add_layer(:image => "backgrounds/space2.png", :damping => 30)
-#      @parallax.add_layer(:image => "backgrounds/space3.png", :damping => 20)
     end
+  end
+
+  def increase_volume
+    $music.volume += 0.1
+  end
+
+  def decrease_volume
+    $music.volume -= 0.1
   end
 
   def right_attack
     @player1.cast_spell
-#    if $spell1 == "stun"; @player2.stun; end
-#    if $spell1 == "mist"; @player2.mist; end
   end
   
   def left_attack
     @player2.cast_spell
-#    if $spell2 == "stun"; @player1.stun; end
-#    if $spell2 == "mist"; @player1.mist; end
   end
 
   def chest_bump1
-#    if $power_ups1 > 2
       @bumping1 = true
-#    end
   end
 
   def chest_bump2
-#    if $power_ups2 > 2
       @bumping2 = true
-#    end
   end
-
-
-  def fire;  start_multiball;  end
-
 
   def tock
     if @ending == false
@@ -237,7 +224,6 @@ class Field < Chingu::GameState
       @timer_text.text = ""
     end
   end
-
 
   def start_multiball
     if @multiball == false
@@ -265,11 +251,6 @@ class Field < Chingu::GameState
     end
   end
 
-#  def fire;  FireCube.create(:x => rand($window.width), :y => rand($window.height), :zorder => Zorder::Projectile);  end
-  def toggle_left;  end
-  def toggle_right;  end
-  def toggle_up;  end
-  def toggle_down;  end
 
   def screen_shake1
     blink_flare
@@ -687,6 +668,7 @@ class Field < Chingu::GameState
             @score1_text.text = "#{$score1}"
             @score1_text.x = 500 - @score1_text.width/2
             @puck.destroy
+            @ending = true
             @multiball = true
             if @puck2 != nil; @puck2.destroy; end
             if @puck3 != nil; @puck3.destroy; end
@@ -720,6 +702,7 @@ class Field < Chingu::GameState
             @score2_text.text = "#{$score2}"
             @score2_text.x = 300 - @score2_text.width/2
             @puck.destroy
+            @ending = true
             @multiball = true
             if @puck2 != nil; @puck2.destroy; end
             if @puck3 != nil; @puck3.destroy; end
@@ -757,19 +740,11 @@ class Field < Chingu::GameState
   end
 
   def draw
-=begin
-    if @player1.mist == true && rand(20) == 1
-      puts "player 1 misted"
-    end
-    if @player2.mist == true && rand(20) == 1
-      puts "player 2 misted"
-    end
-=end
     @lense_flares.draw
-#    if @transition == false
-#    fill_gradient(:from => Color.new(255,0,0,0), :to => Color.new(255,60,60,80), :rect => [0,0,$window.width,@ground_y])
-#    fill_gradient(:from => Color.new(255,100,100,100), :to => Color.new(255,50,50,50), :rect => [0,@ground_y,$window.width,$window.height-@ground_y])
-#    end
+    if $round == 2 || $round == 1
+#      fill_gradient(:from => Color.new(255,0,0,0), :to => Color.new(255,60,60,80), :rect => [0,0,$window.width,@ground_y])
+      fill_gradient(:from => Color.new(0xFF00003B), :to => Color.new(0xFF252546), :orientation => :vertical)
+    end
     super
   end
 
