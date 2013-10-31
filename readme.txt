@@ -2,18 +2,19 @@ _________________________________________________________________
 
                          S T I C K B A L L      
 
-                     Entry for Gamedev.net PUTT
+                     Entry for GameDev.net PUTT
                   Power-Up Table Tennis Competition
 
 
-To run from the source:
+To run from source code:
 
-requires Ruby on all systems
-requires Xcode 4+ on Mac
+ (requires Ruby)
+ (Mac OSX additionally requires Xcode 4+)
 
- $ bundle install
- $ ruby main.rb
+$ bundle install
+$ ruby main.rb
 
+Detailed installation instructions are included below.
 _________________________________________________________________
 
                            CONTROLS
@@ -30,23 +31,30 @@ Left Shift                                            Right Shift
 
 Left Ctrl                                             Right Ctrl
 
+Play against an opponent, or against the CPU. There are four CPU 
+difficulty levels. Each match is best two rounds out of three.
 
-Shift is used to cast spells, after they are picked up.
+Collect five stars to receive a Power-Up.
 
 Ctrl is used to slow the ball, after the Bump Power-Up has been obtained.
 
+Shift is used to cast spells, after they are picked up.
+
 The three main Power-Ups are:
 
-  -  Speed         faster player movement
-  -  Chest Bump    slows ball when holding Ctrl
-  -  Kick          hold ctrl to kick the ball faster
+  -  Speed     faster player movement
+  -  Bump      slows ball when holding Ctrl
+  -  Kick      hold ctrl to kick the ball faster
 
-The two additional Power-Ups are spells which can be cast:
+The two additional Power-Ups are spells which can be cast with the 
+shift button:
 
-  -  Stun          stuns opponent for a few seconds
-  -  Mist          makes opponent disappear for a few seconds
+  -  Stun      stuns opponent for a few seconds
+  -  Mist      makes opponent disappear for a few seconds
 
 
+Extra Controls:  I J K L => music volume controls during rounds
+                 From the Pause menu you can return to the Main Menu
 _________________________________________________________________
 
                     QUICK INSTALL (Requires Ruby)

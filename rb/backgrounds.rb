@@ -49,11 +49,11 @@ class Background2 < Background
 #    @parallax.repeat_y = true
 #    @rotation_center = :top_left
 #    @zorder = Zorder::Background
-    @parallax.add_layer(:image => "backgrounds/space2.png", :damping => 14)
+    @parallax.add_layer(:image => "backgrounds/space2.png", :damping => 25)
+    @parallax.add_layer(:image => "backgrounds/clouds0.png", :damping => 20)
+    @parallax.add_layer(:image => "backgrounds/clouds1.png", :y => 400, :damping => 14)
     @parallax.add_layer(:image => "backgrounds/clouds2.png", :damping => 10)
-    #@parallax.add_layer(:image => "backgrounds/clouds1.png", :damping => 8)
- #   @parallax.add_layer(:image => "backgrounds/clouds1.png", :damping => 6)
-    #@parallax.add_layer(:image => "backgrounds/clouds1.png", :damping => 4)
+    @parallax.add_layer(:image => "backgrounds/clouds3.png", :damping => 6)
 
 
     @speed_x = 10

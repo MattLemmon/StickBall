@@ -156,10 +156,10 @@ class Field < Chingu::GameState
 
   def round_setup
     if $round == 1
-#      Background1.create
-       Background2.create
-#      Gang.create
-#      Background6.create
+      Background1.create
+      #Background2.create
+      #Gang.create
+      #Background6.create
       after(500) {
         $music = Song["media/audio/8_bit_remix.ogg"]
         $music.volume = 0.8
@@ -178,10 +178,12 @@ class Field < Chingu::GameState
       Crowd.create
       after(500) {
         $music = Song["media/audio/guitar_song.ogg"]
-        $music.volume = 0.5
+        $music.volume = 0.6
         $music.play(true)
       }
-      after(22900) { $music.volume = 0.2 }
+      after(10900) { $music.volume = 0.5 }
+      after(22400) { $music.volume = 0.4 }
+      after(22900) { $music.volume = 0.3 }
     end
   end
 
@@ -741,8 +743,7 @@ class Field < Chingu::GameState
 
   def draw
     @lense_flares.draw
-    if $round == 2 || $round == 1
-#      fill_gradient(:from => Color.new(255,0,0,0), :to => Color.new(255,60,60,80), :rect => [0,0,$window.width,@ground_y])
+    if $round == 2
       fill_gradient(:from => Color.new(0xFF00003B), :to => Color.new(0xFF252546), :orientation => :vertical)
     end
     super
@@ -826,7 +827,7 @@ class Field < Chingu::GameState
 
     self.game_objects.destroy_if { |object| object.color.alpha == 0 }
 
-    $window.caption = "Stick Ball - Objects: #{game_objects.size}, FPS: #{$window.fps}"
+    $window.caption = "Stick Ball - Round #{$round}" # - Objects: #{game_objects.size}, FPS: #{$window.fps}"
 
     if @song_fade == true # fade song if @song_fade is true
       @fade_count += 1

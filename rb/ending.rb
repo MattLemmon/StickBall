@@ -26,7 +26,7 @@ class GameOver < Chingu::GameState
     @t3.x = 400 - @t3.width/2
 
     $music.volume = 0.0
-    after(300) { $game_over.play }
+    after(300) { $game_over.play(0.8) }
     after(10000) { push_game_state(PreIntro) } #Chingu::GameStates::FadeTo.new(PreIntro.new, :speed => 10)) }
   end
 
