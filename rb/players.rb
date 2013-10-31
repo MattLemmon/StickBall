@@ -5,23 +5,31 @@ require_relative 'face/eyes'
 
 class ModeSelect < Chingu::GameObject
   def setup
+    @opponent = ["A S D W", "Computer"]
     @mode = ["Versus", "Campaign"]
     @m = 0
-    @opponent = ["A S D W", "Computer"]
+    @difficulty = ["Easy", "Normal", "Hard", "Insane"]
+    @diff = 1
+
     @left_shift_text = ["Left Shift", ""]
+    @left_ctrl_text = ["Left Ctrl", ""]
     @ready = false
 
-    @text = Chingu::Text.create(@mode[@m], :y => 420, :size => 45, :color => Colors::White, :zorder => Zorder::GUI)
+    @text = Chingu::Text.create(@mode[@m], :y => 190, :size => 66, :zorder => Zorder::GUI)
     @text.x = 400 - @text.width/2 # center text
-    @t2 = Chingu::Text.create(@opponent[@m], :y => 360, :font => "GeosansBold", :size => 45, :color => Colors::White, :zorder => Zorder::GUI)
-    @t2.x = 200 - @t2.width/2 # center text
 
-    @text4 = Chingu::Text.create("Left Shift", :y => 500, :font => "GeosansLight", :size => 45, :zorder => Zorder::GUI)
+    @t2 = Chingu::Text.create(@opponent[@m], :y => 370, :size => 40, :font => "GeosansBold", :zorder => Zorder::GUI)
+    @t2.x = 200 - @t2.width/2 # center text
+    @text4 = Chingu::Text.create("Left Shift", :y => 430, :size => 38, :zorder => Zorder::GUI)
     @text4.x = 200 - @text4.width/2 # center text
+    @text6 = Chingu::Text.create("Left Ctrl", :y => 490, :size => 38, :zorder => Zorder::GUI)
+    @text6.x = 200 - @text6.width/2 # center text
+
+    @diff_text = Chingu::Text.create("", :y => 370, :size => 40, :font => "GeosansBold", :zorder => Zorder::GUI)
+#    @diff_text.x = 400 - @diff_text.width/2 # center text
 
 #    @t4 = Chingu::Text.create("A S D W", :y => 360, :font => "GeosansBold", :size => 45, :color => Colors::White, :zorder => Zorder::GUI)
 #    @t4.x = 200 - @t4.width/2 # center text
-
   end
 
   def mode_select
@@ -38,10 +46,51 @@ class ModeSelect < Chingu::GameObject
       @t2.x = 200 - @t2.width/2 # center text
       @text4.text = @left_shift_text[@m]
       @text4.x = 200 - @text4.width/2 # center text
+      @text6.text = @left_ctrl_text[@m]
+      @text6.x = 200 - @text6.width/2 # center text
       $mode = @mode[@m]
+      if $mode == "Campaign"
+        @diff_text.text = $difficulty
+        @diff_text.x = 400 - @diff_text.width/2
+      else
+        @diff_text.text = ""
+      end
     end
   end
+
+  def go_up
+    if $mode == "Campaign"
+      $click.play(0.7)
+      if @diff < 3
+        @diff += 1
+      else
+        @diff = 0
+      end
+      @diff_text.text = @difficulty[@diff]
+      @diff_text.x = 400 - @diff_text.width/2
+      $difficulty = @difficulty[@diff]
+
+    end
+  end
+
+  def go_down
+    if $mode == "Campaign"
+      $click.play(0.7)
+      if @diff > 0
+        @diff -= 1
+      else
+        @diff = 3
+      end
+      @diff_text.text = @difficulty[@diff]
+      @diff_text.x = 400 - @diff_text.width/2
+      $difficulty = @difficulty[@diff]
+    end
+  end
+
 end
+
+
+
 
 
 class Player1Clone < Chingu::GameObject
@@ -377,8 +426,9 @@ class Player1 < Chingu::GameObject
   traits :velocity, :collision_detection
   trait :bounding_box, :debug => DEBUG
   trait :timer
-  attr_reader :health, :score, :direction, :mist
-  def initialize(health)
+  attr_reader :direction, :mist, :creeping
+
+  def initialize(options)
     super
     @image = Gosu::Image["players/#{$image1}.png"]
     cache_bounding_box
@@ -539,8 +589,9 @@ class Player2 < Chingu::GameObject
   traits :velocity, :collision_detection
   trait :bounding_box, :debug => DEBUG
   trait :timer
-  attr_reader :health, :score, :direction, :mist
-  def initialize(health)
+  attr_reader :direction, :mist, :creeping
+
+  def initialize(options)
     super
     @image = Gosu::Image["players/#{$image2}.png"]
     @direction = 1

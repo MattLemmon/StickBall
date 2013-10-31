@@ -1,4 +1,39 @@
 
+
+  def player1_power_up
+    if $power_ups1 == 1
+      $speed1 = 10
+    end
+    if $power_ups1 == 2
+      $creep1 = true
+    end
+    if $power_ups1 == 3
+      $chest_bump1 = true
+    end
+    if $power_ups1 == 4
+      $kick1 = true
+    end
+  end
+
+  def player2_power_up
+    if $power_ups2 == 1
+      $speed2 = 10
+    end
+    if $power_ups2 == 2
+      $creep2 = true
+    end
+    if $power_ups2 == 3
+      $chest_bump2 = true
+    end
+    if $power_ups2 == 4
+      $kick2 = true
+    end
+  end
+
+
+
+
+
 =begin
           if $health1 > 1
             $health1 -=1

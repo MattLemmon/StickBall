@@ -30,11 +30,11 @@ class GUI1 < Chingu::GameObject
       @power_ups_text1.x = @text_pos_x - @power_ups_text1.width/2
     end
     if $power_ups1 > 1
-      @power_ups_text2.text = "Creep"
+      @power_ups_text2.text = "Bump"
       @power_ups_text2.x = @text_pos_x - @power_ups_text2.width/2
     end
     if $power_ups1 > 2
-      @power_ups_text3.text = "Bump"
+      @power_ups_text3.text = "Kick"
       @power_ups_text3.x = @text_pos_x - @power_ups_text3.width/2
     end
   end
@@ -44,10 +44,10 @@ class GUI1 < Chingu::GameObject
       @power_ups_text1.text = "Speed"
       @power_ups_text1.x = @text_pos_x - @power_ups_text1.width/2
     elsif $power_ups1 == 2
-      @power_ups_text2.text = "Creep"
+      @power_ups_text2.text = "Bump"
       @power_ups_text2.x = @text_pos_x - @power_ups_text2.width/2
     else
-      @power_ups_text3.text = "Bump"
+      @power_ups_text3.text = "Kick"
       @power_ups_text3.x = @text_pos_x - @power_ups_text3.width/2
     end
   end
@@ -114,11 +114,11 @@ class GUI2 < Chingu::GameObject
       @power_ups_text1.x = @text_pos_x - @power_ups_text1.width/2
     end
     if $power_ups2 > 1
-      @power_ups_text2.text = "Creep"
+      @power_ups_text2.text = "Bump"
       @power_ups_text2.x = @text_pos_x - @power_ups_text2.width/2
     end
     if $power_ups2 > 2
-      @power_ups_text3.text = "Bump"
+      @power_ups_text3.text = "Kick"
       @power_ups_text3.x = @text_pos_x - @power_ups_text3.width/2
     end
   end
@@ -128,10 +128,10 @@ class GUI2 < Chingu::GameObject
       @power_ups_text1.text = "Speed"
       @power_ups_text1.x = @text_pos_x - @power_ups_text1.width/2
     elsif $power_ups2 == 2
-      @power_ups_text2.text = "Creep"
+      @power_ups_text2.text = "Bump"
       @power_ups_text2.x = @text_pos_x - @power_ups_text2.width/2
     else
-      @power_ups_text3.text = "Bump"
+      @power_ups_text3.text = "Kick"
       @power_ups_text3.x = @text_pos_x - @power_ups_text3.width/2
     end
   end

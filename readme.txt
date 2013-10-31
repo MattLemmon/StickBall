@@ -2,6 +2,12 @@ _________________________________________________________________
 
                          S T I C K B A L L      
 
+                     Entry for Gamedev.net PUTT
+                  Power-Up Table Tennis Competition
+
+
+To run from the source:
+
 requires Ruby on all systems
 requires Xcode 4+ on Mac
 
@@ -22,7 +28,23 @@ Esc - Exit
 
 Left Shift                                            Right Shift
 
-Left Ctrl                  Spacebar                    Right Ctrl
+Left Ctrl                                             Right Ctrl
+
+
+Shift is used to cast spells, after they are picked up.
+
+Ctrl is used to kick the ball, after the kick Power-Up has been obtained.
+
+The three main Power-Ups are:
+
+  -  Speed         faster player movement
+  -  Chest Bump    slows ball when it hits player's chest
+  -  Kick          hold ctrl to kick the ball faster
+
+The two additional Power-Ups are spells which can be cast:
+
+  -  Stun          stuns opponent for a few seconds
+  -  Mist          makes opponent disappear for a few seconds
 
 _________________________________________________________________
 
@@ -172,17 +194,12 @@ Enjoy!
 _________________________________________________________________
 
 
-                See more about Gosu at libgosu.org
+              See more about Gosu at libgosu.org
 
 _________________________________________________________________
 
-                          ATTRIBUTION
 
-Sound Effects:
-
-incantor_5.wav      by aquaculture
-buffer_spell.wav    by Northern_Monkey
-...
-...
+Attribution for Sound Effects and Music is included in the audio
+information properties of each .ogg file.
 
 _________________________________________________________________

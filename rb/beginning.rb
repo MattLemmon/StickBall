@@ -25,11 +25,12 @@ class PreIntro < Chingu::GameState
     super
     LenseFlares.load_images $window, './media/lense_flares'
     @lense_flares = LenseFlares.new $window.width/2.0, $window.height/2.0
-    self.input = { [:left_shift, :right_shift] => :next, :p => Pause } #, :r => lambda{current_game_state.setup} }
+    self.input = { [:left_shift, :right_shift] => :next, :p => Pause } #, :r => lambda{current_game_state.setup} } [:up, :down, :w, :s] => :cpu_difficulty,
   end
 
   def setup
     ####################################################
+    $difficulty = "Normal"
     $score1 = 0
     $score2 = 0
     $mode = "Versus"
@@ -55,14 +56,15 @@ class PreIntro < Chingu::GameState
     ####################################################
     Chingu::Text.destroy_all 
     $window.caption = "StickBall"
-    @counter = 0  
-    @count = 1    
+    @ground_y = ($window.height * 0.95).to_i
     @nxt = false
     @song_fade = false
     @fade_count = 0
     @bounce = 0
     @bounce_delay = 6
-    @ground_y = ($window.height * 0.95).to_i
+
+#    @counter = 0  
+#    @count = 1    
 
     if $intro == false
       $music = Song["media/audio/guitar_solo.ogg"]
@@ -75,26 +77,22 @@ class PreIntro < Chingu::GameState
     @title = Title.create
 
     after(300) {
-    @t1 = Chingu::Text.create("Right Player", :y => 260, :font => "GeosansBold", :size => 65, :color => Colors::White, :zorder => Zorder::GUI)
+    @t1 = Chingu::Text.create("Right Player", :y => 300, :font => "GeosansBold", :size => 52, :color => Colors::White, :zorder => Zorder::GUI)
     @t1.x = 600 - @t1.width/2 # center text
-    @t2 = Chingu::Text.create("Left Player", :y => 260, :font => "GeosansBold", :size => 65, :color => Colors::White, :zorder => Zorder::GUI)
+    @t2 = Chingu::Text.create("Left Player", :y => 300, :font => "GeosansBold", :size => 52, :color => Colors::White, :zorder => Zorder::GUI)
     @t2.x = 200 - @t2.width/2 # center text
     }
 
     after(600) {
-      @t3 = Chingu::Text.create("Arrows", :y => 360, :font => "GeosansBold", :size => 45, :color => Colors::White, :zorder => Zorder::GUI)
-      @t3.x = 600 - @t3.width/2 # center text
-    }
-
-    after(900) {
       @mode_select = ModeSelect.create
-      @mode_select.input = { [:right, :left, :up, :down, :a, :d, :w, :s] => :mode_select }
-    }
-    after(900) {
-#      @text4 = Chingu::Text.create("Left Shift", :y => 500, :font => "GeosansLight", :size => 45, :zorder => Zorder::GUI)
-#      @text4.x = 200 - @text4.width/2 # center text
-      @text5 = Chingu::Text.create("Right Shift", :y => 500, :font => "GeosansLight", :size => 45, :zorder => Zorder::GUI)
+      @mode_select.input = { [:right, :left,  :a, :d ] => :mode_select, [:up, :w] => :go_up, [:down, :s] => :go_down }
+      @t3 = Chingu::Text.create("Arrows", :y => 370, :size => 40, :font => "GeosansBold", :zorder => Zorder::GUI)
+      @t3.x = 600 - @t3.width/2 # center text
+      @text5 = Chingu::Text.create("Right Shift", :y => 430, :size => 38, :zorder => Zorder::GUI)
       @text5.x = 600 - @text5.width/2 # center text
+      @text6 = Chingu::Text.create("Right Ctrl", :y => 490, :size => 38, :zorder => Zorder::GUI)
+      @text6.x = 600 - @text6.width/2 # center text
+
     }
 
     after(1500) {
@@ -117,20 +115,23 @@ class PreIntro < Chingu::GameState
 
   def next
     if @nxt == true  # if you've already pressed 'shift' once, pressing it again skips ahead
+ 
+#      $difficulty = "Normal"
+
       @nxt = false
       $click.play(0.7)
       push_game_state(Intro)
     else
       @nxt = true    # transition to Intro
       $chime.play(0.7)
-      after(300) { puts 1 }
-      after(600) { puts 2 }
-      after(1000) { push_game_state(Intro) }
+#      after(300) { puts 1 }
+#      after(600) { puts 2 }
+      after(200) { push_game_state(Intro) }
     end
   end
 
   def update
-    @counter += @count
+#    @counter += @count
     if @bounce > 0
       @bounce -= 1
     end

@@ -304,7 +304,7 @@ end
 class Title < Chingu::GameObject
   def setup
     @image = Image["objects/title.png"]
-    @y = 150
+    @y = 180
     @zorder = 20
     @x = 400
   end

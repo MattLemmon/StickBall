@@ -29,7 +29,6 @@ class Field < Chingu::GameState
                    :k => :toggle_down,
                    :right_shift=>:right_attack,
                    :left_shift=>:left_attack,
-                   :/ => :testify,
                    [:enter, :return] => Field,
                    :holding_right_ctrl=>:kick_ball1,
                    :holding_left_ctrl=>:kick_ball2
@@ -38,15 +37,28 @@ class Field < Chingu::GameState
     $window.caption = "Stick Ball! Go team go!"
   end
 
-  def testify
-    puts "test"
-  end
-
   def setup
     super
     $health1 = $start_health1
     $health2 = $start_health2
-
+=begin    ####################################################
+    $stars1 = 0
+    $stars2 = 0
+    $speed1 = 6
+    $speed2 = 6
+    $power_ups1 = 0
+    $power_ups2 = 0
+    $creep1 = false
+    $creep2 = false
+    $chest_bump1 = false
+    $chest_bump2 = false
+    $kick1 = false
+    $kick2 = false
+    $spell1 = "none"
+    $spell2 = "none"
+=end    ####################################################
+#    $score1 = 0
+#    $score2 = 0
     $winner = ""
 
     @seconds = 30
@@ -55,7 +67,7 @@ class Field < Chingu::GameState
     @kicking2 = false
 
     @bump = 0
-    @bump_delay = 12
+    @bump_delay = 10
     @bounce = 0
     @bounce_delay = 6
     @spell1_hit = false
@@ -68,6 +80,8 @@ class Field < Chingu::GameState
     @multiball = false
     @ending = false
     @transition = true
+
+#    @ground_y = ($window.height * 0.95).to_i
 
     game_objects.destroy_all
     Referee.destroy_all
@@ -83,16 +97,19 @@ class Field < Chingu::GameState
     Star.destroy_all
 #    LenseFlares.destroy_all
 
-#    if @player != nil; @player.destroy; end 
+    Explosion.destroy_all
+    Bullet.destroy_all   # destroy lingering GameObjects
+#    if @player != nil; @player.destroy; end # if @player exists, destroy it
 
     @referee = Referee.create(:x => 400, :y => 300, :zorder => Zorder::Main_Character)
+#    @referee.input = {:holding_left => :go_left, :holding_right => :go_right, :holding_up => :go_up, :holding_down => :go_down}
 
     @player1 = Player1.create(:x => $pos1_x, :y => $pos1_y, :zorder => Zorder::Main_Character)#(:x => $player_x, :y => $player_y, :angle => $player_angle, :zorder => Zorder::Main_Character)
-    @player1.input = {:holding_left=>:go_left,:holding_right=>:go_right,:holding_up=>:go_up,:holding_down=>:go_down} #:holding_right_ctrl=>:creep,
+    @player1.input = {:holding_right_ctrl=>:creep,:holding_left=>:go_left,:holding_right=>:go_right,:holding_up=>:go_up,:holding_down=>:go_down}
 
     @player2 = Player2.create(:x => $pos2_x, :y => $pos2_y, :zorder => Zorder::Main_Character)#(:x => $player_x, :y => $player_y, :angle => $player_angle, :zorder => Zorder::Main_Character)
     if $mode == "Versus"
-      @player2.input = {:holding_a=>:go_left,:holding_d=>:go_right,:holding_w=>:go_up,:holding_s=>:go_down} #:holding_left_ctrl=>:creep,
+      @player2.input = {:holding_left_ctrl=>:creep,:holding_a=>:go_left,:holding_d=>:go_right,:holding_w=>:go_up,:holding_s=>:go_down}
     end
 
     @health1_text = Chingu::Text.create(:text=>"#{$health1}", :y=>16, :size=>32)
@@ -127,9 +144,6 @@ class Field < Chingu::GameState
 
     $music.volume = 0.0
 
-    if $mode == "Campaign"
-      campaign_setup
-    end
     round_setup
 
     after(1000) { tock }
@@ -139,16 +153,6 @@ class Field < Chingu::GameState
 #    1.times { fire }
 
   end
-
-  def campaign_setup
-    if $difficulty == "Hard"
-      $speed2 = 10
-    end
-    if $difficulty == "Insane"
-      $speed2 = 16
-    end
-  end
-
 
   def round_setup
     if $round == 1
@@ -319,9 +323,12 @@ class Field < Chingu::GameState
       $speed1 = 10
     end
     if $power_ups1 == 2
-      $chest_bump1 = true
+      $creep1 = true
     end
     if $power_ups1 == 3
+      $chest_bump1 = true
+    end
+    if $power_ups1 == 4
       $kick1 = true
     end
   end
@@ -331,9 +338,12 @@ class Field < Chingu::GameState
       $speed2 = 10
     end
     if $power_ups2 == 2
-      $chest_bump2 = true
+      $creep2 = true
     end
     if $power_ups2 == 3
+      $chest_bump2 = true
+    end
+    if $power_ups2 == 4
       $kick2 = true
     end
   end
@@ -544,58 +554,55 @@ class Field < Chingu::GameState
         @bump = @bump_delay
         player.wobble
         puck.die!
-
-
-        if @kicking1 == true #&& $kick1 == true
-          puts "Kick!"
-          puck.velocity_x = player.velocity_x * 10
-          if puck.velocity_x > 0
-            puck.velocity_x *= -1
-          end
-          if puck.velocity_x > -0.25
-            puck.velocity_x = -15
-          end
-        else
-          if puck.velocity_x < 0       # vel_x 
+        if $kick1 == false || player.velocity_x == 0 # && player.velocity_y == 0
+          if puck.velocity_x < 0
             puck.velocity_x = 10
           else
             puck.velocity_x = -10
           end
-        end
-
-        if player.y - puck.y < -46      # vel_y
-          puck.velocity_y = 11
-        elsif player.y - puck.y < -38
-          puck.velocity_y = 5
-
-        elsif player.y - puck.y < -20
-          puck.velocity_y = 3
-
-        elsif player.y - puck.y < 20
-          if puck.velocity_y >= 2.0 || puck.velocity_y <= 2.0
-            puck.velocity_y = -puck.velocity_y*0.4
-            if $chest_bump1 == true                # Chest Bump Ability
-              if puck.velocity_x < 0
-                puck.velocity_x *= -0.05
+          if player.y - puck.y < -48
+            puck.velocity_y = 11
+          elsif player.y - puck.y < -40
+            puck.velocity_y = 5
+          elsif player.y - puck.y < -25
+            puck.velocity_y = 3
+          elsif player.y - puck.y < 25
+            if puck.velocity_y >= 2.0 || puck.velocity_y <= 2.0
+              puck.velocity_y = -puck.velocity_y*0.2
+              if $chest_bump1 == true                # Chest Bump Ability
+                if puck.velocity_x < 0
+                  puck.velocity_x *= -0.05
+                end
               end
             end
+          elsif player.y - puck.y < 40
+            puck.velocity_y = -3
+          elsif player.y - puck.y < 48
+            puck.velocity_y = -5
+          else
+            puck.velocity_y = -11
           end
-        elsif player.y - puck.y < 38
-          puck.velocity_y = -3
-        elsif player.y - puck.y < 46
-          puck.velocity_y = -5
-        else
-          puck.velocity_y = -11
+        else                                         #  Kick Ability
+          puck.velocity_x = player.velocity_x * 5
+          puck.velocity_y = player.velocity_y * 5
+          if puck.velocity_x > 0
+            puck.velocity_x *= -1
+          end
         end
-      end
-#        puck.velocity_x = player.velocity_x * 5
-#        puck.velocity_y = player.velocity_y * 5
-#        if puck.velocity_x > 0
-#          puck.velocity_x *= -1
-#        end
-#      end
-    end
 
+        if @kicking1 == true
+          puts "Kick!"
+          puck.velocity_x = player.velocity_x * 20
+          if puck.velocity_x > 0
+            puck.velocity_x *= -1
+          end
+          if puck.velocity_x > -0.25
+            puck.velocity_x = -25
+          end
+        end
+
+      end
+    end
     FireCube.each_collision(Player2) do |puck, player|           # PUCK / PLAYER 2
       if @bump == 0
         @bump = @bump_delay
@@ -677,8 +684,6 @@ class Field < Chingu::GameState
             @score1_text.x = 500 - @score1_text.width/2
             @puck.destroy
             @multiball = true
-            if @puck2 != nil; @puck2.destroy; end
-            if @puck3 != nil; @puck3.destroy; end
             if $score1 == 1
               after(2800){push_game_state(FieldChange)}
             else
@@ -709,8 +714,6 @@ class Field < Chingu::GameState
             @score2_text.x = 300 - @score2_text.width/2
             @puck.destroy
             @multiball = true
-            if @puck2 != nil; @puck2.destroy; end
-            if @puck3 != nil; @puck3.destroy; end
             if $score2 == 1
               after(2800){push_game_state(FieldChange)}
             else
@@ -788,21 +791,11 @@ class Field < Chingu::GameState
 
 
     if $mode == "Campaign"
-      if $difficulty == "Easy"
-        if @player2.y > @puck.y && rand(5) == 1
-          @player2.go_up
-        end
-        if @player2.y < @puck.y && rand(5) == 1
-          @player2.go_down
-        end
+      if @player2.y > @puck.y && rand(5) == 1
+        @player2.go_up
       end
-      if $difficulty == "Normal" || $difficulty == "Hard" || $difficulty == "Insane"
-        if @player2.y > @puck.y && rand(3) == 1 && @player2.x < @puck.x
-          @player2.go_up
-        end
-        if @player2.y < @puck.y && rand(3) == 1 && @player2.x < @puck.x
-          @player2.go_down
-        end
+      if @player2.y < @puck.y && rand(5) == 1
+        @player2.go_down
       end
     end
 
