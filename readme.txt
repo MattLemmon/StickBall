@@ -5,12 +5,20 @@ _________________________________________________________________
                      Entry for GameDev.net PUTT
                   Power-Up Table Tennis Competition
 
+On Windows:
+
+Copy StickBall to your harddrive, go into the StickBall folder, and double-click main.exe
+
+On Mac:
+
+https://www.dropbox.com/s/n6lfga4i6rwdh8j/Stick%20Ball%20Mac%202013-10-31-1051.zip
 
 To run from source code:
 
  (requires Ruby)
  (Mac OSX additionally requires Xcode 4+)
 
+$ gem install bundler
 $ bundle install
 $ ruby main.rb
 
@@ -44,7 +52,7 @@ The three main Power-Ups are:
 
   -  Speed     faster player movement
   -  Bump      slows ball when holding Ctrl
-  -  Kick      hold ctrl to kick the ball faster
+  -  Kick      player kicks the ball faster
 
 The two additional Power-Ups are spells which can be cast with the 
 shift button:
@@ -72,7 +80,6 @@ of if you prefer manual gem install (instead of bundle):
 
   $ gem install gosu
   $ gem install chingu
-  $ gem install ashton
 
 If you don't have git installed, you can copy the repo manually at
 https://github.com/mattlemmon/StickBall by clicking on the "Download
@@ -109,6 +116,8 @@ Next you should:
 Clone from github: https://github.com/mattlemmon/StickBall.git
 (If you do not have git installed, just click on the "Download
 Zip" link - right side of screen toward the bottom.)
+
+Install bundler with `gem install bundler`.
 
 Then `cd` into the StickBall folder and execute `bundle install`.
 This will install three gems: Gosu, Chingu, and Ashton, and 
@@ -202,12 +211,10 @@ Once the gems are installed, execute:
 
 $ ruby main.rb
 
-Enjoy!
-
 _________________________________________________________________
 
 
-              See more about Gosu at libgosu.org
+       See more about Gosu and Chingu at libgosu.org
 
 _________________________________________________________________
 
